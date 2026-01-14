@@ -69,7 +69,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "alb_logs_lifecycle" {
   rule {
     id     = "${var.Project_Name}-alb_access_logs-lifecycle"
     status = "Enabled"
-
+    filter {
+      prefix = ""
+    }
     expiration {
       days = 30
     }

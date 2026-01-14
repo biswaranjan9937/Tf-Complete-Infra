@@ -46,7 +46,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "vpc_flowlog_lifecycle" {
   rule {
     id     = "${var.Project_Name}-vpc_flowlogs-lifecycle"
     status = "Enabled"
-
+    filter {
+      prefix = ""
+    }
     expiration {
       days = 15
     }
