@@ -8,13 +8,13 @@ provider "aws" {
     tags = {
       "Implementedby" = "Workmates",
       "Managedby"     = "Workmates",
-      "Environment"   = "POC",
-      "Project"       = "CWM-Talent-Talker"
+      "Environment"   = "Prod",
+      "Project"       = "Innervex-Technologies"
     }
   }
 }
 provider "aws" {
-  region = "us-east-1"
-  alias  = "virginia"
+  region = "ap-south-2"
+  alias  = "hyderabad"
 }
 #####################################################

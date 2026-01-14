@@ -15,12 +15,11 @@ terraform {
   }
 
   backend "s3" {
-    region       = "ap-south-1"
+    region       = "ap-south-2"
     encrypt      = true
-    bucket       = "cwm-terraform-statefiles-talent-talker"
+    bucket       = "cwm-terraform-statefiles-innervex-technologies"
     use_lockfile = true
     key          = "terraform.tfstate"
-  
   }
 }
 

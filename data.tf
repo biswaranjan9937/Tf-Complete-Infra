@@ -32,10 +32,20 @@ data "aws_iam_policy_document" "flow_log_s3" {
     resources = ["arn:aws:s3:::${local.vpc_flowlog_bucket}"]
   }
 }
+
+
 ####################################################################
-# PRITUNL
+# EC2 - UAT
 ####################################################################
-# data "aws_key_pair" "pritunl" {
-#   key_name           = var.ec2_pritunl_key_name
-#   include_public_key = true
-# }
+data "aws_key_pair" "uat" {
+  key_name           = var.uat_key_name
+  include_public_key = true
+}
+
+####################################################################
+# EC2 - PROD
+####################################################################
+data "aws_key_pair" "prod" {
+  key_name           = var.prod_key_name
+  include_public_key = true
+}
