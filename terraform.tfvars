@@ -233,7 +233,7 @@ prod_egress_rules = [{
 #########################################################################
 alb_sg_name = "Innervex-Technologies-ALB-SG"
 alb_name    = "Innervex-Technologies-alb"
-uat_ec2_tg_name = "Innervex-Technologies-UAT-EC2-TG-80"
+uat_ec2_tg_name = "Innervex-Technologies-UAT-TG-80"
 alb_access_logs_s3_bucket = "innervex-technologies-alb-access-logs"
 alb_access_logs_s3_prefix = "uat-alb-logs"
 

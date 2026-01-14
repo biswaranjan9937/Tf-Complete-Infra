@@ -46,7 +46,7 @@ resource "aws_s3_bucket_policy" "alb_log_policy" {
       {
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_elb_service_account.main.id}:root"
+          AWS = "arn:aws:iam::297686227792:root"
         }
         Action   = "s3:PutObject"
         Resource = "${aws_s3_bucket.alb_log_s3.arn}/*"
@@ -63,4 +63,3 @@ resource "aws_s3_bucket_policy" "alb_log_policy" {
   })
 }
 
-data "aws_elb_service_account" "main" {}
