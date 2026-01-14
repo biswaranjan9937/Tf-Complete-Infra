@@ -273,9 +273,6 @@ variable "uat_egress_rules" {
 ########################################################################
 # EC2 - PROD
 ########################################################################
-variable "availability_zone" {
-  type = string
-}
 
 variable "prod_key_name" {
   type = string
