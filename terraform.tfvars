@@ -160,7 +160,7 @@ uat_tags = {
   "Environment"   = "UAT",
   "Project"       = "Innervex-Technologies"
 }
-uat_key_name               = "Innervex-Technologies-UAT-App+DB-2b-Keypair"
+uat_ec2_key_name               = "Innervex-Technologies-UAT-App+DB-2b-Keypair"
 uat_termination_protection = true
 uat_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-KDvzcgT2Vw31"
 uat_ingress_rules = [
@@ -202,7 +202,7 @@ prod_tags = {
   "Environment"   = "PROD",
   "Project"       = "Innervex-Technologies"
 }
-prod_key_name               = "Innervex-Technologies-PROD-App+DB-2b-Keypair"
+prod_ec2_key_name               = "Innervex-Technologies-PROD-App+DB-2b-Keypair"
 prod_termination_protection = true
 prod_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-KDvzcgT2Vw31"
 prod_ingress_rules = [
@@ -242,3 +242,9 @@ alb_access_logs_s3_prefix = "uat-alb-logs"
 ########################################
 uat_s3_bucket_name  = "innervex-technologies-uat-bucket"
 prod_s3_bucket_name = "innervex-technologies-prod-bucket"
+
+########################################
+# Budget
+########################################
+budget_amount = "801"
+anomaly_threshold = "27"

@@ -32,20 +32,3 @@ data "aws_iam_policy_document" "flow_log_s3" {
     resources = ["arn:aws:s3:::${local.vpc_flowlog_bucket}"]
   }
 }
-
-
-####################################################################
-# EC2 - UAT
-####################################################################
-data "aws_key_pair" "uat" {
-  key_name           = var.uat_key_name
-  include_public_key = true
-}
-
-####################################################################
-# EC2 - PROD
-####################################################################
-data "aws_key_pair" "prod" {
-  key_name           = var.prod_key_name
-  include_public_key = true
-}

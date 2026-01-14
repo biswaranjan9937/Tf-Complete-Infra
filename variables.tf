@@ -209,7 +209,7 @@ variable "availability_zone" {
   type = string
 }
 
-variable "uat_key_name" {
+variable "uat_ec2_key_name" {
   type = string
 }
 variable "uat_ami_id" {
@@ -274,7 +274,7 @@ variable "uat_egress_rules" {
 # EC2 - PROD
 ########################################################################
 
-variable "prod_key_name" {
+variable "prod_ec2_key_name" {
   type = string
 }
 variable "prod_ami_id" {
@@ -363,4 +363,17 @@ variable "uat_s3_bucket_name" {
 }
 variable "prod_s3_bucket_name" {
   type = string
+}
+
+################################
+# Budget
+################################
+variable "budget_amount" {
+  description = "Monthly budget amount in USD"
+  type        = string
+}
+
+variable "anomaly_threshold" {
+  description = "Threshold for cost anomaly detection"
+  type        = string
 }

@@ -40,7 +40,18 @@ module "vpc-flowlog-bucket" {
   policy        = data.aws_iam_policy_document.flow_log_s3.json
   force_destroy = true
 }
+resource "aws_s3_bucket_lifecycle_configuration" "vpc_flowlog_lifecycle" {
+  bucket = module.vpc-flowlog-bucket.s3_bucket_id
 
+  rule {
+    id     = "${var.Project_Name}-vpc_flowlogs-lifecycle"
+    status = "Enabled"
+
+    expiration {
+      days = 15
+    }
+  }
+}
 # #####################################################
 # # VPC Endpoints
 # #####################################################
@@ -91,7 +102,7 @@ module "ec2_pritunl" {
   availability_zone           = element(module.vpc.azs, 0)
   subnet_id                   = element(module.vpc.public_subnets, 0)
   vpc_security_group_ids      = [module.pritunl-securtiy-group.security_group_id]
-  #key_name                    = data.aws_key_pair.pritunl.key_name
+  key_name                    = data.aws_key_pair.pritunl.key_name
   associate_public_ip_address = true
   disable_api_stop            = false
   disable_api_termination     = local.ec2_pritunl_disable_api_termination

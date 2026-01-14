@@ -19,7 +19,7 @@ module "uat" {
   availability_zone           = var.availability_zone
   subnet_id                   = element(module.vpc.private_subnets, 1)
   vpc_security_group_ids      = [module.uat-securtiy-group.security_group_id]
-  key_name                    = data.aws_key_pair.uat.key_name
+  key_name                    = aws_key_pair.uat_ec2_keypair.key_name
   associate_public_ip_address = false
   disable_api_stop            = false
   disable_api_termination     = false

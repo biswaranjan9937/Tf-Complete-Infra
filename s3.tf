@@ -63,3 +63,15 @@ resource "aws_s3_bucket_policy" "alb_log_policy" {
   })
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "alb_logs_lifecycle" {
+  bucket = aws_s3_bucket.alb_log_s3.id
+
+  rule {
+    id     = "${var.Project_Name}-alb_access_logs-lifecycle"
+    status = "Enabled"
+
+    expiration {
+      days = 30
+    }
+  }
+}
