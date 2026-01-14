@@ -89,7 +89,7 @@ module "alb" {
       create_attachment = true
       targets = {
         uat_instance = {
-          target_id = module.uat.id
+          target_id = module.uat[0].instance_id
           port      = 80
         }
       }
