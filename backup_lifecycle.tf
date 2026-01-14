@@ -1,5 +1,5 @@
 resource "aws_dlm_lifecycle_policy" "ebs_snapshot_policy" {
-  description        = "EBS Snapshot Policy for instances with dlcm:yes tag"
+  description        = "EBS Snapshot Policy"
   execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/AWSDataLifecycleManagerDefaultRole"
   state              = "ENABLED"
 
@@ -24,10 +24,6 @@ resource "aws_dlm_lifecycle_policy" "ebs_snapshot_policy" {
         count = 7
       }
 
-      tags_to_add = {
-        SnapshotCreator = "DLM"
-      }
-
       copy_tags = true
     }
   }
@@ -42,7 +38,7 @@ resource "aws_dlm_lifecycle_policy" "ebs_snapshot_policy" {
 }
 
 resource "aws_dlm_lifecycle_policy" "ebs_ami_policy" {
-  description        = "EBS-backed AMI Policy for instances with wm_backup:yes tag"
+  description        = "EBS-backed AMI Policy"
   execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/AWSDataLifecycleManagerDefaultRole"
   state              = "ENABLED"
 
@@ -58,10 +54,9 @@ resource "aws_dlm_lifecycle_policy" "ebs_ami_policy" {
       name = "Weekly AMI Backup"
 
       create_rule {
-        interval      = 1
-        interval_unit = "WEEKS"
+        interval      = 168
+        interval_unit = "HOURS"
         times         = ["18:30"]
-        cron_expression = "cron(30 18 ? * FRI *)"
       }
 
       retain_rule {
@@ -70,10 +65,10 @@ resource "aws_dlm_lifecycle_policy" "ebs_ami_policy" {
 
       copy_tags = true
 
-      variable_tags = {
-        instance-id = "$(instance-id)"
-        timestamp   = "$(timestamp)"
-      }
+    #   variable_tags = {
+    #     instance-id = "$(instance-id)"
+    #     timestamp   = "$(timestamp)"
+    #   }
     }
 
     parameters {

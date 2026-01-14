@@ -102,7 +102,7 @@ module "ec2_pritunl" {
   availability_zone           = element(module.vpc.azs, 0)
   subnet_id                   = element(module.vpc.public_subnets, 0)
   vpc_security_group_ids      = [module.pritunl-securtiy-group.security_group_id]
-  key_name                    = data.aws_key_pair.pritunl.key_name
+  key_name                    = aws_key_pair.vpn_ec2_keypair.key_name
   associate_public_ip_address = true
   disable_api_stop            = false
   disable_api_termination     = local.ec2_pritunl_disable_api_termination
