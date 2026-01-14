@@ -54,21 +54,14 @@ resource "aws_dlm_lifecycle_policy" "ebs_ami_policy" {
       name = "Weekly AMI Backup"
 
       create_rule {
-        interval      = 168
-        interval_unit = "HOURS"
-        times         = ["18:30"]
+        cron_expression = "cron(30 18 ? * FRI *)"  # Friday 18:30 UTC
       }
 
       retain_rule {
-        count = 7  # Keep for 7 days
+        count = 7
       }
 
       copy_tags = true
-
-    #   variable_tags = {
-    #     instance-id = "$(instance-id)"
-    #     timestamp   = "$(timestamp)"
-    #   }
     }
 
     parameters {

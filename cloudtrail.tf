@@ -62,7 +62,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_lifecycle" {
   rule {
     id     = "${var.Project_Name}-cloudtrail-lifecycle"
     status = "Enabled"
-    filter {}
+    filter {
+      prefix = ""  # Apply to all objects
+    }
     expiration {
       days = 365
     }
