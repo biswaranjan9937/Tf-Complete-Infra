@@ -47,13 +47,12 @@ resource "aws_s3_bucket_policy" "alb_log_policy" {
             "Sid": "ALBAccessLogsWrite",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::718504428378:root"
+                "AWS": "arn:aws:iam::531254959396:root"
             },
             "Action": [
-                "s3:PutObject",
-                "s3:PutObjectAcl"
+                "s3:PutObject"
             ],
-            "Resource": "aws_s3_bucket.alb_log_s3.arn/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
+            "Resource": "${aws_s3_bucket.alb_log_s3.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
             "Condition": {
                 "StringEquals": {
                     "s3:x-amz-acl": "bucket-owner-full-control"
