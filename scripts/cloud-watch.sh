@@ -28,7 +28,10 @@ sudo cat <<EOT > $CONFIG_FILE
         "run_as_user": "cwagent"
     },
     "metrics": {
-        "namespace": "CWAgent",
+        "append_dimensions": {
+            "AutoScalingGroupName": "\${aws:AutoScalingGroupName}",
+            "InstanceId": "\${aws:InstanceId}"
+        },
         "metrics_collected": {
             "disk": {
                 "measurement": [
