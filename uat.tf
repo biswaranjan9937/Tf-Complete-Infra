@@ -10,7 +10,7 @@ module "uat-securtiy-group" {
 module "uat" {
   count      = 1
   source     = "./modules/ec2"
-  depends_on = [module.uat-securtiy-group]
+  depends_on = [module.uat-securtiy-group, aws_s3_bucket.credential-bucket]
   create     = true
   name       = var.uat_name
 
@@ -48,12 +48,25 @@ module "uat" {
       )
     }
   ]
+  # user_data = templatefile("./scripts/user-creation-with-logs.sh")
   user_data = <<-EOF
-    #!/bin/bash
-    sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
-    sudo systemctl status snap.amazon-ssm-agent.amazon-ssm-agent.service
-  EOF  
-  #ebs_block_device = var.uat_ebs_block_devices
+  #!/bin/bash
+  # Download and execute scripts
+
+  # Copy scripts to temp location
+  cat > /tmp/user-creation.sh << 'SCRIPT1'
+  ${file("./scripts/user-uat.sh")}
+  SCRIPT1
+
+  cat > /tmp/cloudwatch.sh << 'SCRIPT2'
+  ${file("./scripts/cloud-watch.sh")}
+  SCRIPT2
+
+  # Make executable and run
+  chmod +x /tmp/user-creation.sh /tmp/cloudwatch.sh
+  ./tmp/user-creation.sh
+  ./tmp/cloudwatch.sh
+  EOF
 
   tags = merge(
     {

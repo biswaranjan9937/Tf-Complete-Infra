@@ -373,7 +373,7 @@ variable "budget_amount" {
   type        = string
 }
 
-variable "anomaly_threshold" {
-  description = "Threshold for cost anomaly detection"
-  type        = string
-}
+# variable "anomaly_threshold" {
+#   description = "Threshold for cost anomaly detection"
+#   type        = string
+# }

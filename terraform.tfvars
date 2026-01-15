@@ -4,7 +4,7 @@ Project_Name   = "Innervex-Technologies"
 # VPC
 ########################################
 environment          = "PROD"
-vpc_cidr             = "10.221.0.0/16"
+vpc_cidr             = "172.173.0.0/16"
 region               = "ap-south-2"
 vpc_name             = "Innervex-Technologies"
 single_nat_gateway   = "true"
@@ -23,7 +23,7 @@ vpc_flowlog_bucket = "innervex-technologies-vpcflowlog"
 ########################################
 # Pritunl
 ########################################
-cred_bucketName = "innervex-technologies-prod-credentials"
+cred_bucketName = "innervex-technologies-credentials"
 bucketTags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
@@ -165,7 +165,7 @@ uat_termination_protection = true
 uat_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-KDvzcgT2Vw31"
 uat_ingress_rules = [
   {
-    cidr_blocks = ["10.221.0.0/16"]
+    cidr_blocks = ["172.173.0.0/16"]
     from_port   = 2223
     protocol    = "tcp"
     to_port     = 2223
@@ -207,7 +207,7 @@ prod_termination_protection = true
 prod_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-KDvzcgT2Vw31"
 prod_ingress_rules = [
   {
-    cidr_blocks = ["10.221.0.0/16"]
+    cidr_blocks = ["172.173.0.0/16"]
     from_port   = 2223
     protocol    = "tcp"
     to_port     = 2223
@@ -247,4 +247,4 @@ prod_s3_bucket_name = "innervex-technologies-prod-bucket"
 # Budget
 ########################################
 budget_amount = "801"
-anomaly_threshold = "27"
+# anomaly_threshold = "27"

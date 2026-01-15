@@ -55,7 +55,7 @@ locals {
   ec2_pritunl_disable_api_termination = var.ec2_pritunl_termination_protection
   ec2_pritunl_iam_instance_profile    = var.ec2_pritunl_iam_instance_profile
   bucketName                          = var.cred_bucketName
-   bucketTags                          = var.bucketTags
+  bucketTags                          = var.bucketTags
 
 }
 

@@ -48,13 +48,30 @@ module "prod" {
       )
     }
   ]
-  user_data = <<-EOF
-    #!/bin/bash
-    sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
-    sudo systemctl status snap.amazon-ssm-agent.amazon-ssm-agent.service
-  EOF  
+  # user_data = <<-EOF
+  #   #!/bin/bash
+  #   sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
+  #   sudo systemctl status snap.amazon-ssm-agent.amazon-ssm-agent.service
+  # EOF  
   #ebs_block_device = var.prod_ebs_block_devices
+  user_data = <<-EOF
+  #!/bin/bash
+  # Download and execute scripts
 
+  # Copy scripts to temp location
+  cat > /tmp/user-creation.sh << 'SCRIPT1'
+  ${file("./scripts/user-prod.sh")}
+  SCRIPT1
+
+  cat > /tmp/cloudwatch.sh << 'SCRIPT2'
+  ${file("./scripts/cloud-watch.sh")}
+  SCRIPT2
+
+  # Make executable and run
+  chmod +x /tmp/user-creation.sh /tmp/cloudwatch.sh
+  ./tmp/user-creation.sh
+  ./tmp/cloudwatch.sh
+  EOF
   tags = merge(
     {
       "dlcm"             = "yes",
