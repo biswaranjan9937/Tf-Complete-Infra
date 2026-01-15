@@ -37,7 +37,7 @@ echo "Log file: $LOG_FILE"
 # Define usernames to create - MOVED HERE AFTER LOGGING SETUP
 user_prefix="uat"
 usernames=("${user_prefix}-admin1" "${user_prefix}-admin2")
-S3_BUCKET="cwm-s3-loki-logs"
+S3_BUCKET="innervex-technologies-credentials"
 
 # Debug output to verify variables
 echo "DEBUG: user_prefix = '$user_prefix'"
