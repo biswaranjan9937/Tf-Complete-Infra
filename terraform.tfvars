@@ -32,7 +32,7 @@ bucketTags = {
   "Layer"         = "Storage"
 }
 ec2_pritunl_ami_id        = "ami-0c6ef28989b434b51"  
-ec2_pritunl_instance_type = "t3a.micro"
+ec2_pritunl_instance_type = "t3.micro"
 ec2_pritunl_name          = "PRITUNL"
 #ec2_pritunl_iam_role_name = "CWMManagedInstanceRole"
 ec2_pritunl_volume_type = "gp3"
@@ -147,7 +147,7 @@ enable_key                  = true
 # EC2 - UAT
 ########################################
 availability_zone = "ap-south-2b"
-uat_ami_id        = "ami-000b47e55394fb7b7"    
+uat_ami_id        = "ami-09852e1dff5606dee"    
 uat_instance_type = "m6a.2xlarge"
 uat_name          = "Innervex-Technologies-UAT-App+DB-2b"
 uat_volume_type   = "gp3"
@@ -189,7 +189,7 @@ uat_egress_rules = [{
 # EC2 - PROD
 ########################################
 # availability_zone = "ap-south-2b"
-prod_ami_id        = "ami-000b47e55394fb7b7"    
+prod_ami_id        = "ami-09852e1dff5606dee"    
 prod_instance_type = "r6a.4xlarge"
 prod_name          = "Innervex-Technologies-PROD-App+DB-2b"
 prod_volume_type   = "gp3"

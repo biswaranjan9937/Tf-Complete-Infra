@@ -41,24 +41,25 @@ resource "aws_s3_bucket_policy" "alb_log_policy" {
   bucket = aws_s3_bucket.alb_log_s3.id
 
   policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::297686227792:root"
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ALBAccessLogsWrite",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::718504428378:root"
+            },
+            "Action": [
+                "s3:PutObject",
+                "s3:PutObjectAcl"
+            ],
+            "Resource": "aws_s3_bucket.alb_log_s3.arn/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
+            "Condition": {
+                "StringEquals": {
+                    "s3:x-amz-acl": "bucket-owner-full-control"
+                }
+            }
         }
-        Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.alb_log_s3.arn}/*"
-      },
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "delivery.logs.amazonaws.com"
-        }
-        Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.alb_log_s3.arn}/*"
-      }
     ]
   })
 }
