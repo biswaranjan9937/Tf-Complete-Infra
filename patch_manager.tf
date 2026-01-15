@@ -1,4 +1,4 @@
-# Patch Baseline for Linux (Ubuntu/Amazon Linux)
+# Patch Baseline for Alma Linux (Ubuntu/Alma Linux)
 resource "aws_ssm_patch_baseline" "alma_linux_baseline" {
   name             = "alma_linux-critical-security-baseline"
   description      = "Patch baseline for Alma Linux servers - Critical and Security updates"
@@ -21,6 +21,33 @@ resource "aws_ssm_patch_baseline" "alma_linux_baseline" {
 
   tags = {
     Name        = "alma-linux-critical-security-baseline"
+    Environment = var.environment
+    patch_baseline = "yes"
+  }
+}
+
+# Patch Baseline for Ubuntu (Ubuntu/Amazon Linux)
+resource "aws_ssm_patch_baseline" "ubuntu_baseline" {
+  name             = "ubuntu-critical-security-baseline"
+  description      = "Patch baseline for Ubuntu servers - Critical and Security updates"
+  operating_system = "UBUNTU" # Change to: UBUNTU, CENTOS, REDHAT_ENTERPRISE_LINUX, etc.
+  approval_rule {
+    approve_after_days = 0 # Auto-approve immediately
+    compliance_level   = "CRITICAL"
+
+    patch_filter {
+      key    = "CLASSIFICATION"
+      values = ["Security", "Critical"]
+    }
+
+    patch_filter {
+      key    = "SEVERITY"
+      values = ["Critical", "Important"]
+    }
+  }
+
+  tags = {
+    Name        = "ubuntu-critical-security-baseline"
     Environment = var.environment
     patch_baseline = "yes"
   }
