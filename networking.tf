@@ -11,7 +11,7 @@ module "vpc" {
   azs              = local.azs
   private_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k + 1)]
   public_subnets   = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k + 4)]
-  database_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k + 7)]
+  # database_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k + 7)]
 
   # public_subnet_tags = {
   #   "kubernetes.io/role/elb" = 1
@@ -81,7 +81,6 @@ module "vpc_endpoints" {
 # ####################################################################
 # # PRITUNL
 # ####################################################################
-
 
 module "pritunl-securtiy-group" {
   source      = "./modules/sg"
