@@ -1,6 +1,6 @@
 # Patch Baseline for Alma Linux (Ubuntu/Alma Linux)
 resource "aws_ssm_patch_baseline" "alma_linux_baseline" {
-  name             = "alma_linux-critical-security-baseline"
+  name             = "CWM_alma_linux-critical-security-baseline"
   description      = "Patch baseline for Alma Linux servers - Critical and Security updates"
   operating_system = "ALMA_LINUX" # Change to: UBUNTU, CENTOS, REDHAT_ENTERPRISE_LINUX, etc.
 
@@ -25,10 +25,14 @@ resource "aws_ssm_patch_baseline" "alma_linux_baseline" {
     patch_baseline = "yes"
   }
 }
+resource "aws_ssm_patch_baseline_default" "alma_linux_default" {
+  baseline_id      = aws_ssm_patch_baseline.alma_linux_baseline.id
+  operating_system = "ALMA_LINUX"
+}
 
 # Patch Baseline for Ubuntu (Ubuntu/Amazon Linux)
 resource "aws_ssm_patch_baseline" "ubuntu_baseline" {
-  name             = "ubuntu-critical-security-baseline"
+  name             = "CWM_ubuntu-critical-security-baseline"
   description      = "Patch baseline for Ubuntu servers - Critical and Security updates"
   operating_system = "UBUNTU" # Change to: UBUNTU, CENTOS, REDHAT_ENTERPRISE_LINUX, etc.
   approval_rule {
@@ -51,6 +55,10 @@ resource "aws_ssm_patch_baseline" "ubuntu_baseline" {
     Environment = var.environment
     patch_baseline = "yes"
   }
+}
+resource "aws_ssm_patch_baseline_default" "ubuntu_linux_default" {
+  baseline_id      = aws_ssm_patch_baseline.ubuntu_baseline.id
+  operating_system = "UBUNTU"
 }
 
 # # Patch Baseline for Windows (if needed)
