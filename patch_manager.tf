@@ -2,7 +2,7 @@
 resource "aws_ssm_patch_baseline" "alma_linux_baseline" {
   name             = "alma_linux-critical-security-baseline"
   description      = "Patch baseline for Alma Linux servers - Critical and Security updates"
-  operating_system = "AlmaLinux" # Change to: UBUNTU, CENTOS, REDHAT_ENTERPRISE_LINUX, etc.
+  operating_system = "ALMA_LINUX" # Change to: UBUNTU, CENTOS, REDHAT_ENTERPRISE_LINUX, etc.
 
   approval_rule {
     approve_after_days = 0 # Auto-approve immediately
