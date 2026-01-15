@@ -39,10 +39,26 @@ module "uat" {
       encrypted   = var.uat_root_encrypted
       kms_key_id  = module.kms_complete.key_arn
       volume_type = var.uat_volume_type
-      volume_size = var.uat_volume_size
+      volume_size = var.uat_root_volume_size
       tags = merge(
         {
-          Name = "${var.uat_name}-(C:)"
+          Name = "${var.uat_name}-root(/)"
+        },
+        var.uat_tags
+      )
+    }
+  ]
+  ebs_block_device = [
+    {
+      device_name = "/dev/sdb"  # or /dev/xvdf
+      volume_type = var.uat_volume_type
+      volume_size = var.uat_ebs_volume_size
+      encrypted   = var.uat_root_encrypted
+      kms_key_id  = module.kms_complete.key_arn
+      delete_on_termination = true
+      tags = merge(
+        {
+          Name = "${var.uat_name}-/data"
         },
         var.uat_tags
       )

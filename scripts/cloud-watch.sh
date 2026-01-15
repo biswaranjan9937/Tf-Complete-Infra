@@ -39,7 +39,7 @@ sudo cat <<EOT > $CONFIG_FILE
                 ],
                 "metrics_collection_interval": 60,
                 "resources": [
-                    "/"
+                    "/","/data"
                 ]
             },
             "mem": {

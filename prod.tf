@@ -39,10 +39,26 @@ module "prod" {
       encrypted   = var.prod_root_encrypted
       kms_key_id  = module.kms_complete.key_arn
       volume_type = var.prod_volume_type
-      volume_size = var.prod_volume_size
+      volume_size = var.prod_root_volume_size
       tags = merge(
         {
-          Name = "${var.prod_name}-(C:)"
+          Name = "${var.prod_name}-root(/)"
+        },
+        var.prod_tags
+      )
+    }
+  ]
+  ebs_block_device = [
+    {
+      device_name = "/dev/sdb"  # or /dev/xvdf
+      volume_type = var.prod_volume_type
+      volume_size = var.prod_ebs_volume_size
+      encrypted   = var.prod_root_encrypted
+      kms_key_id  = module.kms_complete.key_arn
+      delete_on_termination = true
+      tags = merge(
+        {
+          Name = "${var.prod_name}-/data"
         },
         var.prod_tags
       )

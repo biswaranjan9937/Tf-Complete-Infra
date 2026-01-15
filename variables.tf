@@ -228,7 +228,10 @@ variable "uat_iam_role_policies" {
 variable "uat_volume_type" {
   type = string
 }
-variable "uat_volume_size" {
+variable "uat_root_volume_size" {
+  type = string
+}
+variable "uat_ebs_volume_size" {
   type = string
 }
 variable "uat_root_encrypted" {
@@ -293,7 +296,10 @@ variable "prod_iam_role_policies" {
 variable "prod_volume_type" {
   type = string
 }
-variable "prod_volume_size" {
+variable "prod_root_volume_size" {
+  type = string
+}
+variable "prod_ebs_volume_size" {
   type = string
 }
 variable "prod_root_encrypted" {
