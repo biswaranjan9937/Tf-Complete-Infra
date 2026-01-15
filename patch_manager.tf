@@ -10,7 +10,7 @@ resource "aws_ssm_patch_baseline" "alma_linux_baseline" {
 
     patch_filter {
       key    = "CLASSIFICATION"
-      values = ["Security", "Critical"]
+      values = ["Security", "Recommended"]
     }
 
     patch_filter {
@@ -36,13 +36,13 @@ resource "aws_ssm_patch_baseline" "ubuntu_baseline" {
     compliance_level   = "CRITICAL"
 
     patch_filter {
-      key    = "CLASSIFICATION"
-      values = ["Security", "Critical"]
+      key    = "SECTION"
+      values = ["All"]
     }
 
     patch_filter {
-      key    = "SEVERITY"
-      values = ["Critical", "Important"]
+      key    = "PRIORITY"
+      values = ["Required", "Important"]
     }
   }
 
