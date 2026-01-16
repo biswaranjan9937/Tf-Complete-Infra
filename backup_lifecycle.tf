@@ -26,6 +26,9 @@ resource "aws_dlm_lifecycle_policy" "ebs_snapshot_policy" {
 
       copy_tags = true
     }
+    parameters {
+      no_reboot          = true
+    }
   }
 
   tags = {
