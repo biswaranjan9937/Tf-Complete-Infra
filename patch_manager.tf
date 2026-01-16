@@ -25,7 +25,7 @@ resource "aws_ssm_patch_baseline" "alma_linux_baseline" {
     patch_baseline = "yes"
   }
 }
-resource "aws_ssm_patch_baseline_default" "alma_linux_default" {
+resource "aws_ssm_default_patch_baseline" "alma_linux_default" {
   baseline_id      = aws_ssm_patch_baseline.alma_linux_baseline.id
   operating_system = "ALMA_LINUX"
 }
@@ -56,7 +56,7 @@ resource "aws_ssm_patch_baseline" "ubuntu_baseline" {
     patch_baseline = "yes"
   }
 }
-resource "aws_ssm_patch_baseline_default" "ubuntu_linux_default" {
+resource "aws_ssm_default_patch_baseline" "ubuntu_linux_default" {
   baseline_id      = aws_ssm_patch_baseline.ubuntu_baseline.id
   operating_system = "UBUNTU"
 }
