@@ -32,7 +32,7 @@ bucketTags = {
   "Layer"         = "Storage"
 }
 ec2_pritunl_ami_id        = "ami-0c6ef28989b434b51"  
-ec2_pritunl_instance_type = "t3.large"
+ec2_pritunl_instance_type = "t3.micro"
 ec2_pritunl_name          = "PRITUNL"
 #ec2_pritunl_iam_role_name = "CWMManagedInstanceRole"
 ec2_pritunl_volume_type = "gp3"
