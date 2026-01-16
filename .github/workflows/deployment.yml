@@ -63,7 +63,19 @@ jobs:
             exit 1
           fi
 
-
+      - name: Get Instance Profile ARN
+        id: get-arn
+        run: |
+          PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
+            --role-name CWMManagedInstanceRole \
+            --query 'InstanceProfiles[0].Arn' \
+            --output text)
+          echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
+          echo "Instance Profile ARN: $PROFILE_ARN"
+ 
+      - name: Use the ARN
+        run: |
+          echo "ARN is: ${{ steps.get-arn.outputs.profile_arn }}"
       - name: Terraform Init
         run: |
           terraform init -input=false -no-color
