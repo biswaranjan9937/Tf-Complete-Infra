@@ -44,8 +44,7 @@ ec2_pritunl_tags = {
   "Managedby"     = "Workmates",
   "Environment"   = "PROD",
   "Project"       = "Innervex-Technologies",
-  "Layer"         = "Gateway",
-  "wm-patch" = "yes"
+  "Layer"         = "Gateway"
 }
 ec2_pritunl_key_name               = "Innervex-Technologies-Pritunl-VPN-2b-keypair"
 ec2_pritunl_termination_protection = true

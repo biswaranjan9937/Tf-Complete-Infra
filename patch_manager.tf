@@ -91,7 +91,7 @@ resource "aws_ssm_default_patch_baseline" "ubuntu_linux_default" {
 
 #Patch Group - Associates baseline with tagged instances
 resource "aws_ssm_patch_group" "patch_group" {
-  baseline_id = aws_ssm_patch_baseline.ubuntu_baseline.id
+  baseline_id = aws_ssm_patch_baseline.alma_linux_baseline.id
   patch_group = "production-servers" # Match this with EC2 instance tag
 }
 
@@ -99,9 +99,9 @@ resource "aws_ssm_patch_group" "patch_group" {
 resource "aws_ssm_maintenance_window" "patching_window" {
   name              = "patching-maintenance-window"
   description       = "Maintenance window for automated patching"
-  schedule          = "cron(30 10 16 1 ? 2026)"  # Jan 16, 2026 at 10:15 UTC (15:45 IST)
-  duration          = 1                      # 3 hours
-  cutoff            = 0                      # Stop 1 hour before end
+  schedule          = "cron(15 10 16 1 ? 2026)"  # Jan 16, 2026 at 10:15 UTC (15:45 IST)
+  duration          = 3                      # 3 hours
+  cutoff            = 1                      # Stop 1 hour before end
   allow_unassociated_targets = false
 
   tags = {
@@ -118,7 +118,7 @@ resource "aws_ssm_maintenance_window_target" "patching_target" {
   resource_type = "INSTANCE"
 
   targets {
-    key    = "tag:wm-patch"
+    key    = "tag:wm-AutoStartStop"
     values = ["yes"] # EC2 instances must have this tag
   }
 }
