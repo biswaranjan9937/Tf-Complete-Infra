@@ -3,7 +3,7 @@ resource "aws_iam_user" "s3_access_user_uat" {
   path = "/system/"
 
   tags = {
-        Name        = aws_iam_user.s3_access_user_uat.name
+        Name        = "s3-access-user-uat"
         Environment = "Uat"
         Implementedby = "Workmates"
         Managedby   = "Workmates"
