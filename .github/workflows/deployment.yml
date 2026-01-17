@@ -199,7 +199,7 @@ jobs:
         run: |
           ACCESS_KEY=$(terraform output -raw uat_access_key_id)
           SECRET_KEY=$(terraform output -raw uat_secret_access_key)
-          echo "::add-mask::$SECRET_KEY"
+          # echo "::add-mask::$SECRET_KEY"
           echo "access_key=$ACCESS_KEY" >> $GITHUB_OUTPUT
           echo "secret_key=$SECRET_KEY" >> $GITHUB_OUTPUT
 
