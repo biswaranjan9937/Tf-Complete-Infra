@@ -1,5 +1,5 @@
 ##########################################
-# Generate SSH key for PROD
+# Generate SSH key for UAT
 ##########################################
 # Generate SSH key
 resource "tls_private_key" "uat_ec2_key" {
