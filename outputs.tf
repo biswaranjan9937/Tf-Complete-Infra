@@ -73,10 +73,10 @@ output "complete_grants" {
 # S3 IAM Access Keys
 ########################################################################
 output "secret_access_key" {
-  value     = aws_iam_access_key.s3_access_user.secret
+  value     = aws_iam_access_key.s3_access_user_uat.secret
 }
 
 # Access key ID is not sensitive (it's public)
 output "access_key_id" {
-  value = aws_iam_access_key.s3_access_user.id
+  value = aws_iam_access_key.s3_access_user_uat.id
 }
