@@ -1,6 +1,6 @@
 resource "aws_dlm_lifecycle_policy" "ebs_snapshot_policy" {
   description        = "EBS Snapshot Policy"
-  execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/AWSDataLifecycleManagerDefaultRole"
+  execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/service-role/AWSDataLifecycleManagerDefaultRole"
   state              = "ENABLED"
 
   policy_details {
@@ -42,7 +42,7 @@ resource "aws_dlm_lifecycle_policy" "ebs_snapshot_policy" {
 
 resource "aws_dlm_lifecycle_policy" "ebs_ami_policy" {
   description        = "EBS-backed AMI Policy"
-  execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/AWSDataLifecycleManagerDefaultRole"
+  execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/service-role/AWSDataLifecycleManagerDefaultRole"
   state              = "ENABLED"
 
   policy_details {
