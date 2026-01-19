@@ -41,7 +41,7 @@ resource "aws_dlm_lifecycle_policy" "ebs_snapshot_policy" {
 }
 
 resource "aws_iam_role" "dlm_lifecycle_role" {
-  name = "AWSDataLifecycleManagerDefaultRole"
+  name = "AWSDataLifecycleManagerDefaultRoleForAMIManagement"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
