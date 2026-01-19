@@ -40,13 +40,31 @@ resource "aws_dlm_lifecycle_policy" "ebs_snapshot_policy" {
   }
 }
 
-resource "aws_iam_service_linked_role" "dlm" {
-  aws_service_name = "dlm.amazonaws.com"
+resource "aws_iam_role" "dlm_lifecycle_role" {
+  name = "AWSDataLifecycleManagerDefaultRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "dlm.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "dlm_lifecycle_role_policy" {
+  role       = aws_iam_role.dlm_lifecycle_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSDataLifecycleManagerServiceRoleForAMIManagement"
 }
 
 resource "aws_dlm_lifecycle_policy" "ebs_ami_policy" {
   description        = "EBS-backed AMI Policy"
-  execution_role_arn = aws_iam_service_linked_role.dlm.arn
+  execution_role_arn = aws_iam_role.dlm_lifecycle_role.arn
   state              = "ENABLED"
 
   policy_details {
