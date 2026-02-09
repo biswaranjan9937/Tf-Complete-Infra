@@ -59,7 +59,6 @@ module "eks_cluster" {
       desired_size         = 1
       force_update_version = true
       instance_types       = "${var.app_instance_type}"
-      # instance_types       = ["t3.medium"]
       labels = {
         role = "app"
       }
@@ -77,21 +76,6 @@ module "eks_cluster" {
       ebs_optimized           = true
       disable_api_termination = false
       #enable_monitoring       = true
-      # block_device_mappings = {
-      #   xvda = {
-      #     device_name = "/dev/xvda"
-      #     ebs = {
-      #       volume_size = 50
-      #       volume_type = "gp3"
-      #       iops        = 3000
-      #       throughput  = 125
-      #       encrypted   = true
-      #       kms_key_id  = "${module.kms_complete.key_arn}"
-      #       # kms_key_id            = local.eks_key_arn
-      #       delete_on_termination = true
-      #     }
-      #   }
-      # }
       block_device_mappings = {
         xvda = {
           device_name = "/dev/xvda"
@@ -158,7 +142,6 @@ module "eks_cluster" {
       desired_size         = 1
       force_update_version = true
       instance_types       = "${var.service_instance_type}"
-      # instance_types       = ["t3.medium"]
       labels = {
         role = "service"
       }
@@ -168,21 +151,6 @@ module "eks_cluster" {
       ebs_optimized           = true
       disable_api_termination = false
       #enable_monitoring       = true
-      # block_device_mappings = {
-      #   xvda = {
-      #     device_name = "/dev/xvda"
-      #     ebs = {
-      #       volume_size = 50
-      #       volume_type = "gp3"
-      #       iops        = 3000
-      #       throughput  = 125
-      #       encrypted   = true
-      #       kms_key_id  = "${module.kms_complete.key_arn}"
-      #       # kms_key_id            = "${local.eks_key_arn}"
-      #       delete_on_termination = true
-      #     }
-      #   }
-      # }
       block_device_mappings = {
         xvda = {
           device_name = "/dev/xvda"
@@ -243,11 +211,11 @@ module "eks_cluster" {
   node_security_group_additional_rules = {
     ingress_self_all = {
       description = "Node to node all ports/protocols"
-      protocol    = "-1"  ### This means all protocols. You can specify "tcp", "udp" or "icmp" if you want to restrict to specific protocol.
+      protocol    = "-1" ### This means all protocols. You can specify "tcp", "udp" or "icmp" if you want to restrict to specific protocol.
       from_port   = 0
       to_port     = 0
       type        = "ingress"
-      self        = true   ### This allows nodes to communicate with each other on all ports and protocols, which is often necessary for Kubernetes components to function properly.
+      self        = true ### This allows nodes to communicate with each other on all ports and protocols, which is often necessary for Kubernetes components to function properly.
     }
     egress_all = {
       description = "Node all egress"
