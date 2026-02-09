@@ -194,17 +194,17 @@ jobs:
       - name: Apply Terraform
         run: terraform apply -auto-approve
 
-      - name: Get AWS Credentials
-        id: aws_creds
-        run: |
-          ACCESS_KEY=$(terraform output -raw uat_access_key_id)
-          SECRET_KEY=$(terraform output -raw uat_secret_access_key)
-          # echo "::add-mask::$SECRET_KEY"
-          echo "access_key=$ACCESS_KEY" >> $GITHUB_OUTPUT
-          echo "secret_key=$SECRET_KEY" >> $GITHUB_OUTPUT
+      # - name: Get AWS Credentials
+      #   id: aws_creds
+      #   run: |
+      #     ACCESS_KEY=$(terraform output -raw uat_access_key_id)
+      #     SECRET_KEY=$(terraform output -raw uat_secret_access_key)
+      #     # echo "::add-mask::$SECRET_KEY"
+      #     echo "access_key=$ACCESS_KEY" >> $GITHUB_OUTPUT
+      #     echo "secret_key=$SECRET_KEY" >> $GITHUB_OUTPUT
 
-      - name: Use credentials
-        run: |
-          echo "Access Key: ${{ steps.aws_creds.outputs.access_key }}"
-          echo "Secret Key: ${{ steps.aws_creds.outputs.secret_key }}"
+      # - name: Use credentials
+      #   run: |
+      #     echo "Access Key: ${{ steps.aws_creds.outputs.access_key }}"
+      #     echo "Secret Key: ${{ steps.aws_creds.outputs.secret_key }}"
 
