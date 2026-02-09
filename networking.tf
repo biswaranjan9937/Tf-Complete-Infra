@@ -6,51 +6,52 @@ module "vpc" {
   source = "./modules/VPC"
 
   name = local.vpc_name
-  cidr = local.vpc_cidr
+  cidr = var.vpc_cidr
 
   azs              = local.azs
-  private_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k + 1)]
-  public_subnets   = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k + 4)]
-  # database_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k + 7)]
+  private_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 1)]
+  public_subnets   = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 4)]
+  database_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 7)]
 
-  # public_subnet_tags = {
-  #   "kubernetes.io/role/elb" = 1
-  # }
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1,
+    "Tier"                   = "Public"
+  }
 
-  # private_subnet_tags = {
-  #   "kubernetes.io/role/internal-elb" = 1
-  # }
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+    "Tier"                            = "Private"
+  }
 
-  single_nat_gateway = local.single_nat_gateway
-  enable_nat_gateway = local.enable_nat_gateway
+  database_subnet_tags = {
+    "Tier" = "Database"
+  }
 
-  enable_dns_hostnames = local.enable_dns_hostnames
-  enable_dns_support   = local.enable_dns_support
+
+  single_nat_gateway = var.single_nat_gateway
+  enable_nat_gateway = var.enable_nat_gateway
+
+  enable_dns_hostnames = var.enable_dns_hostnames
+  enable_dns_support   = var.enable_dns_support ### This is the DNS resolutions.
 
   enable_flow_log           = true
   flow_log_destination_type = "s3"
   flow_log_destination_arn  = module.vpc-flowlog-bucket.s3_bucket_arn
 
-  tags = local.vpc_tags
+  tags = var.vpc_tags
 }
-module "vpc-flowlog-bucket" {
-  source = "./modules/s3"
-  bucket = local.vpc_flowlog_bucket
-  #attach_policy   = true
-  policy        = data.aws_iam_policy_document.flow_log_s3.json
-  force_destroy = true
-}
+
 resource "aws_s3_bucket_lifecycle_configuration" "vpc_flowlog_lifecycle" {
   bucket = module.vpc-flowlog-bucket.s3_bucket_id
 
   rule {
-    id     = "${var.Project_Name}-vpc_flowlogs-lifecycle"
+    id     = "${var.Project_Name}_vpc_flowlogs_lifecycle"
     status = "Enabled"
     filter {
-      prefix = ""
+      prefix = "" ### Apply to all objects
     }
     expiration {
-      days = 15
+      days = 15 ### Expire objects after 15 days
     }
   }
 }
@@ -73,7 +74,7 @@ module "vpc_endpoints" {
     }
   }
 
-  tags = merge(local.vpc_tags, {
+  tags = merge(var.vpc_tags, {
     Endpoint = "true"
   })
 }
@@ -88,39 +89,41 @@ module "pritunl-securtiy-group" {
   description = "${upper(local.ec2_pritunl_name)} Security group"
   vpc_id      = module.vpc.vpc_id
 
-  ingress_rules = local.ec2_pritunl_ingress_rules
-  egress_rules  = local.ec2_pritunl_egress_rules
+  ingress_rules = var.ec2_pritunl_ingress_rules
+  egress_rules  = var.ec2_pritunl_egress_rules
 }
 
 module "ec2_pritunl" {
   source     = "./modules/ec2"
-  depends_on = [module.pritunl-securtiy-group, aws_s3_bucket.credential-bucket]
+  depends_on = [module.pritunl-securtiy-group, module.vpn_credential_bucket]
   create     = true
   name       = local.ec2_pritunl_name
 
-  ami                         = local.ec2_pritunl_ami_id
-  instance_type               = local.ec2_pritunl_instance_type
+  ami                         = var.ec2_pritunl_ami_id
+  instance_type               = var.ec2_pritunl_instance_type
   availability_zone           = element(module.vpc.azs, 0)
   subnet_id                   = element(module.vpc.public_subnets, 0)
   vpc_security_group_ids      = [module.pritunl-securtiy-group.security_group_id]
   key_name                    = aws_key_pair.vpn_ec2_keypair.key_name
   associate_public_ip_address = true
   disable_api_stop            = false
-  disable_api_termination     = local.ec2_pritunl_disable_api_termination
+  disable_api_termination     = var.ec2_pritunl_termination_protection
   ebs_optimized               = true
   source_dest_check           = false
-
-  create_iam_instance_profile = false
-  iam_instance_profile        = local.ec2_pritunl_iam_instance_profile
-
+  create_iam_instance_profile = true #### make it false if you already have Instance profile. Also comment iam_role_policies.
+  iam_role_policies = {
+    AmazonSSMManagedInstanceCore               = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    AmazonEC2ContainerRegistryS3ReadOnlyAccess = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+  }
+  # iam_instance_profile        = var.ec2_pritunl_iam_instance_profile   ### Uncomment this if you already have Instance profile.
 
   enable_volume_tags = false
   root_block_device = [
     {
-      encrypted   = local.ec2_pritunl_root_encrypted
+      encrypted   = var.ec2_pritunl_root_encrypted
       kms_key_id  = local.ec2_pritunl_kms_key_id
-      volume_type = local.ec2_pritunl_volume_type
-      volume_size = local.ec2_pritunl_volume_size
+      volume_type = var.ec2_pritunl_volume_type
+      volume_size = var.ec2_pritunl_volume_size
       tags = {
         Name = "${local.ec2_pritunl_name}-OS"
       }
@@ -142,9 +145,9 @@ module "ec2_pritunl" {
   #   }
   # ]
 
-  user_data = templatefile("./scripts/pritunl-ubuntu.sh", { S3_BUCKET_NAME = aws_s3_bucket.credential-bucket.bucket })
+  user_data = templatefile("./scripts/pritunl-ubuntu24.04.sh", { S3_BUCKET_NAME = module.vpn_credential_bucket.s3_bucket_id })
 
-  tags = local.ec2_pritunl_tags
+  tags = var.ec2_pritunl_tags
 }
 
 # ################################
@@ -159,13 +162,7 @@ resource "aws_eip" "vpn-eip" {
     {
       Name = "${local.ec2_pritunl_name}-EIP"
     },
-    local.ec2_pritunl_tags
+    var.ec2_pritunl_tags
   )
-}
-resource "aws_s3_bucket" "credential-bucket" {
-  bucket        = local.bucketName
-  force_destroy = true
-
-  tags = local.bucketTags
 }
 

@@ -19,9 +19,9 @@ permissions:
 env:
   TFVAR_NAME_POC: terraform.tfvars
   BRANCH_NAME_POC: main
-  AWS_REGION: ap-south-2
+  AWS_REGION: ap-south-1
   TERRAFORM_VERSION: "1.11.4"
-  ROLE_TO_ASSUME: arn:aws:iam::187691954636:role/Terraform-deployer-role
+  ROLE_TO_ASSUME: arn:aws:iam::793524670633:role/Terraform-deployer-role
   AWS_SESSION_NAME: Terraform-deployer-role
 
 jobs:
@@ -117,13 +117,13 @@ jobs:
               }
             }
             const commentBody = `
-            ### 📊 Terraform Plan Summary 
+            ###  Terraform Plan Summary 
 
-            #### ⚙️ Init: ${{ steps.init-validate.outcome }}
-            #### ✅ Validate: ${{ steps.init-validate.outcome }}
-            #### 📖 Plan: ${{ steps.plan.outcome }}
+            ####  Init: ${{ steps.init-validate.outcome }}
+            ####  Validate: ${{ steps.init-validate.outcome }}
+            ####  Plan: ${{ steps.plan.outcome }}
 
-            <details><summary>🔍 Show Terraform Plan</summary>
+            <details><summary> Show Terraform Plan</summary>
 
             \`\`\`hcl
             ${planOutput}
@@ -133,7 +133,7 @@ jobs:
 
             ---
             
-            🔁 *Triggered by: @${{ github.actor }} using \`${{ github.event_name }}\`*
+             *Triggered by: @${{ github.actor }} using \`${{ github.event_name }}\`*
             `;
             await github.rest.issues.createComment({
               issue_number: context.issue.number,

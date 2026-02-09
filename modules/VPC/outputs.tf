@@ -283,25 +283,25 @@ output "database_route_table_ids" {
   value = length(aws_route_table.database[*].id) > 0 ? aws_route_table.database[*].id : aws_route_table.private[*].id
 }
 
-output "database_internet_gateway_route_id" {
-  description = "ID of the database internet gateway route"
-  value       = try(aws_route.database_internet_gateway[0].id, null)
-}
+# output "database_internet_gateway_route_id" {
+#   description = "ID of the database internet gateway route"
+#   value       = try(aws_route.database_internet_gateway[0].id, null)
+# }
 
-output "database_nat_gateway_route_ids" {
-  description = "List of IDs of the database nat gateway route"
-  value       = aws_route.database_nat_gateway[*].id
-}
+# output "database_nat_gateway_route_ids" {
+#   description = "List of IDs of the database nat gateway route"
+#   value       = aws_route.database_nat_gateway[*].id
+# }
 
 output "database_ipv6_egress_route_id" {
   description = "ID of the database IPv6 egress route"
   value       = try(aws_route.database_ipv6_egress[0].id, null)
 }
 
-output "database_route_table_association_ids" {
-  description = "List of IDs of the database route table association"
-  value       = aws_route_table_association.database[*].id
-}
+# output "database_route_table_association_ids" {
+#   description = "List of IDs of the database route table association"
+#   value       = aws_route_table_association.database[*].id
+# }
 
 output "database_network_acl_id" {
   description = "ID of the database network ACL"

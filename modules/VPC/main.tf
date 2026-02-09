@@ -418,51 +418,51 @@ resource "aws_route_table" "database" {
   )
 }
 
-resource "aws_route_table_association" "database" {
-  count = local.create_database_subnets ? local.len_database_subnets : 0
+# resource "aws_route_table_association" "database" {
+#   count = local.create_database_subnets ? local.len_database_subnets : 0
 
-  subnet_id = element(aws_subnet.database[*].id, count.index)
-  route_table_id = element(
-    coalescelist(aws_route_table.database[*].id, aws_route_table.private[*].id),
-    var.create_database_subnet_route_table ? var.single_nat_gateway || var.create_database_internet_gateway_route ? 0 : count.index : count.index,
-  )
-}
+#   subnet_id = element(aws_subnet.database[*].id, count.index)
+#   route_table_id = element(
+#     coalescelist(aws_route_table.database[*].id, aws_route_table.private[*].id),
+#     var.create_database_subnet_route_table ? var.single_nat_gateway || var.create_database_internet_gateway_route ? 0 : count.index : count.index,
+#   )
+# }
 
-resource "aws_route" "database_internet_gateway" {
-  count = local.create_database_route_table && var.create_igw && var.create_database_internet_gateway_route && !var.create_database_nat_gateway_route ? 1 : 0
+# resource "aws_route" "database_internet_gateway" {
+#   count = local.create_database_route_table && var.create_igw && var.create_database_internet_gateway_route && !var.create_database_nat_gateway_route ? 1 : 0
 
-  route_table_id         = aws_route_table.database[0].id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.this[0].id
+#   route_table_id         = aws_route_table.database[0].id
+#   destination_cidr_block = "0.0.0.0/0"
+#   gateway_id             = aws_internet_gateway.this[0].id
 
-  timeouts {
-    create = "5m"
-  }
-}
+#   timeouts {
+#     create = "5m"
+#   }
+# }
 
-resource "aws_route" "database_nat_gateway" {
-  count = local.create_database_route_table && !var.create_database_internet_gateway_route && var.create_database_nat_gateway_route && var.enable_nat_gateway ? var.single_nat_gateway ? 1 : local.len_database_subnets : 0
+# resource "aws_route" "database_nat_gateway" {
+#   count = local.create_database_route_table && !var.create_database_internet_gateway_route && var.create_database_nat_gateway_route && var.enable_nat_gateway ? var.single_nat_gateway ? 1 : local.len_database_subnets : 0
 
-  route_table_id         = element(aws_route_table.database[*].id, count.index)
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.this[*].id, count.index)
+#   route_table_id         = element(aws_route_table.database[*].id, count.index)
+#   destination_cidr_block = "0.0.0.0/0"
+#   nat_gateway_id         = element(aws_nat_gateway.this[*].id, count.index)
 
-  timeouts {
-    create = "5m"
-  }
-}
+#   timeouts {
+#     create = "5m"
+#   }
+# }
 
-resource "aws_route" "database_dns64_nat_gateway" {
-  count = local.create_database_route_table && !var.create_database_internet_gateway_route && var.create_database_nat_gateway_route && var.enable_nat_gateway && var.enable_ipv6 && var.private_subnet_enable_dns64 ? var.single_nat_gateway ? 1 : local.len_database_subnets : 0
+# resource "aws_route" "database_dns64_nat_gateway" {
+#   count = local.create_database_route_table && !var.create_database_internet_gateway_route && var.create_database_nat_gateway_route && var.enable_nat_gateway && var.enable_ipv6 && var.private_subnet_enable_dns64 ? var.single_nat_gateway ? 1 : local.len_database_subnets : 0
 
-  route_table_id              = element(aws_route_table.database[*].id, count.index)
-  destination_ipv6_cidr_block = "64:ff9b::/96"
-  nat_gateway_id              = element(aws_nat_gateway.this[*].id, count.index)
+#   route_table_id              = element(aws_route_table.database[*].id, count.index)
+#   destination_ipv6_cidr_block = "64:ff9b::/96"
+#   nat_gateway_id              = element(aws_nat_gateway.this[*].id, count.index)
 
-  timeouts {
-    create = "5m"
-  }
-}
+#   timeouts {
+#     create = "5m"
+#   }
+# }
 
 resource "aws_route" "database_ipv6_egress" {
   count = local.create_database_route_table && var.create_egress_only_igw && var.enable_ipv6 && var.create_database_internet_gateway_route ? 1 : 0
