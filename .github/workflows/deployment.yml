@@ -11,7 +11,7 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   pull-requests: write
   issues: write
   actions: read
@@ -62,7 +62,6 @@ jobs:
             echo "Branch not recognized! Exiting."
             exit 1
           fi
-
       - name: Get Instance Profile ARN
         id: get-arn
         run: |
@@ -70,12 +69,16 @@ jobs:
             --role-name Instance-Profile-Role \
             --query 'InstanceProfiles[0].Arn' \
             --output text)
+          # Extract name from ARN
+          PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
           echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
+          echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
           echo "Instance Profile ARN: $PROFILE_ARN"
+          echo "Instance Profile Name: $PROFILE_NAME"
  
       - name: Use the ARN
         run: |
-          echo "ARN is: ${{ steps.get-arn.outputs.profile_arn }}"
+          echo "ARN is: ${{ steps.get-arn.outputs.profile_name }}"
       - name: Terraform Init
         run: |
           terraform init -input=false -no-color
@@ -96,6 +99,7 @@ jobs:
           # Capture both stdout and stderr, then tee into a file
           terraform plan -lock=false -no-color \
             -var-file="${{ steps.detect_branch.outputs.tfvars }}" \
+            -var="instance_profile_arn=${{ steps.get-arn.outputs.profile_name }}" \
             2>&1 \
             | tee "${{ github.workspace }}/.plan_summaries/plan-output.txt"
 
@@ -117,13 +121,13 @@ jobs:
               }
             }
             const commentBody = `
-            ###  Terraform Plan Summary 
+            ### 📊 Terraform Plan Summary 
 
-            ####  Init: ${{ steps.init-validate.outcome }}
-            ####  Validate: ${{ steps.init-validate.outcome }}
-            ####  Plan: ${{ steps.plan.outcome }}
+            #### ⚙️ Init: ${{ steps.init-validate.outcome }}
+            #### ✅ Validate: ${{ steps.init-validate.outcome }}
+            #### 📖 Plan: ${{ steps.plan.outcome }}
 
-            <details><summary> Show Terraform Plan</summary>
+            <details><summary>🔍 Show Terraform Plan</summary>
 
             \`\`\`hcl
             ${planOutput}
@@ -133,7 +137,7 @@ jobs:
 
             ---
             
-             *Triggered by: @${{ github.actor }} using \`${{ github.event_name }}\`*
+            🔁 *Triggered by: @${{ github.actor }} using \`${{ github.event_name }}\`*
             `;
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -179,6 +183,19 @@ jobs:
             echo "Branch not recognized! Exiting."
             exit 1
           fi
+      - name: Get Instance Profile ARN
+        id: get-arn
+        run: |
+          PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
+            --role-name Instance-Profile-Role \
+            --query 'InstanceProfiles[0].Arn' \
+            --output text)
+          # Extract name from ARN
+          PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
+          echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
+          echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
+          echo "Instance Profile ARN: $PROFILE_ARN"
+          echo "Instance Profile Name: $PROFILE_NAME"
 
       - name: Terraform Init
         run: |
@@ -190,9 +207,7 @@ jobs:
       - name: Terraform Apply
         run: |
           echo "Running Terraform apply in folder"
-          terraform apply -auto-approve -var-file="${{ steps.detect_branch.outputs.tfvars }}"
-      - name: Apply Terraform
-        run: terraform apply -auto-approve
+          terraform apply -auto-approve -var-file="${{ steps.detect_branch.outputs.tfvars }}" -var="instance_profile_arn=${{ steps.get-arn.outputs.profile_name }}"
 
       # - name: Get AWS Credentials
       #   id: aws_creds
@@ -207,4 +222,19 @@ jobs:
       #   run: |
       #     echo "Access Key: ${{ steps.aws_creds.outputs.access_key }}"
       #     echo "Secret Key: ${{ steps.aws_creds.outputs.secret_key }}"
+      # Add these steps to your GitHub Actions workflow after terraform apply
 
+      - name: Generate Infrastructure Documentation
+        if: success()
+        run: |
+          chmod +x ./scripts/generate-docs.sh
+          PROJECT_NAME="Biye-CO" ENVIRONMENT="PROD" ./scripts/generate-docs.sh
+          
+      - name: Commit Documentation
+        if: success()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/ || true
+          git diff --staged --quiet || git commit -m "📚 Update infrastructure documentation [skip ci]" || true
+          git push || true
