@@ -99,7 +99,6 @@ jobs:
           # Capture both stdout and stderr, then tee into a file
           terraform plan -lock=false -no-color \
             -var-file="${{ steps.detect_branch.outputs.tfvars }}" \
-            -var="instance_profile_arn=${{ steps.get-arn.outputs.profile_name }}" \
             2>&1 \
             | tee "${{ github.workspace }}/.plan_summaries/plan-output.txt"
 
