@@ -207,7 +207,7 @@ jobs:
       - name: Terraform Apply
         run: |
           echo "Running Terraform apply in folder"
-          terraform apply -auto-approve -var-file="${{ steps.detect_branch.outputs.tfvars }}" -var="instance_profile_arn=${{ steps.get-arn.outputs.profile_name }}"
+          terraform apply -auto-approve -var-file="${{ steps.detect_branch.outputs.tfvars }}" 
 
       # - name: Get AWS Credentials
       #   id: aws_creds
