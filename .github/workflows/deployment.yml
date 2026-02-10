@@ -183,19 +183,19 @@ jobs:
             echo "Branch not recognized! Exiting."
             exit 1
           fi
-      # - name: Get Instance Profile ARN
-      #   id: get-arn
-      #   run: |
-      #     PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
-      #       --role-name Instance-Profile-Role \
-      #       --query 'InstanceProfiles[0].Arn' \
-      #       --output text)
-      #     # Extract name from ARN
-      #     PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
-      #     echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
-      #     echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
-      #     echo "Instance Profile ARN: $PROFILE_ARN"
-      #     echo "Instance Profile Name: $PROFILE_NAME"
+      - name: Get Instance Profile ARN
+        id: get-arn
+        run: |
+          PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
+            --role-name Instance-Profile-Role \
+            --query 'InstanceProfiles[0].Arn' \
+            --output text)
+          # Extract name from ARN
+          PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
+          echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
+          echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
+          echo "Instance Profile ARN: $PROFILE_ARN"
+          echo "Instance Profile Name: $PROFILE_NAME"
 
       - name: Terraform Init
         run: |
