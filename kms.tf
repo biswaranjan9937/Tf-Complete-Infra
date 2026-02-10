@@ -22,4 +22,5 @@ module "kms_complete" { ### Region comes from the provider block
   tags                    = var.kms_tags
 
   depends_on = [aws_iam_role.ebs_csi_driver_role]
+  
 }
