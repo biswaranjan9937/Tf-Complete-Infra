@@ -127,8 +127,8 @@ key_user_list = [ ### IAM roles or users who can use the key for encryption/decr
   "arn:aws:iam::187691954636:role/Workmates-SSO-AdminRole",
   "arn:aws:iam::187691954636:role/Workmates-SSO-L2SupportRole"
 ]
-key_aliases                 = ["project-PROD-CMK"]
-key_description             = "project PROD Customer managed Key"
+key_aliases                 = ["project-prod-CMK"]
+key_description             = "project prod Customer managed Key"
 key_deletion_window_in_days = 7
 key_usage                   = "ENCRYPT_DECRYPT"
 kms_region                  = "ap-south-1"
@@ -294,7 +294,6 @@ ecr_tags = {
 # EFS
 ##################################
 efs_create               = true
-efs_name                 = "project"
 efs_create_backup_policy = false
 efs_enable_backup_policy = false
 efs_attach_policy        = false

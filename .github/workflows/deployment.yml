@@ -62,23 +62,24 @@ jobs:
             echo "Branch not recognized! Exiting."
             exit 1
           fi
-      - name: Get Instance Profile ARN
-        id: get-arn
-        run: |
-          PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
-            --role-name Instance-Profile-Role \
-            --query 'InstanceProfiles[0].Arn' \
-            --output text)
-          # Extract name from ARN
-          PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
-          echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
-          echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
-          echo "Instance Profile ARN: $PROFILE_ARN"
-          echo "Instance Profile Name: $PROFILE_NAME"
+      # - name: Get Instance Profile ARN
+      #   id: get-arn
+      #   run: |
+      #     PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
+      #       --role-name Instance-Profile-Role \
+      #       --query 'InstanceProfiles[0].Arn' \
+      #       --output text)
+      #     # Extract name from ARN
+      #     PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
+      #     echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
+      #     echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
+      #     echo "Instance Profile ARN: $PROFILE_ARN"
+      #     echo "Instance Profile Name: $PROFILE_NAME"
  
-      - name: Use the ARN
-        run: |
-          echo "ARN is: ${{ steps.get-arn.outputs.profile_name }}"
+      # - name: Use the ARN
+      #   run: |
+      #     echo "ARN is: ${{ steps.get-arn.outputs.profile_name }}"
+
       - name: Terraform Init
         run: |
           terraform init -input=false -no-color
@@ -120,13 +121,13 @@ jobs:
               }
             }
             const commentBody = `
-            ### 📊 Terraform Plan Summary 
+            ###  Terraform Plan Summary 
 
-            #### ⚙️ Init: ${{ steps.init-validate.outcome }}
-            #### ✅ Validate: ${{ steps.init-validate.outcome }}
-            #### 📖 Plan: ${{ steps.plan.outcome }}
+            ####  Init: ${{ steps.init-validate.outcome }}
+            ####  Validate: ${{ steps.init-validate.outcome }}
+            ####  Plan: ${{ steps.plan.outcome }}
 
-            <details><summary>🔍 Show Terraform Plan</summary>
+            <details><summary> Show Terraform Plan</summary>
 
             \`\`\`hcl
             ${planOutput}
@@ -136,7 +137,7 @@ jobs:
 
             ---
             
-            🔁 *Triggered by: @${{ github.actor }} using \`${{ github.event_name }}\`*
+             *Triggered by: @${{ github.actor }} using \`${{ github.event_name }}\`*
             `;
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -182,19 +183,19 @@ jobs:
             echo "Branch not recognized! Exiting."
             exit 1
           fi
-      - name: Get Instance Profile ARN
-        id: get-arn
-        run: |
-          PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
-            --role-name Instance-Profile-Role \
-            --query 'InstanceProfiles[0].Arn' \
-            --output text)
-          # Extract name from ARN
-          PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
-          echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
-          echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
-          echo "Instance Profile ARN: $PROFILE_ARN"
-          echo "Instance Profile Name: $PROFILE_NAME"
+      # - name: Get Instance Profile ARN
+      #   id: get-arn
+      #   run: |
+      #     PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
+      #       --role-name Instance-Profile-Role \
+      #       --query 'InstanceProfiles[0].Arn' \
+      #       --output text)
+      #     # Extract name from ARN
+      #     PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
+      #     echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
+      #     echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
+      #     echo "Instance Profile ARN: $PROFILE_ARN"
+      #     echo "Instance Profile Name: $PROFILE_NAME"
 
       - name: Terraform Init
         run: |
@@ -235,5 +236,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add docs/ || true
-          git diff --staged --quiet || git commit -m "📚 Update infrastructure documentation [skip ci]" || true
+          git diff --staged --quiet || git commit -m " Update infrastructure documentation [skip ci]" || true
           git push || true
