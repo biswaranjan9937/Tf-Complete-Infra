@@ -696,9 +696,6 @@ variable "efs_enable_backup_policy" {
 variable "efs_attach_policy" {
   type = bool
 }
-variable "efs_name" {
-  type = string
-}
 variable "efs_ingress_rules" {
   description = "List of ingress rules"
   type = list(object({

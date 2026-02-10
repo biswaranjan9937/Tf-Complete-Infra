@@ -34,13 +34,13 @@ terraform {
     }
   }
 
-  # backend "s3" {
-  #   region       = "ap-south-1"
-  #   encrypt      = true
-  #   bucket       = "incede-terraform-statefiles"
-  #   use_lockfile = true
-  #   key          = "terraform.tfstate"
-  # }
+  backend "s3" {
+    region       = "ap-south-1"
+    encrypt      = true
+    bucket       = "terraform-statefiles-poc"
+    use_lockfile = true
+    key          = "terraform.tfstate"
+  }
 }
 
 

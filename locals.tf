@@ -79,7 +79,7 @@ locals {
 # EFS
 ################################
 locals {
-  efs_name = "${var.efs_name}-${var.environment}-efs"
+  efs_name = "${var.Project_Name}-${var.environment}-efs"
   efs_azs  = slice(data.aws_availability_zones.available.names, 0, 3)
 }
 
