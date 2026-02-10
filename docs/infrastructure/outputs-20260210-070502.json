@@ -1,0 +1,148 @@
+{
+  "complete_aliases": {
+    "sensitive": false,
+    "type": [
+      "object",
+      {
+        "project-prod-CMK": [
+          "object",
+          {
+            "arn": "string",
+            "id": "string",
+            "name": "string",
+            "name_prefix": "string",
+            "target_key_arn": "string",
+            "target_key_id": "string"
+          }
+        ]
+      }
+    ],
+    "value": {
+      "project-prod-CMK": {
+        "arn": "arn:aws:kms:ap-south-1:793524670633:alias/project-prod-CMK",
+        "id": "alias/project-prod-CMK",
+        "name": "alias/project-prod-CMK",
+        "name_prefix": "",
+        "target_key_arn": "arn:aws:kms:ap-south-1:793524670633:key/f186be86-af68-4420-9363-3414fd72eefa",
+        "target_key_id": "f186be86-af68-4420-9363-3414fd72eefa"
+      }
+    }
+  },
+  "complete_grants": {
+    "sensitive": true,
+    "type": [
+      "object",
+      {}
+    ],
+    "value": {}
+  },
+  "complete_key_arn": {
+    "sensitive": false,
+    "type": "string",
+    "value": "arn:aws:kms:ap-south-1:793524670633:key/f186be86-af68-4420-9363-3414fd72eefa"
+  },
+  "complete_key_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "f186be86-af68-4420-9363-3414fd72eefa"
+  },
+  "complete_key_policy": {
+    "sensitive": false,
+    "type": "string",
+    "value": "{\"Statement\":[{\"Action\":\"kms:*\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::793524670633:root\"},\"Resource\":\"*\",\"Sid\":\"Enable IAM User Permissions\"},{\"Action\":[\"kms:ReEncrypt*\",\"kms:GenerateDataKeyWithoutPlainText\",\"kms:DescribeKey\",\"kms:Decrypt\",\"kms:CreateGrant\"],\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::793524670633:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling\"},\"Resource\":\"*\",\"Sid\":\"AllowAutoScalingServiceLinkedRole\"},{\"Action\":[\"kms:ReEncrypt*\",\"kms:GenerateDataKey*\",\"kms:Encrypt\",\"kms:DescribeKey\",\"kms:Decrypt\",\"kms:CreateGrant\"],\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::793524670633:role/project-prod-ebs-csi-driver\"},\"Resource\":\"*\",\"Sid\":\"AllowEBSCSIRole\"},{\"Action\":[\"kms:ReEncrypt*\",\"kms:GenerateDataKey*\",\"kms:Encrypt\",\"kms:DescribeKey\",\"kms:Decrypt\",\"kms:CreateGrant\"],\"Condition\":{\"StringEquals\":{\"kms:CallerAccount\":\"793524670633\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"},\"Resource\":\"*\",\"Sid\":\"AllowEC2EBSService\"},{\"Action\":[\"kms:GenerateDataKey*\",\"kms:Encrypt\",\"kms:DescribeKey\",\"kms:Decrypt\"],\"Condition\":{\"StringEquals\":{\"kms:CallerAccount\":\"793524670633\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"elasticfilesystem.amazonaws.com\"},\"Resource\":\"*\"}],\"Version\":\"2012-10-17\"}"
+  },
+  "vpc_az": {
+    "sensitive": false,
+    "type": [
+      "list",
+      "string"
+    ],
+    "value": [
+      "ap-south-1a",
+      "ap-south-1b",
+      "ap-south-1c"
+    ]
+  },
+  "vpc_cidr": {
+    "sensitive": false,
+    "type": "string",
+    "value": "172.173.0.0/16"
+  },
+  "vpc_database_subnets": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string",
+        "string",
+        "string"
+      ]
+    ],
+    "value": [
+      "subnet-0de1c20e27f0ce4ed",
+      "subnet-0d7c8ca75f83999d7",
+      "subnet-03b89a72b84b85cee"
+    ]
+  },
+  "vpc_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "vpc-062b4d18b4292488d"
+  },
+  "vpc_private_route_table": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string"
+      ]
+    ],
+    "value": [
+      "rtb-09854723eec6ede3a"
+    ]
+  },
+  "vpc_private_subnets": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string",
+        "string",
+        "string"
+      ]
+    ],
+    "value": [
+      "subnet-06535a1159d03213e",
+      "subnet-06bba04c080b06b94",
+      "subnet-0030ca3cba84fe680"
+    ]
+  },
+  "vpc_public_route_table": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string"
+      ]
+    ],
+    "value": [
+      "rtb-082c11e90e6e96adf"
+    ]
+  },
+  "vpc_public_subnets": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string",
+        "string",
+        "string"
+      ]
+    ],
+    "value": [
+      "subnet-0b39660b9c51642bd",
+      "subnet-0df54ae28de135777",
+      "subnet-0310f5e4843e4c64d"
+    ]
+  }
+}

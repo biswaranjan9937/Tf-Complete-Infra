@@ -1,0 +1,10 @@
+    157 module
+      6 data
+      3 aws_iam_role_policy_attachment
+      3 aws_iam_policy
+      2 aws_iam_role
+      1 tls_private_key
+      1 aws_s3_object
+      1 aws_s3_bucket_lifecycle_configuration
+      1 aws_key_pair
+      1 aws_eip
