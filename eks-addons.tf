@@ -55,7 +55,7 @@ module "aws_lb_controller" {
   # depends_on = [ aws_iam_role.lbc_role ]    #### Ignore this if your create_role is true.
 }
 resource "time_sleep" "wait_for_lb_controller" {
-  depends_on = [module.aws_lb_controller]
+  depends_on      = [module.aws_lb_controller]
   create_duration = "60s"
 }
 
@@ -95,12 +95,12 @@ module "cluster_autoscaler" {
         ]),
       })
     ]
-    set = [ #### To override chart values at install/upgrade time without editing values.yaml
-      {
-        name  = "replicaCount"
-        value = "1"
-      }
-    ]
+    # set = [ #### To override chart values at install/upgrade time without editing values.yaml
+    #   {
+    #     name  = "replicaCount"
+    #     value = "1"
+    #   }
+    # ]
 
     create_role = true
     role_name   = var.ca_role
@@ -189,10 +189,10 @@ resource "helm_release" "ebs_csi" {
   chart      = "aws-ebs-csi-driver"
   version    = "2.34.0" #### Latest working version of aws-ebs-csi-driver helm chart version
   namespace  = "kube-system"
-#   set = {
-#     name  = "controller.replicaCount"
-#     value = "1"
-#   }
+  #   set = {
+  #     name  = "controller.replicaCount"
+  #     value = "1"
+  #   }
   values = [
     templatefile("./values-files/ebs_csi_driver_values.yaml", {
       role_arn = "${aws_iam_role.ebs_csi_driver_role.arn}"
@@ -221,10 +221,10 @@ resource "helm_release" "efs_csi" {
   version    = "3.4.0" #### Latest working version of aws-efs-csi-driver helm chart version
   namespace  = "kube-system"
 
-#   set = {
-#     name  = "controller.replicaCount"
-#     value = "1"
-#   }
+  #   set = {
+  #     name  = "controller.replicaCount"
+  #     value = "1"
+  #   }
   values = [
     templatefile("./values-files/efs_csi_driver_values.yaml", {
       role_arn = "${aws_iam_role.efs_csi_driver_role.arn}"
