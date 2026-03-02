@@ -276,20 +276,20 @@ module "eks_cluster" {
         }
       }
     }
-    # Example of adding multiple policies to a single access entry
-    ec2-role = {
-      kubernetes_groups = []
-      principal_arn     = "arn:aws:iam::836397457870:role/CWMManagedInstanceRole"
+    # # Example of adding multiple policies to a single access entry
+    # ec2-role = {
+    #   kubernetes_groups = []
+    #   principal_arn     = "arn:aws:iam::836397457870:role/CWMManagedInstanceRole"
 
-      policy_associations = {
-        cluster-admin = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-          access_scope = {
-            type = "cluster"
-          }
-        }
-      }
-    }
+    #   policy_associations = {
+    #     cluster-admin = {
+    #       policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+    #       access_scope = {
+    #         type = "cluster"
+    #       }
+    #     }
+    #   }
+    # }
   }
 
   tags = var.eks_tags
