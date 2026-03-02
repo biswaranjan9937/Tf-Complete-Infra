@@ -158,12 +158,6 @@
 #     role_name   = var.metric_server_role
 
 #     tags = var.eks_tags
-#     # tags = {
-#     #   "ENVIRONMENT"   = "POC"
-#     #   "PROJECT"       = "INCEDE"
-#     #   "Implementedby" = "Workmates"
-#     #   "Managedby"     = "Workmates"
-#     # }
 
 #   }
 

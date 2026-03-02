@@ -88,3 +88,13 @@ else
     echo "MongoDB URI already configured: $current_uri"
     echo "No fix needed"
 fi
+
+
+###########
+# 1. Edit SSH configuration
+sudo sed -i 's/^#Port 22/Port 2223/' /etc/ssh/sshd_config
+sudo sed -i 's/^Port 22/Port 2223/' /etc/ssh/sshd_config
+
+# 2. Restart SSH service
+sudo systemctl restart sshd
+

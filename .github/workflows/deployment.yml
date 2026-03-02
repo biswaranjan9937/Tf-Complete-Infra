@@ -224,17 +224,17 @@ jobs:
       #     echo "Secret Key: ${{ steps.aws_creds.outputs.secret_key }}"
       # Add these steps to your GitHub Actions workflow after terraform apply
 
-      - name: Generate Infrastructure Documentation
-        if: success()
-        run: |
-          chmod +x ./scripts/generate-docs.sh
-          PROJECT_NAME="Biye-CO" ENVIRONMENT="PROD" ./scripts/generate-docs.sh
+      # - name: Generate Infrastructure Documentation
+      #   if: success()
+      #   run: |
+      #     chmod +x ./scripts/generate-docs.sh
+      #     PROJECT_NAME="Biye-CO" ENVIRONMENT="PROD" ./scripts/generate-docs.sh
           
-      - name: Commit Documentation
-        if: success()
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add docs/ || true
-          git diff --staged --quiet || git commit -m " Update infrastructure documentation [skip ci]" || true
-          git push || true
+      # - name: Commit Documentation
+      #   if: success()
+      #   run: |
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "GitHub Action"
+      #     git add docs/ || true
+      #     git diff --staged --quiet || git commit -m " Update infrastructure documentation [skip ci]" || true
+      #     git push || true
