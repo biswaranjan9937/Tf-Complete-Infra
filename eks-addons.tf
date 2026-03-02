@@ -54,6 +54,11 @@ module "aws_lb_controller" {
 
   # depends_on = [ aws_iam_role.lbc_role ]    #### Ignore this if your create_role is true.
 }
+resource "time_sleep" "wait_for_lb_controller" {
+  depends_on = [module.aws_lb_controller]
+  create_duration = "60s"
+}
+
 
 ########################################################################
 #  Cluster Autoscaler
