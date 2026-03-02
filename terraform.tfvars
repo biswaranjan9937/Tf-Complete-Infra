@@ -275,10 +275,8 @@ tag_mutability          = "MUTABLE" # It can be IMMUTABLE or MUTABLE.
 repository_force_delete = true
 
 repository_names = [
-  "project-prod-gateway-service",
-  "project-prod-loan-request-service",
-  "project-prod-master-data-service",
-  "project-prod-asset-service"
+  "frontend_repo",
+  "backend_repo"
 ]
 
 ecr_tags = {

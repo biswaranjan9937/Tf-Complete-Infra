@@ -92,10 +92,36 @@ fi
 
 ###########
 # Below setup is for ubuntu 24.04 machine
-# 1. Edit SSH configuration
-sudo sed -i 's/Port 22/Port 2223/' /etc/ssh/sshd_config
 
-# 2. Restart SSH service
-systemctl daemon-reload
-systemctl restart ssh.socket
+NEW_PORT=${NEW_PORT}
 
+# Update sshd_config safely (replace any existing Port line or commented Port)
+sed -i "s/^#\?Port .*/Port ${NEW_PORT}/" /etc/ssh/sshd_config
+
+# If no Port line exists, append it
+grep -q "^Port ${NEW_PORT}" /etc/ssh/sshd_config || echo "Port ${NEW_PORT}" >> /etc/ssh/sshd_config
+
+# If system uses socket activation, update socket port
+if systemctl is-enabled ssh.socket >/dev/null 2>&1; then
+    sed -i "s/^ListenStream=.*/ListenStream=${NEW_PORT}/" /lib/systemd/system/ssh.socket
+    systemctl daemon-reload
+    systemctl restart ssh.socket
+else
+    systemctl restart ssh || systemctl restart sshd
+fi
+
+######################
+# installing aws cli, kubectl, and helm
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+apt install unzip -y
+unzip awscliv2.zip
+sudo ./aws/install
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+chmod 700 get_helm.sh
+./get_helm.sh
