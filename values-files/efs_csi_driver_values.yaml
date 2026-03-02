@@ -54,7 +54,7 @@ controller:
   # Name of the CSI controller service
   name: efs-csi-controller
   # Number of replicas for the CSI controller service deployment
-  replicaCount: 2
+  replicaCount: 1
   # Number for the log level verbosity
   logLevel: 2
   # If set, add pv/pvc metadata to plugin create requests as parameters.
