@@ -93,7 +93,7 @@ fi
 ###########
 # Below setup is for ubuntu 24.04 machine
 
-NEW_PORT=2223
+NEW_PORT=${NEW_PORT}
 
 # Update sshd_config safely (replace any existing Port line or commented Port)
 sed -i "s/^#\?Port .*/Port ${NEW_PORT}/" /etc/ssh/sshd_config
