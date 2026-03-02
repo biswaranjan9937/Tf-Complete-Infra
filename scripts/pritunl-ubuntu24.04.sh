@@ -93,8 +93,7 @@ fi
 ###########
 # Below setup is for ubuntu 24.04 machine
 # 1. Edit SSH configuration
-sudo sed -i 's/^#Port 22/Port 2223/' /etc/ssh/sshd_config
-sudo sed -i 's/^Port 22/Port 2223/' /etc/ssh/sshd_config
+sudo sed -i 's/Port 22/Port 2223/' /etc/ssh/sshd_config
 
 # 2. Restart SSH service
 systemctl daemon-reload
