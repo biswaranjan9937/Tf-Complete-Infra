@@ -139,8 +139,8 @@ enable_key                  = true
 ########################################################################
 # ACM
 ########################################################################
-main_domain_name       = "biswa.click"
-create_route53_records = "false" ### Need to do this manually.
+main_domain_name       = "seawhale.in"
+create_route53_records = "true" ### Need to do this manually.
 validation_method      = "DNS"   ### Supports Email and DNS. DNS is recommended.
 acm_main_tags = {
   "Implementedby" = "Workmates",
