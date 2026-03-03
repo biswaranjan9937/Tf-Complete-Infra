@@ -1,5 +1,5 @@
 module "zones" {
-  source = "./modules/r53_module/zones"
+  source = "./modules/route53_module/zones"
   create = true
 
   zones = {
