@@ -38,6 +38,19 @@ locals {
   acm_main_tags = merge(var.acm_main_tags, { Name = var.main_domain_name })
 }
 
+############################################
+# Route53
+############################################
+locals {
+  #zone_name = sort(keys(module.zones.route53_zone_zone_id))[0]
+  zone_tags = {
+    "Implementedby" = "Wokrmates",
+    "Managedby"     = "Workmates",
+    "Project"       = "sample-project",
+    "Environment"   = "POC",
+    "Layer"         = "DNS"
+  }
+}
 
 ####################################################################
 # EKS

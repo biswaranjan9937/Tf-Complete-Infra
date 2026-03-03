@@ -148,7 +148,7 @@ module "ec2_pritunl" {
 
   # user_data = templatefile("./scripts/pritunl-ubuntu24.04.sh", { S3_BUCKET_NAME = module.vpn_credential_bucket.s3_bucket_id })
   user_data = templatefile("./scripts/pritunl-ubuntu24.04.sh", { NEW_PORT = 2223 })
-  tags = var.ec2_pritunl_tags
+  tags      = var.ec2_pritunl_tags
 }
 
 # ################################
