@@ -17,12 +17,12 @@ permissions:
   actions: read
 
 env:
-  TFVAR_NAME_POC: terraform.tfvars
-  BRANCH_NAME_POC: main
-  AWS_REGION: ap-south-1
-  TERRAFORM_VERSION: "1.11.4"
-  ROLE_TO_ASSUME: arn:aws:iam::793524670633:role/Terraform-deployer-role
-  AWS_SESSION_NAME: Terraform-deployer-role
+  TFVAR_NAME: ${{vars.TFVAR_NAME }}
+  BRANCH_NAME: ${{ vars.BRANCH_NAME }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  TERRAFORM_VERSION: ${{ vars.TERRAFORM_VERSION }}
+  ROLE_TO_ASSUME: ${{ vars.ROLE_TO_ASSUME }}
+  AWS_SESSION_NAME: ${{ vars.AWS_SESSION_NAME }}
 
 jobs:
   plan:
@@ -55,9 +55,9 @@ jobs:
           BRANCH="${{ github.base_ref || github.event.pull_request.base.ref }}"
           echo "Branch is: $BRANCH"
 
-          if [ "$BRANCH" == "${BRANCH_NAME_POC}" ]; then
-            echo "tfvars=${TFVAR_NAME_POC}" >> $GITHUB_OUTPUT
-            echo "workspace=${BRANCH_NAME_POC}" >> $GITHUB_OUTPUT
+          if [ "$BRANCH" == "${BRANCH_NAME}" ]; then
+            echo "tfvars=${TFVAR_NAME}" >> $GITHUB_OUTPUT
+            echo "workspace=${BRANCH_NAME}" >> $GITHUB_OUTPUT
           else
             echo "Branch not recognized! Exiting."
             exit 1
@@ -176,9 +176,9 @@ jobs:
           BRANCH="${{ github.base_ref || github.event.pull_request.base.ref }}"
           echo "Branch is: $BRANCH"
 
-          if [ "$BRANCH" == "${BRANCH_NAME_POC}" ]; then
-            echo "tfvars=${TFVAR_NAME_POC}" >> $GITHUB_OUTPUT
-            echo "workspace=${BRANCH_NAME_POC}" >> $GITHUB_OUTPUT
+          if [ "$BRANCH" == "${BRANCH_NAME}" ]; then
+            echo "tfvars=${TFVAR_NAME}" >> $GITHUB_OUTPUT
+            echo "workspace=${BRANCH_NAME}" >> $GITHUB_OUTPUT
           else
             echo "Branch not recognized! Exiting."
             exit 1

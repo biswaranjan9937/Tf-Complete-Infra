@@ -248,7 +248,7 @@ rds_maintenance_window          = "Mon:00:00-Mon:03:00"
 rds_backup_retention_period     = "7"
 rds_backup_window               = "09:30-10:30"
 rds_delete_automated_backups    = true
-rds_deletion_protection         = false
+rds_deletion_protection         = true
 rds_ingress_rules = [
   {
     from_port   = 5444
