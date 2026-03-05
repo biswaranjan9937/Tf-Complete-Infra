@@ -4,7 +4,8 @@ module "acm_main" {
   create_certificate = true
 
   domain_name               = var.main_domain_name          ### Ex- example.com
-  zone_id = module.zones.route53_zone_zone_id["seawhale.in"]
+  zone_id = module.zones.route53_zone_zone_id["${var.main_domain_name}"]
+  # zone_id = module.zones.route53_zone_zone_id["seawhale.in"]
   subject_alternative_names = ["*.${var.main_domain_name}"] ### *.example.com
   create_route53_records    = var.create_route53_records    ### if true Terraform will create CNAME  records in Route53 for certificate validation. If false, you need to validate the certificate manually from AWS console or CLI. 
   validation_method         = var.validation_method
