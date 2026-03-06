@@ -32,11 +32,11 @@ bucketTags = {
   "Layer"         = "Storage"
 }
 ec2_pritunl_ami_id        = "ami-019715e0d74f695be" ### ubuntu 24.04 of ap-south-1
-ec2_pritunl_instance_type = "t3.micro"
+ec2_pritunl_instance_type = "c5.large"
 ec2_pritunl_name          = "PRITUNL"
 #ec2_pritunl_iam_role_name = "CWMManagedInstanceRole"
 ec2_pritunl_volume_type = "gp3"
-ec2_pritunl_volume_size = "20"
+ec2_pritunl_volume_size = "25"
 #ec2_pritunl_kms_key_id     = ""
 ec2_pritunl_root_encrypted = true
 ec2_pritunl_tags = {
