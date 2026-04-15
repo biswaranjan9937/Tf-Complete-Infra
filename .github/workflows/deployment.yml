@@ -23,6 +23,7 @@ env:
   TERRAFORM_VERSION: ${{ vars.TERRAFORM_VERSION }}
   ROLE_TO_ASSUME: ${{ vars.ROLE_TO_ASSUME }}
   AWS_SESSION_NAME: ${{ vars.AWS_SESSION_NAME }}
+  INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
 
 jobs:
   plan:
@@ -155,7 +156,7 @@ jobs:
         run: terraform show -json tfplan.binary > plan.json
 
       - name: Generate Infracost Breakdown
-        run: infracost breakdown --path plan.json --format json --out-file cost.json
+        run: infracost breakdown --path plan.json --format json --out-file cost.json --no-cloud
 
       - name: Generate Infracost HTML Report
         run: infracost output --path cost.json --format html --out-file report.html
