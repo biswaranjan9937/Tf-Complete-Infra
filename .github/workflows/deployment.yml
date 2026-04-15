@@ -91,9 +91,6 @@ jobs:
         id: init-validate
         run: terraform validate -no-color
 
-      - name: Install Infracost
-        run: curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
-
       - name: Terraform Plan
         id: plan
         continue-on-error: true
@@ -101,28 +98,10 @@ jobs:
           # Ensure root-level summaries directory exists
           mkdir -p "${{ github.workspace }}/.plan_summaries/"
           # Capture both stdout and stderr, then tee into a file
-          terraform plan -lock=false -no-color -out=tfplan.binary \
+          terraform plan -lock=false -no-color \
             -var-file="${{ steps.detect_branch.outputs.tfvars }}" \
             2>&1 \
             | tee "${{ github.workspace }}/.plan_summaries/plan-output.txt"
-
-      - name: Convert Plan to JSON
-        if: steps.plan.outcome == 'success'
-        run: terraform show -json tfplan.binary > plan.json
-
-      - name: Generate Infracost Breakdown
-        if: steps.plan.outcome == 'success'
-        run: infracost breakdown --path plan.json --format json --out-file cost.json
-
-      - name: Generate Infracost HTML Report
-        if: steps.plan.outcome == 'success'
-        run: infracost output --path cost.json --format html --out-file report.html
-
-      - name: Upload Report to S3
-        if: steps.plan.outcome == 'success'
-        run: |
-          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-          aws s3 cp report.html s3://your-bucket-name/infracost-reports/report-${TIMESTAMP}.html
 
       - name: Comment Terraform Plan Summary on PR
         if: always()
@@ -166,6 +145,25 @@ jobs:
               repo: context.repo.repo,
               body: commentBody
             });
+      - name: Install Infracost
+        run: curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+
+      - name: Generate Terraform Plan Binary
+        run: terraform plan -out tfplan.binary -var-file="${{ steps.detect_branch.outputs.tfvars }}"
+
+      - name: Convert Plan to JSON
+        run: terraform show -json tfplan.binary > plan.json
+
+      - name: Generate Infracost Breakdown
+        run: infracost breakdown --path plan.json --format json --out-file cost.json
+
+      - name: Generate Infracost HTML Report
+        run: infracost output --path cost.json --format html --out-file report.html
+
+      - name: Upload Report to S3
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          aws s3 cp report.html s3://awsinfra-cost-report-bucket/infracost-reports/report-${TIMESTAMP}.html
 
   on-pr-merge:
     if: ${{ github.event.pull_request.merged == true && github.event.action == 'closed' }}
