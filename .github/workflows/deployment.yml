@@ -23,7 +23,6 @@ env:
   TERRAFORM_VERSION: ${{ vars.TERRAFORM_VERSION }}
   ROLE_TO_ASSUME: ${{ vars.ROLE_TO_ASSUME }}
   AWS_SESSION_NAME: ${{ vars.AWS_SESSION_NAME }}
-  INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
 
 jobs:
   plan:
@@ -147,7 +146,9 @@ jobs:
               body: commentBody
             });
       - name: Install Infracost
-        run: curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+        run: | 
+          curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+          infracost version
 
       - name: Generate Terraform Plan Binary
         run: terraform plan -out tfplan.binary -var-file="${{ steps.detect_branch.outputs.tfvars }}"
@@ -156,7 +157,7 @@ jobs:
         run: terraform show -json tfplan.binary > plan.json
 
       - name: Generate Infracost Breakdown
-        run: infracost breakdown --path plan.json --format json --out-file cost.json --no-cloud
+        run: infracost breakdown --path plan.json --format json --out-file cost.json
 
       - name: Generate Infracost HTML Report
         run: infracost output --path cost.json --format html --out-file report.html
