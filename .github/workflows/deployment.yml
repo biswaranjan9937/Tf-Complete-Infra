@@ -174,6 +174,40 @@ jobs:
           TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
           aws s3 cp report.html s3://awsinfra-cost-report-bucket/infracost-reports/report-${TIMESTAMP}.html
 
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: '${{ github.event.pull_request.base.ref }}'
+
+      - name: Generate Infracost cost estimate baseline
+        run: |
+          infracost breakdown --path=. \
+                              --format=json \
+                              --out-file=/tmp/infracost-base.json
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+
+      - name: Generate Infracost diff
+        run: |
+          infracost diff --path=. \
+                          --format=json \
+                          --compare-to=/tmp/infracost-base.json \
+                          --out-file=/tmp/infracost.json
+
+      - name: Post Infracost comment
+        run: |
+          infracost comment github --path=/tmp/infracost.json \
+                                  --repo=$GITHUB_REPOSITORY \
+                                  --github-token=${{ github.token }} \
+                                  --pull-request=${{ github.event.pull_request.number }} \
+                                  --behavior=update
+
   on-pr-merge:
     if: ${{ github.event.pull_request.merged == true && github.event.action == 'closed' }}
     runs-on: ubuntu-latest
