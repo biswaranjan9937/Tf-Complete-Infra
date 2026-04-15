@@ -174,16 +174,6 @@ jobs:
           TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
           aws s3 cp report.html s3://awsinfra-cost-report-bucket/infracost-reports/report-${TIMESTAMP}.html
 
-      - name: Setup Infracost
-        uses: infracost/actions/setup@v3
-        with:
-          api-key: ${{ secrets.INFRACOST_API_KEY }}
-
-      - name: Checkout base branch
-        uses: actions/checkout@v4
-        with:
-          ref: '${{ github.event.pull_request.base.ref }}'
-
       - name: Generate Infracost cost estimate baseline
         run: |
           infracost breakdown --path=. \
