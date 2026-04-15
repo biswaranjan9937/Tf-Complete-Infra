@@ -163,6 +163,9 @@ jobs:
       - name: Generate Infracost Breakdown
         run: infracost breakdown --path plan.json --format json --out-file cost.json
 
+      - name: Genearte Infracost Summary
+        run: infracost breakdown --path plan.json
+
       - name: Generate Infracost HTML Report
         run: infracost output --path cost.json --format html --out-file report.html
 
