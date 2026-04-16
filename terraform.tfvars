@@ -141,7 +141,7 @@ enable_key                  = true
 ########################################################################
 main_domain_name       = "seawhale.in"
 create_route53_records = "true" ### Need to do this manually.
-validation_method      = "DNS"   ### Supports Email and DNS. DNS is recommended.
+validation_method      = "DNS"  ### Supports Email and DNS. DNS is recommended.
 acm_main_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",

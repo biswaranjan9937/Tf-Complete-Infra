@@ -9,7 +9,7 @@ provider "aws" {
       "Implementedby" = "Workmates",
       "Managedby"     = "Workmates",
       "Environment"   = "Prod",
-      "Project"       = "${var.Project_Name}"
+      "Project"       = var.Project_Name
     }
   }
 }
