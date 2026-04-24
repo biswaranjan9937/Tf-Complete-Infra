@@ -167,6 +167,11 @@ jobs:
           framework: terraform_plan
           soft_fail: true
 
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+
       - name: Generate Infracost Breakdown
         run: infracost breakdown --path tfplan.json --format json --out-file cost.json
 
