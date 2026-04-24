@@ -161,12 +161,74 @@ jobs:
       - name: Convert Plan to JSON
         run: terraform show -json tfplan.binary > tfplan.json
 
-      - name: Run Checkov (Terraform Plan)
+      - name: Run Checkov on Terraform Plan
         uses: bridgecrewio/checkov-action@master
         with:
           file: tfplan.json
           framework: terraform_plan
           soft_fail: true
+      # -----------------------------
+      # Create Python Script
+      # -----------------------------
+      - name: Create HTML generator script
+        run: |
+          cat << 'EOF' > generate_html.py
+          import json
+
+          with open("report.json") as f:
+              data = json.load(f)
+
+          if isinstance(data, list):
+              data = data[0]
+
+          results = data.get("results", {})
+          failed = results.get("failed_checks", [])
+          passed = results.get("passed_checks", [])
+
+          html = f"""
+          <html>
+          <head>
+          <meta charset="UTF-8">
+          <title>Checkov Report</title>
+          </head>
+          <body>
+
+          <h1>Checkov Report</h1>
+
+          <p>Passed: {len(passed)}</p>
+          <p>Failed: {len(failed)}</p>
+
+          <h2>Failed Checks</h2>
+          """
+
+          for c in failed:
+              html += f"<p>{c.get('check_id')} - {c.get('resource')}</p>"
+
+          html += "<h2>Passed Checks</h2>"
+
+          for c in passed:
+              html += f"<p>{c.get('check_id')} - {c.get('resource')}</p>"
+
+          html += "</body></html>"
+
+          with open("report.html", "w", encoding="utf-8") as f:
+              f.write(html)
+
+          print("HTML generated")
+          EOF
+
+      # -----------------------------
+      # Run Python Script
+      # -----------------------------
+      - name: Run HTML generator
+        run: python3 generate_html.py
+
+      # -----------------------------
+      # Upload checkov scanned report to S3
+      # -----------------------------
+      - name: Upload to S3
+        run: |
+          aws s3 cp report.html s3://checkov-bucket-tf-scan/reports/report.html
 
       - name: Generate Infracost Breakdown
         run: infracost breakdown --path tfplan.json --format json --out-file cost.json
@@ -177,6 +239,9 @@ jobs:
       - name: Generate Infracost HTML Report
         run: infracost output --path cost.json --format html --out-file report.html
 
+      # -----------------------------
+      # Upload infracost report to S3
+      # -----------------------------
       - name: Upload Report to S3
         run: |
           TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
