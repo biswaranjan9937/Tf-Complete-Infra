@@ -180,7 +180,7 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 cp checkov-report s3://checkov-bucket-tf-scan/reports/checkov-report.csv
+          aws s3 cp checkov-report s3://checkov-bucket-tf-scan/reports/checkov-report.csv --recursive
 
       - name: Upload SARIF to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
