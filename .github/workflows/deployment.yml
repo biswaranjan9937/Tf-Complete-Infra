@@ -167,8 +167,8 @@ jobs:
           file: tfplan.json
           framework: terraform_plan
           soft_fail: true
-      - name: create csv report
-        run: touch checkov-report.csv
+      - name: Create report directory
+        run: mkdir -p checkov-report
       - name: Run Checkov (CSV)
         uses: bridgecrewio/checkov-action@master
         with:
