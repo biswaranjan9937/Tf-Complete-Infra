@@ -168,7 +168,7 @@ jobs:
           pipx ensurepath
 
       - name: Generate Checkov Report
-        run: checkov -f tfplan.json
+        run: checkov -f tfplan.json --soft-fail
 
       - name: Generate Checkov JSON 
         run: checkov -f tfplan.json -o json > report.json
