@@ -160,10 +160,16 @@ jobs:
       - name: Convert Plan to JSON
         run: terraform show -json tfplan.binary > tfplan.json
 
+      - name: Run Checkov (Terraform Plan)
+        uses: bridgecrewio/checkov-action@master
+        with:
+          file: tfplan.json
+          framework: terraform_plan
+
       - name: Generate Infracost Breakdown
         run: infracost breakdown --path tfplan.json --format json --out-file cost.json
 
-      - name: Genearte Infracost Summary
+      - name: Generate Infracost Summary
         run: infracost breakdown --path tfplan.json
 
       - name: Generate Infracost HTML Report
@@ -203,11 +209,6 @@ jobs:
                                   --github-token=${{ github.token }} \
                                   --pull-request=${{ github.event.pull_request.number }} \
                                   --behavior=update
-      - name: Run Checkov (Terraform Plan)
-        uses: bridgecrewio/checkov-action@master
-        with:
-          file: tfplan.json
-          framework: terraform_plan
 
   on-pr-merge:
     if: ${{ github.event.pull_request.merged == true && github.event.action == 'closed' }}
