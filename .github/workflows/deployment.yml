@@ -181,7 +181,7 @@ jobs:
       - name: Upload Checkov HTML to S3
         run: |
           TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-          aws s3 cp report.html s3://${env.CHECKOV_REPORT_BUCKET}/reports/checkov-report-${TIMESTAMP}.html
+          aws s3 cp report.html s3://$CHECKOV_REPORT_BUCKET/reports/checkov-report-${TIMESTAMP}.html
 
 
       - name: Generate Infracost Breakdown
