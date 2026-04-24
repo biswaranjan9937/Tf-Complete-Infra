@@ -169,7 +169,7 @@ jobs:
           soft_fail: true
       - name: Generate HTML report
         run: |
-          touch report.html
+          checkov -f tfplan.json -o json > report.json
           python3 scripts/generate_html.py
       # Upload to S3
       - name: Upload report to S3
