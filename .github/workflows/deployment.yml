@@ -168,7 +168,9 @@ jobs:
           framework: terraform_plan
           soft_fail: true
       - name: Generate HTML report
-        run: python3 scripts/generate_html.py
+        run: |
+          touch report.html
+          python3 scripts/generate_html.py
       # Upload to S3
       - name: Upload report to S3
         run: |
