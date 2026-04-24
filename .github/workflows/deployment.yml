@@ -188,7 +188,7 @@ jobs:
           sarif_file: results.sarif
 
       - name: Detroy
-        run: terraform destroy -auto-approve -var-file="${{ steps.detect_branch.outputs.tfvars }}"
+        run: terraform destroy -auto-approve -var-file="${{ steps.detect_branch.outputs.tfvars }}" -lock=false
 
       - name: Generate Infracost Breakdown
         run: infracost breakdown --path tfplan.json --format json --out-file cost.json
