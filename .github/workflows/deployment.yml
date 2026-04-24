@@ -24,6 +24,8 @@ env:
   ROLE_TO_ASSUME: ${{ vars.ROLE_TO_ASSUME }}
   AWS_SESSION_NAME: ${{ vars.AWS_SESSION_NAME }}
   INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
+  INFRACOST_REPORT_BUCKET: ${{ vars.INFRACOST_REPORT_BUCKET }}
+  CHECKOV_REPORT_BUCKET: ${{ vars.CHECKOV_REPORT_BUCKET }}
 
 jobs:
   plan:
@@ -146,6 +148,7 @@ jobs:
               repo: context.repo.repo,
               body: commentBody
             });
+
       - name: Install Infracost
         run: | 
           curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
@@ -155,22 +158,31 @@ jobs:
         run: infracost configure set api_key ${{ env.INFRACOST_API_KEY }}
 
       - name: Generate Terraform Plan Binary
-        run: terraform plan -out tfplan.binary -var-file="${{ steps.detect_branch.outputs.tfvars }}"
+        run: terraform plan -out tfplan.binary -var-file="${{ steps.detect_branch.outputs.tfvars }}" -lock=false
 
       - name: Convert Plan to JSON
-        run: terraform show -json tfplan.binary > tfplan.json
+        run: terraform show -json tfplan.binary | jq > tfplan.json
 
-      - name: Run Checkov (Terraform Plan)
-        uses: bridgecrewio/checkov-action@master
-        with:
-          file: tfplan.json
-          framework: terraform_plan
-          soft_fail: true
+      - name: Install Checkov
+        run: |
+          sudo apt install pipx -y
+          pipx install checkov
+          pipx ensurepath
 
-      - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: results.sarif
+      - name: Generate Checkov scanned Report
+        run: checkov -f tfplan.json --soft-fail
+
+      - name: Generate Checkov JSON report for S3 upload
+        run: checkov -f tfplan.json -o json --soft-fail > report.json
+
+      - name: Generate HTML Report
+        run: python3 scripts/generate_html.py
+
+      - name: Upload Checkov HTML to S3
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          aws s3 cp report.html s3://$CHECKOV_REPORT_BUCKET/reports/checkov-report-${TIMESTAMP}.html
+
 
       - name: Generate Infracost Breakdown
         run: infracost breakdown --path tfplan.json --format json --out-file cost.json
@@ -181,10 +193,13 @@ jobs:
       - name: Generate Infracost HTML Report
         run: infracost output --path cost.json --format html --out-file report.html
 
+      # -----------------------------
+      # Upload infracost report to S3
+      # -----------------------------
       - name: Upload Report to S3
         run: |
           TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-          aws s3 cp report.html s3://awsinfra-cost-report-bucket/infracost-reports/report-${TIMESTAMP}.html
+          aws s3 cp report.html s3://$INFRACOST_REPORT_BUCKET/infracost-reports/report-${TIMESTAMP}.html
 
       - name: Checkout base branch
         uses: actions/checkout@v4
