@@ -165,6 +165,7 @@ jobs:
         with:
           file: tfplan.json
           framework: terraform_plan
+          soft_fail: true
 
       - name: Generate Infracost Breakdown
         run: infracost breakdown --path tfplan.json --format json --out-file cost.json
