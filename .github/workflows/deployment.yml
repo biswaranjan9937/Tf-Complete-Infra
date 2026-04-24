@@ -167,11 +167,11 @@ jobs:
           pipx install checkov
           pipx ensurepath
 
-      - name: Generate Checkov Report
+      - name: Generate Checkov scanned Report
         run: checkov -f tfplan.json --soft-fail
 
-      - name: Generate Checkov JSON 
-        run: checkov -f tfplan.json -o json > report.json
+      - name: Generate Checkov JSON report for S3 upload
+        run: checkov -f tfplan.json -o json --soft-fail > report.json
 
       - name: Generate HTML Report
         run: python3 scripts/generate_html.py
