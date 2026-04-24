@@ -166,6 +166,17 @@ jobs:
           file: tfplan.json
           framework: terraform_plan
           soft_fail: true
+      - name: Run Checkov (CSV)
+        uses: bridgecrewio/checkov-action@master
+        with:
+          file: tfplan.json
+          framework: terraform_plan
+          output_format: csv
+          output_file_path: checkov-report.csv
+          soft_fail: true
+      - name: Upload to S3
+        run: |
+          aws s3 cp checkov-report.csv s3://checkov-bucket-tf-scan/reports/checkov-report.csv
 
       - name: Upload SARIF to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
