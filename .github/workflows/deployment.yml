@@ -24,6 +24,8 @@ env:
   ROLE_TO_ASSUME: ${{ vars.ROLE_TO_ASSUME }}
   AWS_SESSION_NAME: ${{ vars.AWS_SESSION_NAME }}
   INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
+  INFRACOST_REPORT_BUCKET: ${{ vars.INFRACOST_REPORT_BUCKET }}
+  CHECKOV_REPORT_BUCKET: ${{ vars.CHECKOV_REPORT_BUCKET }}
 
 jobs:
   plan:
@@ -179,7 +181,7 @@ jobs:
       - name: Upload Checkov HTML to S3
         run: |
           TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-          aws s3 cp report.html s3://checkov-bucket-tf-scan/reports/checkov-report-${TIMESTAMP}.html
+          aws s3 cp report.html s3://${env.CHECKOV_REPORT_BUCKET}/reports/checkov-report-${TIMESTAMP}.html
 
 
       - name: Generate Infracost Breakdown
@@ -197,7 +199,7 @@ jobs:
       - name: Upload Report to S3
         run: |
           TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-          aws s3 cp report.html s3://awsinfra-cost-report-bucket/infracost-reports/report-${TIMESTAMP}.html
+          aws s3 cp report.html s3://${env.INFRACOST_REPORT_BUCKET}/infracost-reports/report-${TIMESTAMP}.html
 
       - name: Checkout base branch
         uses: actions/checkout@v4
