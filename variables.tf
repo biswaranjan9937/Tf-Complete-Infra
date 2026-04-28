@@ -17,7 +17,6 @@ variable "Project_Name" {
 variable "vpc_name" {
   description = "The name of the project."
   type        = string
-
 }
 
 variable "vpc_cidr" {
