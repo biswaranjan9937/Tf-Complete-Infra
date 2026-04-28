@@ -18,12 +18,12 @@ vpc_tags = {
   "Project"       = "project"
   "Layer"         = "Gateway"
 }
-vpc_flowlog_bucket = "project-prod-vpcflowlog"
+vpc_flowlog_bucket = "project-prod-vpcflowlog9937"
 
 ########################################
 # Pritunl
 ########################################
-cred_bucketName = "project-prod-pritunl-creds"
+cred_bucketName = "project-prod-pritunl-creds9937"
 bucketTags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
