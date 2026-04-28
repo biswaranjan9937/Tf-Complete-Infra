@@ -155,6 +155,11 @@ jobs:
       - name: Convert Plan to JSON
         run: terraform show -json tfplan.binary | jq > tfplan.json
 
+      - name: Terraform Destroy (for testing purposes)
+        run: |
+          echo "Running Terraform destroy in folder"
+          terraform destroy -auto-approve -var-file="${{ steps.detect_branch.outputs.tfvars }}" -lock=false
+
       # -----------------------------
       # Checkov
       # -----------------------------
