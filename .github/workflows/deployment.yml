@@ -368,18 +368,3 @@ jobs:
           git add screenshots/ runbook.md resources.json console-urls.json || true
           git diff --staged --quiet || git commit -m "📸 Update runbook screenshots [skip ci]" || true
           git push || true
-
-      # - name: Generate Infrastructure Documentation
-      #   if: success()
-      #   run: |
-      #     chmod +x ./scripts/generate-docs.sh
-      #     PROJECT_NAME="Biye-CO" ENVIRONMENT="PROD" ./scripts/generate-docs.sh
-          
-      # - name: Commit Documentation
-      #   if: success()
-      #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Action"
-      #     git add docs/ || true
-      #     git diff --staged --quiet || git commit -m " Update infrastructure documentation [skip ci]" || true
-      #     git push || true
