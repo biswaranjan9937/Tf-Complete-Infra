@@ -199,7 +199,7 @@ jobs:
         run: infracost breakdown --path tfplan.json
 
       - name: Generate Infracost HTML Report
-        run: infracost output --path cost.json --format html --out-file report.html
+        run: infracost output --path tfplan.json --format html --out-file report.html
 
       # -----------------------------
       # Upload infracost report to S3
