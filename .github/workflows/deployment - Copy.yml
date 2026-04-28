@@ -191,7 +191,6 @@ jobs:
 
       - name: Configure Infracost API Key
         run: infracost configure set api_key ${{ env.INFRACOST_API_KEY }}
-
       - name: Generate Infracost Breakdown
         run: infracost breakdown --path tfplan.json --format json --out-file cost.json
 
@@ -262,7 +261,6 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
-          terraform_wrapper: false
 
       - name: Detect Branch and Set tfvars & Workspace
         id: detect_branch
@@ -316,58 +314,7 @@ jobs:
       #   run: |
       #     echo "Access Key: ${{ steps.aws_creds.outputs.access_key }}"
       #     echo "Secret Key: ${{ steps.aws_creds.outputs.secret_key }}"
-
-      # -----------------------------
-      # Runbook — Console Screenshots
-      # -----------------------------
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: npm
-
-      - name: Install Node.js dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Extract resources from Terraform state
-        run: npm run extract
-
-      - name: Build AWS Console URLs
-        run: npm run map
-
-      - name: Capture AWS Console screenshots
-        run: npm run screenshots
-
-      - name: Verify screenshots
-        run: |
-          count=$(find screenshots -maxdepth 1 -type f -name '*.png' | wc -l)
-          echo "Screenshots captured: ${count}"
-          [ "${count}" -gt 0 ] || { echo "No screenshots generated."; exit 1; }
-
-      - name: Generate runbook
-        run: npm run runbook
-
-      - name: Upload runbook artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: aws-console-runbook
-          path: |
-            screenshots/
-            runbook.md
-            resources.json
-            console-urls.json
-          if-no-files-found: error
-
-      - name: Commit runbook and screenshots to main
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add screenshots/ runbook.md resources.json console-urls.json || true
-          git diff --staged --quiet || git commit -m "📸 Update runbook screenshots [skip ci]" || true
-          git push || true
+      # Add these steps to your GitHub Actions workflow after terraform apply
 
       # - name: Generate Infrastructure Documentation
       #   if: success()
