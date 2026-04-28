@@ -198,8 +198,8 @@ jobs:
       - name: Generate Infracost Summary
         run: infracost breakdown --path tfplan.json
 
-      - name: Generate Custom HTML Report
-        run: python3 scripts/generate_infracost_html.py
+      - name: Generate Infracost HTML Report
+        run: infracost output --path cost.json --format html --out-file report.html
 
       # -----------------------------
       # Upload infracost report to S3
