@@ -1,0 +1,320 @@
+{
+  "region": "ap-south-1",
+  "resources": [
+    {
+      "type": "eip",
+      "name": "project-prod-PRITUNL-EIP",
+      "id": "eipalloc-0c065673e1ada4a02",
+      "address": "aws_eip.vpn-eip",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "iam_policy",
+      "name": "project-prod-ebs-kms",
+      "arn": "arn:aws:iam::334317073341:policy/project-prod-ebs-kms",
+      "address": "aws_iam_policy.ebs-kms-policy",
+      "region": "global"
+    },
+    {
+      "type": "iam_policy",
+      "name": "project-prod-node-kms",
+      "arn": "arn:aws:iam::334317073341:policy/project-prod-node-kms",
+      "address": "aws_iam_policy.node-kms-policy",
+      "region": "global"
+    },
+    {
+      "type": "iam_policy",
+      "name": "POC-EKS-ADDITIONAL",
+      "arn": "arn:aws:iam::334317073341:policy/POC-EKS-ADDITIONAL",
+      "address": "aws_iam_policy.node_additional",
+      "region": "global"
+    },
+    {
+      "type": "iam_role",
+      "name": "project-prod-ebs-csi-driver",
+      "id": "project-prod-ebs-csi-driver",
+      "address": "aws_iam_role.ebs_csi_driver_role",
+      "region": "global"
+    },
+    {
+      "type": "iam_role",
+      "name": "project-prod-efs-csi-driver",
+      "id": "project-prod-efs-csi-driver",
+      "address": "aws_iam_role.efs_csi_driver_role",
+      "region": "global"
+    },
+    {
+      "type": "key_pair",
+      "name": "project-Pritunl-VPN-1a-keypair",
+      "id": "project-Pritunl-VPN-1a-keypair",
+      "address": "aws_key_pair.vpn_ec2_keypair",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "acm",
+      "name": "seawhale.in",
+      "arn": "arn:aws:acm:ap-south-1:334317073341:certificate/ff221b19-cba0-404d-b86d-84d9ff35021c",
+      "address": "module.acm_main.aws_acm_certificate.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "iam_role",
+      "name": "project-prod-PRITUNL",
+      "id": "project-prod-PRITUNL",
+      "address": "module.ec2_pritunl.aws_iam_role.this[0]",
+      "region": "global"
+    },
+    {
+      "type": "ec2",
+      "name": "project-prod-PRITUNL",
+      "id": "i-0ee6fb7ca794ad077",
+      "address": "module.ec2_pritunl.aws_instance.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "ecr",
+      "name": "backend_repo",
+      "id": "backend_repo",
+      "address": "module.ecr_repositories.aws_ecr_repository.this[\"backend_repo\"]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "ecr",
+      "name": "frontend_repo",
+      "id": "frontend_repo",
+      "address": "module.ecr_repositories.aws_ecr_repository.this[\"frontend_repo\"]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "efs",
+      "name": "project-prod-efs",
+      "id": "fs-06aef1159d042a2b3",
+      "address": "module.efs.aws_efs_file_system.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "sg",
+      "name": "Project-Prod-SG",
+      "id": "sg-0e16430f00bd48e50",
+      "address": "module.efs_security_group.aws_security_group.this",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "cw_log_group",
+      "name": "/aws/eks/POC-prod-EKS-CLUSTER/cluster",
+      "id": "/aws/eks/POC-prod-EKS-CLUSTER/cluster",
+      "address": "module.eks_cluster.aws_cloudwatch_log_group.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "iam_role",
+      "name": "POC-prod-EKS-CLUSTER-ROLE",
+      "id": "POC-prod-EKS-CLUSTER-ROLE",
+      "address": "module.eks_cluster.aws_iam_role.this[0]",
+      "region": "global"
+    },
+    {
+      "type": "sg",
+      "name": "POC-prod-EKS-CLUSTER-cluster",
+      "id": "sg-00e59aa3a08295d04",
+      "address": "module.eks_cluster.aws_security_group.cluster[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "sg",
+      "name": "POC-prod-EKS-CLUSTER-node",
+      "id": "sg-04ffb714d21373679",
+      "address": "module.eks_cluster.aws_security_group.node[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "iam_role",
+      "name": "POC-prod-APPLICATION-NG-ROLE",
+      "id": "POC-prod-APPLICATION-NG-ROLE",
+      "address": "module.eks_cluster.module.eks_managed_node_group[\"APPLICATION-NG\"].aws_iam_role.this[0]",
+      "region": "global"
+    },
+    {
+      "type": "launch_template",
+      "name": "APPLICATION-NG",
+      "id": "lt-074aa64a65972f779",
+      "address": "module.eks_cluster.module.eks_managed_node_group[\"APPLICATION-NG\"].aws_launch_template.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "iam_role",
+      "name": "POC-prod-SERVICE-NG-ROLE",
+      "id": "POC-prod-SERVICE-NG-ROLE",
+      "address": "module.eks_cluster.module.eks_managed_node_group[\"SERVICES-NG\"].aws_iam_role.this[0]",
+      "region": "global"
+    },
+    {
+      "type": "launch_template",
+      "name": "SERVICES-NG",
+      "id": "lt-0e628087425494a31",
+      "address": "module.eks_cluster.module.eks_managed_node_group[\"SERVICES-NG\"].aws_launch_template.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "kms",
+      "name": "project prod Customer managed Key",
+      "id": "f506c733-f10d-4163-8dc8-1cc6eeea1dd0",
+      "address": "module.kms_complete.aws_kms_key.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "sg",
+      "name": "PROJECT-PROD-PRITUNL-SG",
+      "id": "sg-0b24118a0ae87d451",
+      "address": "module.pritunl-securtiy-group.aws_security_group.this",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "rds",
+      "name": "project-prod-rds",
+      "id": "project-prod-rds",
+      "address": "module.rds.module.db_instance.aws_db_instance.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "sg",
+      "name": "Project-Prod-Rds-sg",
+      "id": "sg-099930d098528acb3",
+      "address": "module.rds_security_group.aws_security_group.this",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "eip",
+      "name": "project-prod-vpc-prod-NAT-EIP",
+      "id": "eipalloc-0d775764149c4459c",
+      "address": "module.vpc.aws_eip.nat[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "igw",
+      "name": "project-prod-vpc-prod-IG",
+      "id": "igw-0c0da7d1681e4de30",
+      "address": "module.vpc.aws_internet_gateway.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "nat_gateway",
+      "name": "project-prod-vpc-prod-NAT",
+      "id": "nat-02bc2a424a09aac37",
+      "address": "module.vpc.aws_nat_gateway.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "route_table",
+      "name": "project-prod-vpc-prod-PRIVATE-RT",
+      "id": "rtb-0b41fe49747d05a30",
+      "address": "module.vpc.aws_route_table.private[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "route_table",
+      "name": "project-prod-vpc-prod-PUBLIC-RT",
+      "id": "rtb-0083cdc72cf0c1de3",
+      "address": "module.vpc.aws_route_table.public[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-DB-DB-SUBNET",
+      "id": "subnet-07d72d673757f920f",
+      "address": "module.vpc.aws_subnet.database[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-DB-DB-SUBNET",
+      "id": "subnet-06063b1927c036694",
+      "address": "module.vpc.aws_subnet.database[1]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-DB-DB-SUBNET",
+      "id": "subnet-0cfdf7a9ee377b8fd",
+      "address": "module.vpc.aws_subnet.database[2]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-APP-PRIVATE-SUBNET",
+      "id": "subnet-00e3dcda40f41dc63",
+      "address": "module.vpc.aws_subnet.private[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-APP-PRIVATE-SUBNET",
+      "id": "subnet-088977166939465a2",
+      "address": "module.vpc.aws_subnet.private[1]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-APP-PRIVATE-SUBNET",
+      "id": "subnet-09273e29a381cd204",
+      "address": "module.vpc.aws_subnet.private[2]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-INFRA-PUBLIC-SUBNET",
+      "id": "subnet-0a3dfacc529983ee4",
+      "address": "module.vpc.aws_subnet.public[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-INFRA-PUBLIC-SUBNET",
+      "id": "subnet-07fa0b4f84fe59ae8",
+      "address": "module.vpc.aws_subnet.public[1]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "subnet",
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-INFRA-PUBLIC-SUBNET",
+      "id": "subnet-0b8cb86621bfb8968",
+      "address": "module.vpc.aws_subnet.public[2]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "vpc",
+      "name": "project-prod-vpc-prod-VPC",
+      "id": "vpc-05f80550694dcf641",
+      "address": "module.vpc.aws_vpc.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "s3",
+      "name": "project-prod-vpcflowlog9937",
+      "bucket": "project-prod-vpcflowlog9937",
+      "address": "module.vpc-flowlog-bucket.aws_s3_bucket.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "vpc_endpoint",
+      "name": "project-prod-vpc-prod-S3-Endpoint",
+      "id": "vpce-0af086c2489289c1e",
+      "address": "module.vpc_endpoints.aws_vpc_endpoint.this[\"s3\"]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "s3",
+      "name": "project-prod-pritunl-creds9937",
+      "bucket": "project-prod-pritunl-creds9937",
+      "address": "module.vpn_credential_bucket.aws_s3_bucket.this[0]",
+      "region": "ap-south-1"
+    },
+    {
+      "type": "route53_zone",
+      "name": "seawhale.in",
+      "id": "Z015295819VE6D41OJ8PF",
+      "address": "module.zones.aws_route53_zone.this[\"seawhale.in\"]",
+      "region": "global"
+    }
+  ]
+}

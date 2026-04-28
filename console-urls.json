@@ -1,0 +1,545 @@
+{
+  "region": "ap-south-1",
+  "consoleUrls": [
+    {
+      "resource": {
+        "type": "eip",
+        "name": "project-prod-PRITUNL-EIP",
+        "id": "eipalloc-0c065673e1ada4a02",
+        "address": "aws_eip.vpn-eip",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-PRITUNL-EIP",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#ElasticIpDetails:AllocationId=eipalloc-0c065673e1ada4a02",
+      "screenshot": "eip-project-prod-pritunl-eip.png"
+    },
+    {
+      "resource": {
+        "type": "iam_policy",
+        "name": "project-prod-ebs-kms",
+        "arn": "arn:aws:iam::334317073341:policy/project-prod-ebs-kms",
+        "address": "aws_iam_policy.ebs-kms-policy",
+        "region": "global"
+      },
+      "name": "project-prod-ebs-kms",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/policies/details/arn%3Aaws%3Aiam%3A%3A334317073341%3Apolicy%2Fproject-prod-ebs-kms",
+      "screenshot": "iam_policy-project-prod-ebs-kms.png"
+    },
+    {
+      "resource": {
+        "type": "iam_policy",
+        "name": "project-prod-node-kms",
+        "arn": "arn:aws:iam::334317073341:policy/project-prod-node-kms",
+        "address": "aws_iam_policy.node-kms-policy",
+        "region": "global"
+      },
+      "name": "project-prod-node-kms",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/policies/details/arn%3Aaws%3Aiam%3A%3A334317073341%3Apolicy%2Fproject-prod-node-kms",
+      "screenshot": "iam_policy-project-prod-node-kms.png"
+    },
+    {
+      "resource": {
+        "type": "iam_policy",
+        "name": "POC-EKS-ADDITIONAL",
+        "arn": "arn:aws:iam::334317073341:policy/POC-EKS-ADDITIONAL",
+        "address": "aws_iam_policy.node_additional",
+        "region": "global"
+      },
+      "name": "POC-EKS-ADDITIONAL",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/policies/details/arn%3Aaws%3Aiam%3A%3A334317073341%3Apolicy%2FPOC-EKS-ADDITIONAL",
+      "screenshot": "iam_policy-poc-eks-additional.png"
+    },
+    {
+      "resource": {
+        "type": "iam_role",
+        "name": "project-prod-ebs-csi-driver",
+        "id": "project-prod-ebs-csi-driver",
+        "address": "aws_iam_role.ebs_csi_driver_role",
+        "region": "global"
+      },
+      "name": "project-prod-ebs-csi-driver",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/roles/details/project-prod-ebs-csi-driver",
+      "screenshot": "iam_role-project-prod-ebs-csi-driver.png"
+    },
+    {
+      "resource": {
+        "type": "iam_role",
+        "name": "project-prod-efs-csi-driver",
+        "id": "project-prod-efs-csi-driver",
+        "address": "aws_iam_role.efs_csi_driver_role",
+        "region": "global"
+      },
+      "name": "project-prod-efs-csi-driver",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/roles/details/project-prod-efs-csi-driver",
+      "screenshot": "iam_role-project-prod-efs-csi-driver.png"
+    },
+    {
+      "resource": {
+        "type": "key_pair",
+        "name": "project-Pritunl-VPN-1a-keypair",
+        "id": "project-Pritunl-VPN-1a-keypair",
+        "address": "aws_key_pair.vpn_ec2_keypair",
+        "region": "ap-south-1"
+      },
+      "name": "project-Pritunl-VPN-1a-keypair",
+      "url": "https://ap-south-1.console.aws.amazon.com/ec2/home?region=ap-south-1#KeyPairs:search=project-Pritunl-VPN-1a-keypair",
+      "screenshot": "key_pair-project-pritunl-vpn-1a-keypair.png"
+    },
+    {
+      "resource": {
+        "type": "acm",
+        "name": "seawhale.in",
+        "arn": "arn:aws:acm:ap-south-1:334317073341:certificate/ff221b19-cba0-404d-b86d-84d9ff35021c",
+        "address": "module.acm_main.aws_acm_certificate.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "seawhale.in",
+      "url": "https://ap-south-1.console.aws.amazon.com/acm/home?region=ap-south-1#/certificates/arn%3Aaws%3Aacm%3Aap-south-1%3A334317073341%3Acertificate%2Fff221b19-cba0-404d-b86d-84d9ff35021c",
+      "screenshot": "acm-seawhale.in.png"
+    },
+    {
+      "resource": {
+        "type": "iam_role",
+        "name": "project-prod-PRITUNL",
+        "id": "project-prod-PRITUNL",
+        "address": "module.ec2_pritunl.aws_iam_role.this[0]",
+        "region": "global"
+      },
+      "name": "project-prod-PRITUNL",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/roles/details/project-prod-PRITUNL",
+      "screenshot": "iam_role-project-prod-pritunl.png"
+    },
+    {
+      "resource": {
+        "type": "ec2",
+        "name": "project-prod-PRITUNL",
+        "id": "i-0ee6fb7ca794ad077",
+        "address": "module.ec2_pritunl.aws_instance.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-PRITUNL",
+      "url": "https://ap-south-1.console.aws.amazon.com/ec2/home?region=ap-south-1#InstanceDetails:instanceId=i-0ee6fb7ca794ad077",
+      "screenshot": "ec2-project-prod-pritunl.png"
+    },
+    {
+      "resource": {
+        "type": "ecr",
+        "name": "backend_repo",
+        "id": "backend_repo",
+        "address": "module.ecr_repositories.aws_ecr_repository.this[\"backend_repo\"]",
+        "region": "ap-south-1"
+      },
+      "name": "backend_repo",
+      "url": "https://ap-south-1.console.aws.amazon.com/ecr/repositories/private/backend_repo?region=ap-south-1",
+      "screenshot": "ecr-backend_repo.png"
+    },
+    {
+      "resource": {
+        "type": "ecr",
+        "name": "frontend_repo",
+        "id": "frontend_repo",
+        "address": "module.ecr_repositories.aws_ecr_repository.this[\"frontend_repo\"]",
+        "region": "ap-south-1"
+      },
+      "name": "frontend_repo",
+      "url": "https://ap-south-1.console.aws.amazon.com/ecr/repositories/private/frontend_repo?region=ap-south-1",
+      "screenshot": "ecr-frontend_repo.png"
+    },
+    {
+      "resource": {
+        "type": "efs",
+        "name": "project-prod-efs",
+        "id": "fs-06aef1159d042a2b3",
+        "address": "module.efs.aws_efs_file_system.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-efs",
+      "url": "https://ap-south-1.console.aws.amazon.com/efs/home?region=ap-south-1#/file-systems/fs-06aef1159d042a2b3",
+      "screenshot": "efs-project-prod-efs.png"
+    },
+    {
+      "resource": {
+        "type": "sg",
+        "name": "Project-Prod-SG",
+        "id": "sg-0e16430f00bd48e50",
+        "address": "module.efs_security_group.aws_security_group.this",
+        "region": "ap-south-1"
+      },
+      "name": "Project-Prod-SG",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SecurityGroup:groupId=sg-0e16430f00bd48e50",
+      "screenshot": "sg-project-prod-sg.png"
+    },
+    {
+      "resource": {
+        "type": "cw_log_group",
+        "name": "/aws/eks/POC-prod-EKS-CLUSTER/cluster",
+        "id": "/aws/eks/POC-prod-EKS-CLUSTER/cluster",
+        "address": "module.eks_cluster.aws_cloudwatch_log_group.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "/aws/eks/POC-prod-EKS-CLUSTER/cluster",
+      "url": "https://ap-south-1.console.aws.amazon.com/cloudwatch/home?region=ap-south-1#logsV2:log-groups/log-group/%2Faws%2Feks%2FPOC-prod-EKS-CLUSTER%2Fcluster",
+      "screenshot": "cw_log_group-aws-eks-poc-prod-eks-cluster-cluster.png"
+    },
+    {
+      "resource": {
+        "type": "iam_role",
+        "name": "POC-prod-EKS-CLUSTER-ROLE",
+        "id": "POC-prod-EKS-CLUSTER-ROLE",
+        "address": "module.eks_cluster.aws_iam_role.this[0]",
+        "region": "global"
+      },
+      "name": "POC-prod-EKS-CLUSTER-ROLE",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/roles/details/POC-prod-EKS-CLUSTER-ROLE",
+      "screenshot": "iam_role-poc-prod-eks-cluster-role.png"
+    },
+    {
+      "resource": {
+        "type": "sg",
+        "name": "POC-prod-EKS-CLUSTER-cluster",
+        "id": "sg-00e59aa3a08295d04",
+        "address": "module.eks_cluster.aws_security_group.cluster[0]",
+        "region": "ap-south-1"
+      },
+      "name": "POC-prod-EKS-CLUSTER-cluster",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SecurityGroup:groupId=sg-00e59aa3a08295d04",
+      "screenshot": "sg-poc-prod-eks-cluster-cluster.png"
+    },
+    {
+      "resource": {
+        "type": "sg",
+        "name": "POC-prod-EKS-CLUSTER-node",
+        "id": "sg-04ffb714d21373679",
+        "address": "module.eks_cluster.aws_security_group.node[0]",
+        "region": "ap-south-1"
+      },
+      "name": "POC-prod-EKS-CLUSTER-node",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SecurityGroup:groupId=sg-04ffb714d21373679",
+      "screenshot": "sg-poc-prod-eks-cluster-node.png"
+    },
+    {
+      "resource": {
+        "type": "iam_role",
+        "name": "POC-prod-APPLICATION-NG-ROLE",
+        "id": "POC-prod-APPLICATION-NG-ROLE",
+        "address": "module.eks_cluster.module.eks_managed_node_group[\"APPLICATION-NG\"].aws_iam_role.this[0]",
+        "region": "global"
+      },
+      "name": "POC-prod-APPLICATION-NG-ROLE",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/roles/details/POC-prod-APPLICATION-NG-ROLE",
+      "screenshot": "iam_role-poc-prod-application-ng-role.png"
+    },
+    {
+      "resource": {
+        "type": "launch_template",
+        "name": "APPLICATION-NG",
+        "id": "lt-074aa64a65972f779",
+        "address": "module.eks_cluster.module.eks_managed_node_group[\"APPLICATION-NG\"].aws_launch_template.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "APPLICATION-NG",
+      "url": "https://ap-south-1.console.aws.amazon.com/ec2/home?region=ap-south-1#LaunchTemplates:search=lt-074aa64a65972f779",
+      "screenshot": "launch_template-application-ng.png"
+    },
+    {
+      "resource": {
+        "type": "iam_role",
+        "name": "POC-prod-SERVICE-NG-ROLE",
+        "id": "POC-prod-SERVICE-NG-ROLE",
+        "address": "module.eks_cluster.module.eks_managed_node_group[\"SERVICES-NG\"].aws_iam_role.this[0]",
+        "region": "global"
+      },
+      "name": "POC-prod-SERVICE-NG-ROLE",
+      "url": "https://us-east-1.console.aws.amazon.com/iam/home#/roles/details/POC-prod-SERVICE-NG-ROLE",
+      "screenshot": "iam_role-poc-prod-service-ng-role.png"
+    },
+    {
+      "resource": {
+        "type": "launch_template",
+        "name": "SERVICES-NG",
+        "id": "lt-0e628087425494a31",
+        "address": "module.eks_cluster.module.eks_managed_node_group[\"SERVICES-NG\"].aws_launch_template.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "SERVICES-NG",
+      "url": "https://ap-south-1.console.aws.amazon.com/ec2/home?region=ap-south-1#LaunchTemplates:search=lt-0e628087425494a31",
+      "screenshot": "launch_template-services-ng.png"
+    },
+    {
+      "resource": {
+        "type": "kms",
+        "name": "project prod Customer managed Key",
+        "id": "f506c733-f10d-4163-8dc8-1cc6eeea1dd0",
+        "address": "module.kms_complete.aws_kms_key.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project prod Customer managed Key",
+      "url": "https://ap-south-1.console.aws.amazon.com/kms/home?region=ap-south-1#/kms/keys/f506c733-f10d-4163-8dc8-1cc6eeea1dd0",
+      "screenshot": "kms-project-prod-customer-managed-key.png"
+    },
+    {
+      "resource": {
+        "type": "sg",
+        "name": "PROJECT-PROD-PRITUNL-SG",
+        "id": "sg-0b24118a0ae87d451",
+        "address": "module.pritunl-securtiy-group.aws_security_group.this",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-PRITUNL-SG",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SecurityGroup:groupId=sg-0b24118a0ae87d451",
+      "screenshot": "sg-project-prod-pritunl-sg.png"
+    },
+    {
+      "resource": {
+        "type": "rds",
+        "name": "project-prod-rds",
+        "id": "project-prod-rds",
+        "address": "module.rds.module.db_instance.aws_db_instance.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-rds",
+      "url": "https://ap-south-1.console.aws.amazon.com/rds/home?region=ap-south-1#database:id=project-prod-rds;is-cluster=false",
+      "screenshot": "rds-project-prod-rds.png"
+    },
+    {
+      "resource": {
+        "type": "sg",
+        "name": "Project-Prod-Rds-sg",
+        "id": "sg-099930d098528acb3",
+        "address": "module.rds_security_group.aws_security_group.this",
+        "region": "ap-south-1"
+      },
+      "name": "Project-Prod-Rds-sg",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SecurityGroup:groupId=sg-099930d098528acb3",
+      "screenshot": "sg-project-prod-rds-sg.png"
+    },
+    {
+      "resource": {
+        "type": "eip",
+        "name": "project-prod-vpc-prod-NAT-EIP",
+        "id": "eipalloc-0d775764149c4459c",
+        "address": "module.vpc.aws_eip.nat[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-vpc-prod-NAT-EIP",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#ElasticIpDetails:AllocationId=eipalloc-0d775764149c4459c",
+      "screenshot": "eip-project-prod-vpc-prod-nat-eip.png"
+    },
+    {
+      "resource": {
+        "type": "igw",
+        "name": "project-prod-vpc-prod-IG",
+        "id": "igw-0c0da7d1681e4de30",
+        "address": "module.vpc.aws_internet_gateway.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-vpc-prod-IG",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#InternetGateway:internetGatewayId=igw-0c0da7d1681e4de30",
+      "screenshot": "igw-project-prod-vpc-prod-ig.png"
+    },
+    {
+      "resource": {
+        "type": "nat_gateway",
+        "name": "project-prod-vpc-prod-NAT",
+        "id": "nat-02bc2a424a09aac37",
+        "address": "module.vpc.aws_nat_gateway.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-vpc-prod-NAT",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#NatGatewayDetails:natGatewayId=nat-02bc2a424a09aac37",
+      "screenshot": "nat_gateway-project-prod-vpc-prod-nat.png"
+    },
+    {
+      "resource": {
+        "type": "route_table",
+        "name": "project-prod-vpc-prod-PRIVATE-RT",
+        "id": "rtb-0b41fe49747d05a30",
+        "address": "module.vpc.aws_route_table.private[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-vpc-prod-PRIVATE-RT",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#RouteTableDetails:RouteTableId=rtb-0b41fe49747d05a30",
+      "screenshot": "route_table-project-prod-vpc-prod-private-rt.png"
+    },
+    {
+      "resource": {
+        "type": "route_table",
+        "name": "project-prod-vpc-prod-PUBLIC-RT",
+        "id": "rtb-0083cdc72cf0c1de3",
+        "address": "module.vpc.aws_route_table.public[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-vpc-prod-PUBLIC-RT",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#RouteTableDetails:RouteTableId=rtb-0083cdc72cf0c1de3",
+      "screenshot": "route_table-project-prod-vpc-prod-public-rt.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-DB-DB-SUBNET",
+        "id": "subnet-07d72d673757f920f",
+        "address": "module.vpc.aws_subnet.database[0]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-DB-DB-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-07d72d673757f920f",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1a-db-db-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-DB-DB-SUBNET",
+        "id": "subnet-06063b1927c036694",
+        "address": "module.vpc.aws_subnet.database[1]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-DB-DB-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-06063b1927c036694",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1b-db-db-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-DB-DB-SUBNET",
+        "id": "subnet-0cfdf7a9ee377b8fd",
+        "address": "module.vpc.aws_subnet.database[2]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-DB-DB-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-0cfdf7a9ee377b8fd",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1c-db-db-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-APP-PRIVATE-SUBNET",
+        "id": "subnet-00e3dcda40f41dc63",
+        "address": "module.vpc.aws_subnet.private[0]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-APP-PRIVATE-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-00e3dcda40f41dc63",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1a-app-private-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-APP-PRIVATE-SUBNET",
+        "id": "subnet-088977166939465a2",
+        "address": "module.vpc.aws_subnet.private[1]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-APP-PRIVATE-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-088977166939465a2",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1b-app-private-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-APP-PRIVATE-SUBNET",
+        "id": "subnet-09273e29a381cd204",
+        "address": "module.vpc.aws_subnet.private[2]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-APP-PRIVATE-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-09273e29a381cd204",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1c-app-private-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-INFRA-PUBLIC-SUBNET",
+        "id": "subnet-0a3dfacc529983ee4",
+        "address": "module.vpc.aws_subnet.public[0]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1A-INFRA-PUBLIC-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-0a3dfacc529983ee4",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1a-infra-public-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-INFRA-PUBLIC-SUBNET",
+        "id": "subnet-07fa0b4f84fe59ae8",
+        "address": "module.vpc.aws_subnet.public[1]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1B-INFRA-PUBLIC-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-07fa0b4f84fe59ae8",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1b-infra-public-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "subnet",
+        "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-INFRA-PUBLIC-SUBNET",
+        "id": "subnet-0b8cb86621bfb8968",
+        "address": "module.vpc.aws_subnet.public[2]",
+        "region": "ap-south-1"
+      },
+      "name": "PROJECT-PROD-VPC-PROD-AP-SOUTH-1C-INFRA-PUBLIC-SUBNET",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#SubnetDetails:subnetId=subnet-0b8cb86621bfb8968",
+      "screenshot": "subnet-project-prod-vpc-prod-ap-south-1c-infra-public-subnet.png"
+    },
+    {
+      "resource": {
+        "type": "vpc",
+        "name": "project-prod-vpc-prod-VPC",
+        "id": "vpc-05f80550694dcf641",
+        "address": "module.vpc.aws_vpc.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-vpc-prod-VPC",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#VpcDetails:VpcId=vpc-05f80550694dcf641",
+      "screenshot": "vpc-project-prod-vpc-prod-vpc.png"
+    },
+    {
+      "resource": {
+        "type": "s3",
+        "name": "project-prod-vpcflowlog9937",
+        "bucket": "project-prod-vpcflowlog9937",
+        "address": "module.vpc-flowlog-bucket.aws_s3_bucket.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-vpcflowlog9937",
+      "url": "https://s3.console.aws.amazon.com/s3/buckets/project-prod-vpcflowlog9937?region=ap-south-1&tab=objects",
+      "screenshot": "s3-project-prod-vpcflowlog9937.png"
+    },
+    {
+      "resource": {
+        "type": "vpc_endpoint",
+        "name": "project-prod-vpc-prod-S3-Endpoint",
+        "id": "vpce-0af086c2489289c1e",
+        "address": "module.vpc_endpoints.aws_vpc_endpoint.this[\"s3\"]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-vpc-prod-S3-Endpoint",
+      "url": "https://ap-south-1.console.aws.amazon.com/vpcconsole/home?region=ap-south-1#EndpointDetails:vpcEndpointId=vpce-0af086c2489289c1e",
+      "screenshot": "vpc_endpoint-project-prod-vpc-prod-s3-endpoint.png"
+    },
+    {
+      "resource": {
+        "type": "s3",
+        "name": "project-prod-pritunl-creds9937",
+        "bucket": "project-prod-pritunl-creds9937",
+        "address": "module.vpn_credential_bucket.aws_s3_bucket.this[0]",
+        "region": "ap-south-1"
+      },
+      "name": "project-prod-pritunl-creds9937",
+      "url": "https://s3.console.aws.amazon.com/s3/buckets/project-prod-pritunl-creds9937?region=ap-south-1&tab=objects",
+      "screenshot": "s3-project-prod-pritunl-creds9937.png"
+    },
+    {
+      "resource": {
+        "type": "route53_zone",
+        "name": "seawhale.in",
+        "id": "Z015295819VE6D41OJ8PF",
+        "address": "module.zones.aws_route53_zone.this[\"seawhale.in\"]",
+        "region": "global"
+      },
+      "name": "seawhale.in",
+      "url": "https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones#ListRecordSets/Z015295819VE6D41OJ8PF",
+      "screenshot": "route53_zone-seawhale.in.png"
+    }
+  ]
+}
