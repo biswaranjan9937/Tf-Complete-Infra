@@ -1,0 +1,21 @@
+{
+  "name": "runbook-generator",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Automated AWS runbook generator — extracts resources from Terraform state, captures console screenshots, and builds a Markdown runbook.",
+  "main": "index.js",
+  "scripts": {
+    "extract": "node scripts/extract-from-state.js",
+    "map": "node scripts/build-console-urls.js",
+    "screenshots": "playwright test tests/console-screenshot.spec.js --reporter=line",
+    "runbook": "node scripts/generate-runbook.js",
+    "pipeline": "npm run extract && npm run map && npm run screenshots && npm run runbook"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sts": "^3.821.0",
+    "@playwright/test": "^1.54.2"
+  }
+}
