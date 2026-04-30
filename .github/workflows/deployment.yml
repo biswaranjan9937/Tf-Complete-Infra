@@ -196,7 +196,9 @@ jobs:
         run: infracost breakdown --path tfplan.json --format json --out-file cost.json
 
       - name: Generate Infracost Summary
-        run: infracost breakdown --path tfplan.json
+        run: |
+          infracost breakdown --path tfplan.json
+          infracost breakdown --path tfplan.json --show-skipped
 
       - name: Generate Infracost HTML Report
         run: infracost output --path cost.json --format html --out-file report.html
