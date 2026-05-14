@@ -14,10 +14,10 @@ variable "Project_Name" {
 # VPC
 ########################################################################
 
-variable "vpc_name" {
-  description = "The name of the project."
-  type        = string
-}
+# variable "vpc_name" {
+#   description = "The name of the project."
+#   type        = string
+# }
 
 variable "vpc_cidr" {
   description = "CIDR block for the VPC."
@@ -136,6 +136,15 @@ variable "bucketTags" {
 variable "cred_bucketName" {
   type = string
 }
+variable "pritunl_availability_zone" {
+  type = string
+}
+variable "ec2_pritunl_additional_volume_type" {
+  type = string
+}
+variable "ec2_pritunl_additional_volume_size" {
+  type = string
+} 
 
 #######################################################################
 # KMS

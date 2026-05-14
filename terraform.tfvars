@@ -4,9 +4,9 @@ Project_Name   = "project"
 # VPC
 ########################################
 environment          = "prod"
-vpc_cidr             = "172.173.0.0/16"
+vpc_cidr             = "172.16.0.0/16"
 region               = "ap-south-1"
-vpc_name             = "project-prod-vpc"
+# vpc_name             = "project"
 single_nat_gateway   = "true"
 enable_nat_gateway   = "true"
 enable_dns_hostnames = "true"
@@ -18,12 +18,13 @@ vpc_tags = {
   "Project"       = "project"
   "Layer"         = "Gateway"
 }
-vpc_flowlog_bucket = "project-prod-vpcflowlog9937"
+vpc_flowlog_bucket = "project-prod-vpcflowlog7894"
 
 ########################################
 # Pritunl
 ########################################
-cred_bucketName = "project-prod-pritunl-creds9937"
+pritunl_availability_zone      = "ap-south-1b"
+cred_bucketName = "project-prod-pritunl-creds7894"
 bucketTags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
@@ -31,13 +32,13 @@ bucketTags = {
   "Project"       = "project"
   "Layer"         = "Storage"
 }
-ec2_pritunl_ami_id        = "ami-019715e0d74f695be" ### ubuntu 24.04 of ap-south-1
-ec2_pritunl_instance_type = "c5.large"
-ec2_pritunl_name          = "PRITUNL"
-#ec2_pritunl_iam_role_name = "CWMManagedInstanceRole"
+ec2_pritunl_ami_id        = "ami-0388e3ada3d9812da" ### ubuntu 24.04 of ap-south-1
+ec2_pritunl_instance_type = "t3.medium"
+ec2_pritunl_name          = "VPN"
 ec2_pritunl_volume_type = "gp3"
 ec2_pritunl_volume_size = "25"
-#ec2_pritunl_kms_key_id     = ""
+ec2_pritunl_additional_volume_type = "gp3"
+ec2_pritunl_additional_volume_size = "25"
 ec2_pritunl_root_encrypted = true
 ec2_pritunl_tags = {
   "Implementedby" = "Workmates",
@@ -46,9 +47,9 @@ ec2_pritunl_tags = {
   "Project"       = "project",
   "Layer"         = "Gateway"
 }
-ec2_pritunl_key_name               = "project-Pritunl-VPN-1a-keypair"
+ec2_pritunl_key_name               = "project-Pritunl-VPN-1b-keypair"
 ec2_pritunl_termination_protection = false
-# ec2_pritunl_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-KDvzcgT2Vw31" ### This IAM Instance Profile has SSM and Read Only access.
+ec2_pritunl_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-rEMu7z8991ZX" ### This IAM Instance Profile has SSM and Read Only access.
 ec2_pritunl_ingress_rules = [
   {
     cidr_blocks = ["15.206.48.168/32"] ### workmates public ip
@@ -119,16 +120,16 @@ kms_tags = {
   "Layer"         = "Security"
 }
 key_administrators_list = [ ### IAM roles or users who can manage the key
-  "arn:aws:iam::187691954636:role/Workmates-SSO-AdminRole",
-  "arn:aws:iam::187691954636:role/Workmates-SSO-L2SupportRole"
+  "arn:aws:iam::675169529857:role/Workmates-SSO-AdminRole",
+  "arn:aws:iam::675169529857:role/Workmates-SSO-L2SupportRole"
 ]
 key_user_list = [ ### IAM roles or users who can use the key for encryption/decryption
-  "arn:aws:iam::187691954636:role/CWMManagedInstanceRole",
-  "arn:aws:iam::187691954636:role/Workmates-SSO-AdminRole",
-  "arn:aws:iam::187691954636:role/Workmates-SSO-L2SupportRole"
+  "arn:aws:iam::675169529857:role/CWMManagedInstanceRole",
+  "arn:aws:iam::675169529857:role/Workmates-SSO-AdminRole",
+  "arn:aws:iam::675169529857:role/Workmates-SSO-L2SupportRole"
 ]
 key_aliases                 = ["project-prod-CMK"]
-key_description             = "project prod Customer managed Key"
+key_description             = "project Customer managed Key"
 key_deletion_window_in_days = 7
 key_usage                   = "ENCRYPT_DECRYPT"
 kms_region                  = "ap-south-1"
@@ -140,7 +141,7 @@ enable_key                  = true
 # ACM
 ########################################################################
 main_domain_name       = "seawhale.in"
-create_route53_records = "true" ### Need to do this manually.
+create_route53_records = "true" 
 validation_method      = "DNS"  ### Supports Email and DNS. DNS is recommended.
 acm_main_tags = {
   "Implementedby" = "Workmates",
@@ -154,7 +155,7 @@ acm_main_tags = {
 ########################################################################
 # EKS
 ########################################################################
-eks_cluster_name                    = "POC"
+eks_cluster_name                    = "POC-cluster"
 eks_cluster_version                 = "1.34"
 eks_ami_id                          = "" #ami-0f79d8d8f8d504808
 eks_cluster_endpoint_public_access  = "true"
@@ -230,7 +231,7 @@ rds_db_name                            = ""
 rds_username                           = "postgres"
 rds_password                           = "hycnWesdOirutj"
 rds_port                               = "5444"
-rds_availability_zone                  = "ap-south-1a"
+rds_availability_zone                  = "ap-south-1b"
 rds_multi_az                           = false
 rds_publicly_accessible                = false
 rds_tags = {
@@ -254,7 +255,7 @@ rds_ingress_rules = [
     from_port   = 5444
     to_port     = 5444
     protocol    = "tcp"
-    cidr_blocks = ["10.180.0.0/20"]
+    cidr_blocks = ["172.16.0.0/16"]
   }
 ]
 
@@ -311,7 +312,7 @@ efs_ingress_rules = [
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    cidr_blocks = ["172.173.0.0/16"] ### VPC CIDR.
+    cidr_blocks = ["172.16.0.0/16"] ### VPC CIDR.
   }
 ]
 
@@ -323,95 +324,6 @@ efs_egress_rules = [
     cidr_blocks = ["0.0.0.0/0"]
   }
 ]
-
-
-
-########################################
-# EC2 - UAT
-########################################
-# availability_zone = "ap-south-2b"
-# uat_ami_id        = "ami-09852e1dff5606dee"    
-# uat_instance_type = "m6a.2xlarge"
-# uat_name          = "project-UAT-App+DB-2b"
-# uat_volume_type   = "gp3"
-# uat_root_volume_size   = "300"
-# uat_ebs_volume_size   = "200"
-# uat_root_encrypted = true
-# uat_tags = {
-#   "Implementedby" = "Workmates",
-#   "Managedby"     = "Workmates",
-#   "Layer"         = "App+DB",
-#   "Environment"   = "UAT",
-#   "Project"       = "project"
-# }
-# uat_ec2_key_name               = "project-UAT-App+DB-2b-Keypair"
-# uat_termination_protection = true
-# uat_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-KDvzcgT2Vw31"
-# uat_ingress_rules = [
-#   {
-#     cidr_blocks = ["172.173.0.0/16"]
-#     from_port   = 2223
-#     protocol    = "tcp"
-#     to_port     = 2223
-#   },
-#   {
-#     cidr_blocks = ["0.0.0.0/0"]
-#     from_port   = 22
-#     protocol    = "tcp"
-#     to_port     = 22
-#   }
-# ]
-# uat_egress_rules = [{
-#   cidr_blocks = ["0.0.0.0/0"]
-#   from_port   = 0
-#   protocol    = "-1"
-#   to_port     = 0
-# }]
-
-
-########################################
-# EC2 - PROD
-########################################
-# availability_zone = "ap-south-2b"
-# prod_ami_id        = "ami-09852e1dff5606dee"    
-# prod_instance_type = "r6a.4xlarge"
-# prod_name          = "project-PROD-App+DB-2b"
-# prod_volume_type   = "gp3"
-# prod_root_volume_size   = "300"
-# prod_ebs_volume_size   = "200"
-# prod_root_encrypted = true
-# prod_tags = {
-#   "Implementedby" = "Workmates",
-#   "Managedby"     = "Workmates",
-#   "Layer"         = "App+DB",
-#   "Environment"   = "PROD",
-#   "Project"       = "project"
-# }
-# prod_ec2_key_name               = "project-PROD-App+DB-2b-Keypair"
-# prod_termination_protection = true
-# prod_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-KDvzcgT2Vw31"
-# prod_ingress_rules = [
-#   {
-#     cidr_blocks = ["172.173.0.0/16"]
-#     from_port   = 2223
-#     protocol    = "tcp"
-#     to_port     = 2223
-#   },
-#   {
-#     cidr_blocks = ["0.0.0.0/0"]
-#     from_port   = 22
-#     protocol    = "tcp"
-#     to_port     = 22
-#   }
-# ]
-# prod_egress_rules = [{
-#   cidr_blocks = ["0.0.0.0/0"]
-#   from_port   = 0
-#   protocol    = "-1"
-#   to_port     = 0
-# }]
-
-
 
 #########################################################################
 # ALB

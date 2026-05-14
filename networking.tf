@@ -102,8 +102,8 @@ module "ec2_pritunl" {
 
   ami                         = var.ec2_pritunl_ami_id
   instance_type               = var.ec2_pritunl_instance_type
-  availability_zone           = element(module.vpc.azs, 0)
-  subnet_id                   = element(module.vpc.public_subnets, 0)
+  availability_zone           = element(module.vpc.azs, 1)
+  subnet_id                   = element(module.vpc.public_subnets, 1)
   vpc_security_group_ids      = [module.pritunl-securtiy-group.security_group_id]
   key_name                    = aws_key_pair.vpn_ec2_keypair.key_name
   associate_public_ip_address = true
@@ -111,12 +111,12 @@ module "ec2_pritunl" {
   disable_api_termination     = var.ec2_pritunl_termination_protection
   ebs_optimized               = true
   source_dest_check           = false
-  create_iam_instance_profile = true #### make it false if you already have Instance profile. Also comment iam_role_policies.
-  iam_role_policies = {
-    AmazonSSMManagedInstanceCore               = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-    AmazonEC2ContainerRegistryS3ReadOnlyAccess = "arn:aws:iam::aws:policy/ReadOnlyAccess"
-  }
-  # iam_instance_profile        = var.ec2_pritunl_iam_instance_profile   ### Uncomment this if you already have Instance profile.
+  create_iam_instance_profile = false #### make it false if you already have Instance profile. Also comment iam_role_policies.
+  # iam_role_policies = {
+  #   AmazonSSMManagedInstanceCore               = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  #   AmazonEC2ContainerRegistryS3ReadOnlyAccess = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+  # }
+  iam_instance_profile        = var.ec2_pritunl_iam_instance_profile   ### Uncomment this if you already have Instance profile.
 
   enable_volume_tags = false
   root_block_device = [
@@ -130,25 +130,24 @@ module "ec2_pritunl" {
       }
     }
   ]
-  # ebs_block_device = [
-  #   {
-  #     device_name = "/dev/sdf"
-  #     volume_type = "gp3"
-  #     volume_size = 30
-  #     encrypted   = true
-  #     kms_key_id  = local.ec2_pritunl_kms_key_id
-  #     tags = merge(
-  #       {
-  #         Name = "${local.ec2_pritunl_name}-DATA"
-  #       },
-  #       local.ec2_pritunl_tags
-  #     )
-  #   }
-  # ]
 
   # user_data = templatefile("./scripts/pritunl-ubuntu24.04.sh", { S3_BUCKET_NAME = module.vpn_credential_bucket.s3_bucket_id })
   user_data = templatefile("./scripts/pritunl-ubuntu24.04.sh", { NEW_PORT = 2223 })
   tags      = var.ec2_pritunl_tags
+}
+
+resource "aws_ebs_volume" "vpn_additional_volume" {
+  availability_zone = element(module.vpc.azs, 1)
+  size              = var.ec2_pritunl_additional_volume_size
+  type              = var.ec2_pritunl_additional_volume_type
+  encrypted         = true
+  kms_key_id        = module.kms_complete.key_arn
+}
+
+resource "aws_volume_attachment" "vpn_volume_attachment" {
+  device_name = "/dev/sdb"
+  volume_id   = aws_ebs_volume.vpn_additional_volume.id
+  instance_id = module.ec2_pritunl.id
 }
 
 # ################################
