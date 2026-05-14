@@ -121,7 +121,7 @@ module "ec2_pritunl" {
   enable_volume_tags = false
   root_block_device = [
     {
-      encrypted   = true
+      encrypted   = var.ec2_pritunl_root_encrypted
       kms_key_id  = local.ec2_pritunl_kms_key_id
       volume_type = var.ec2_pritunl_volume_type
       volume_size = var.ec2_pritunl_volume_size
