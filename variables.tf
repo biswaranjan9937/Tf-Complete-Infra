@@ -1,10 +1,6 @@
 variable "environment" {
   type = string
 }
-variable "region_backend" {
-  type = string
-}
-
 variable "Project_Name" {
   type = string
 }
@@ -13,52 +9,37 @@ variable "Project_Name" {
 ########################################################################
 # VPC
 ########################################################################
-
-# variable "vpc_name" {
-#   description = "The name of the project."
-#   type        = string
-# }
-
 variable "vpc_cidr" {
   description = "CIDR block for the VPC."
   type        = string
 }
-
 variable "region" {
   description = "The AWS region in which the VPC will be created."
   type        = string
 }
-
-
 variable "single_nat_gateway" {
   description = "Whether to create a single NAT Gateway in the first public subnet."
   type        = bool
 }
-
 variable "enable_nat_gateway" {
   description = "Whether to create NAT Gateways for each private subnet."
   type        = bool
 }
-
 variable "enable_dns_hostnames" {
   description = "Whether instances with public IP addresses should get corresponding DNS hostnames."
   type        = bool
 }
-
 variable "enable_dns_support" {
   description = "Whether the VPC should have DNS support."
   type        = bool
 }
-
 variable "vpc_tags" {
   type = map(string)
 }
-
 variable "vpc_flowlog_bucket" {
   type    = string
   default = "toucan-uat-vpc-flowlog-bucket"
 }
-
 
 
 ########################################################################
@@ -80,9 +61,6 @@ variable "ec2_pritunl_volume_type" {
 variable "ec2_pritunl_volume_size" {
   type = string
 }
-# variable "ec2_pritunl_kms_key_id" {
-#   type = string
-# }
 variable "ec2_pritunl_root_encrypted" {
   type = bool
 }
