@@ -43,6 +43,7 @@ provider "kubectl" {
   #load_config_file = false
 }
 
+
 provider "helm" {
   kubernetes {
     host                   = module.eks_cluster.cluster_endpoint
