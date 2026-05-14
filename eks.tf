@@ -65,13 +65,13 @@ module "eks_cluster" {
       node_repair_config = {
         enabled = true
       }
-      taints = {
-        workload = {
-          key    = "workload"
-          value  = "app"
-          effect = "NO_SCHEDULE"
-        }
-      }
+      # taints = {
+      #   workload = {
+      #     key    = "workload"
+      #     value  = "app"
+      #     effect = "NO_SCHEDULE"
+      #   }
+      # }
 
       ebs_optimized           = true
       disable_api_termination = false
@@ -148,13 +148,13 @@ module "eks_cluster" {
       node_repair_config = {
         enabled = true
       }
-      taints = {
-        workload = {
-          key    = "workload"
-          value  = "service"
-          effect = "NO_SCHEDULE"
-        }
-      }
+      # taints = {
+      #   workload = {
+      #     key    = "workload"
+      #     value  = "service"
+      #     effect = "NO_SCHEDULE"
+      #   }
+      # }
       ebs_optimized           = true
       disable_api_termination = false
       #enable_monitoring       = true
