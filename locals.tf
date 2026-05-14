@@ -1,35 +1,20 @@
 ################################################################################
-# Common Locals
-################################################################################
-# locals {
-#   environment = var.environment
-# }
-
-################################################################################
 # VPC Module
 ################################################################################
 locals {
-
   vpc_name = "${var.Project_Name}-${var.environment}"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3) ### Limiting to 3 AZs. If the region has less than 3 AZs, Terraform will error.
 }
-
-####################################################################
-# KMS
-####################################################################
-locals {}
 
 ####################################################################
 # PRITUNL
 ####################################################################
 locals {
   ec2_pritunl_key_name          = var.ec2_pritunl_key_name
-  ec2_pritunl_name              = "${var.Project_Name}-${var.environment}-${var.ec2_pritunl_name}"
+  ec2_pritunl_name              = "${var.Project_Name}-${var.environment}-VPN"
   ec2_pritunl_iam_role_policies = var.ec2_pritunl_iam_role_policies
-  ec2_pritunl_kms_key_id        = module.kms_complete.key_arn
   ec2_pritunl_ebs_block_devices = var.ec2_pritunl_ebs_block_devices
 }
-
 
 ###################################################################
 # ACM

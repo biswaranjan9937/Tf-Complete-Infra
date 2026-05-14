@@ -13,4 +13,5 @@ module "vpc-flowlog-bucket" {
   #attach_policy   = true    ### Attach policy automatically 
   policy        = data.aws_iam_policy_document.flow_log_s3.json
   force_destroy = true
+  tags          = var.bucketTags
 }

@@ -70,12 +70,6 @@ variable "ec2_pritunl_ami_id" {
 variable "ec2_pritunl_instance_type" {
   type = string
 }
-variable "ec2_pritunl_name" {
-  type = string
-}
-# variable "ec2_pritunl_iam_role_name" {
-#   type = string
-# }
 variable "ec2_pritunl_iam_role_policies" {
   type    = map(string)
   default = {}
@@ -145,6 +139,9 @@ variable "ec2_pritunl_additional_volume_type" {
 variable "ec2_pritunl_additional_volume_size" {
   type = string
 } 
+variable "ec2_pritunl_additional_volume_encrypted" {
+  type = bool
+}
 
 #######################################################################
 # KMS

@@ -32,7 +32,7 @@ module "vpc" {
   enable_nat_gateway = var.enable_nat_gateway
 
   enable_dns_hostnames = var.enable_dns_hostnames
-  enable_dns_support   = var.enable_dns_support ### This is the DNS resolutions.
+  enable_dns_support   = var.enable_dns_support           ### This is the DNS resolutions.
 
   enable_flow_log           = true
   flow_log_destination_type = "s3"
@@ -86,8 +86,8 @@ module "vpc_endpoints" {
 
 module "pritunl-securtiy-group" {
   source      = "./modules/sg"
-  name        = "${upper(local.ec2_pritunl_name)}-SG"
-  description = "${upper(local.ec2_pritunl_name)} Security group"
+  name        = "${local.ec2_pritunl_name}-SG"
+  description = "${local.ec2_pritunl_name} Security Group"
   vpc_id      = module.vpc.vpc_id
 
   ingress_rules = var.ec2_pritunl_ingress_rules
@@ -103,7 +103,7 @@ module "ec2_pritunl" {
   ami                         = var.ec2_pritunl_ami_id
   instance_type               = var.ec2_pritunl_instance_type
   availability_zone           = element(module.vpc.azs, 1)
-  subnet_id                   = element(module.vpc.public_subnets, 1)
+  subnet_id                   = element(module.vpc.public_subnets, 1)    
   vpc_security_group_ids      = [module.pritunl-securtiy-group.security_group_id]
   key_name                    = aws_key_pair.vpn_ec2_keypair.key_name
   associate_public_ip_address = true
@@ -122,7 +122,8 @@ module "ec2_pritunl" {
   root_block_device = [
     {
       encrypted   = var.ec2_pritunl_root_encrypted
-      kms_key_id  = local.ec2_pritunl_kms_key_id
+      kms_key_id  =   module.kms_complete.key_id
+      delete_on_termination = true
       volume_type = var.ec2_pritunl_volume_type
       volume_size = var.ec2_pritunl_volume_size
       tags = {
@@ -140,8 +141,8 @@ resource "aws_ebs_volume" "vpn_additional_volume" {
   availability_zone = element(module.vpc.azs, 1)
   size              = var.ec2_pritunl_additional_volume_size
   type              = var.ec2_pritunl_additional_volume_type
-  encrypted         = true
-  kms_key_id        = module.kms_complete.key_arn
+  encrypted         = var.ec2_pritunl_additional_volume_encrypted
+  kms_key_id        = module.kms_complete.key_id
 }
 
 resource "aws_volume_attachment" "vpn_volume_attachment" {

@@ -1,9 +1,9 @@
-region_backend = "ap-south-1"
-Project_Name   = "project"
+# region_backend = "ap-south-1"
+Project_Name   = "Project"
 ########################################
 # VPC
 ########################################
-environment          = "prod"
+environment          = "UAT"
 vpc_cidr             = "172.16.0.0/16"
 region               = "ap-south-1"
 # vpc_name             = "project"
@@ -14,7 +14,7 @@ enable_dns_support   = "true"
 vpc_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
+  "Environment"   = "UAT",
   "Project"       = "project"
   "Layer"         = "Gateway"
 }
@@ -25,29 +25,23 @@ vpc_flowlog_bucket = "project-prod-vpcflowlog7894"
 ########################################
 pritunl_availability_zone      = "ap-south-1b"
 cred_bucketName = "project-prod-pritunl-creds7894"
-bucketTags = {
-  "Implementedby" = "Workmates",
-  "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Project"       = "project"
-  "Layer"         = "Storage"
-}
 ec2_pritunl_ami_id        = "ami-0388e3ada3d9812da" ### ubuntu 24.04 of ap-south-1
 ec2_pritunl_instance_type = "t3.medium"
-ec2_pritunl_name          = "VPN"
 ec2_pritunl_volume_type = "gp3"
 ec2_pritunl_volume_size = "25"
+ec2_pritunl_root_encrypted = true
+
 ec2_pritunl_additional_volume_type = "gp3"
 ec2_pritunl_additional_volume_size = "25"
-ec2_pritunl_root_encrypted = true
+ec2_pritunl_additional_volume_encrypted = true
 ec2_pritunl_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
+  "Environment"   = "UAT",
   "Project"       = "project",
   "Layer"         = "Gateway"
 }
-ec2_pritunl_key_name               = "project-Pritunl-VPN-1b-keypair"
+ec2_pritunl_key_name               = "Project-UAT-VPN-1b-keypair"
 ec2_pritunl_termination_protection = false
 ec2_pritunl_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-rEMu7z8991ZX" ### This IAM Instance Profile has SSM and Read Only access.
 ec2_pritunl_ingress_rules = [
@@ -76,30 +70,29 @@ ec2_pritunl_ingress_rules = [
     to_port     = 443
   },
   {
-    cidr_blocks = ["59.144.30.58/32"] ## workmates publicInternet IP
+    cidr_blocks = ["59.144.30.58/32"] #### workmates publicInternet IP
     from_port   = 443
     protocol    = "tcp"
     to_port     = 443
   },
   {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 1557 ### pritunl server port for udp
-    protocol    = "udp"
-    to_port     = 1557
-  },
-  {
     cidr_blocks = ["15.206.48.168/32"]
-    from_port   = 2223 ### pritunl ssh port
+    from_port   = 2223                #### pritunl ssh port
     protocol    = "tcp"
     to_port     = 2223
   },
   {
     cidr_blocks = ["10.3.1.105/32"]
-    from_port   = 2223 #### pritunl ssh port
+    from_port   = 2223                #### pritunl ssh port
     protocol    = "tcp"
     to_port     = 2223
   },
-
+  {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 1557                #### pritunl server port for udp
+    protocol    = "udp"
+    to_port     = 1557
+  }
 ]
 ec2_pritunl_egress_rules = [{
   cidr_blocks = ["0.0.0.0/0"]
@@ -337,8 +330,13 @@ efs_egress_rules = [
 ########################################
 # S3 Buckets
 ########################################
-# uat_s3_bucket_name  = "project-uat-bucket"
-# prod_s3_bucket_name = "project-prod-bucket"
+bucketTags = {
+  "Implementedby" = "Workmates",
+  "Managedby"     = "Workmates",
+  "Environment"   = "UAT",
+  "Project"       = "project"
+  "Layer"         = "Storage"
+}
 
 ########################################
 # Budget
