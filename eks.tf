@@ -65,13 +65,13 @@ module "eks_cluster" {
       node_repair_config = {
         enabled = true
       }
-      # taints = {
-      #   workload = {
-      #     key    = "workload"
-      #     value  = "crif-strategyone"
-      #     effect = "NO_SCHEDULE"
-      #   }
-      # }
+      taints = {
+        workload = {
+          key    = "workload"
+          value  = "app"
+          effect = "NO_SCHEDULE"
+        }
+      }
 
       ebs_optimized           = true
       disable_api_termination = false
@@ -147,6 +147,13 @@ module "eks_cluster" {
       }
       node_repair_config = {
         enabled = true
+      }
+      taints = {
+        workload = {
+          key    = "workload"
+          value  = "service"
+          effect = "NO_SCHEDULE"
+        }
       }
       ebs_optimized           = true
       disable_api_termination = false
@@ -252,7 +259,7 @@ module "eks_cluster" {
     # One access entry with a policy associated
     l2-support-role = {
       kubernetes_groups = []
-      principal_arn     = "arn:aws:iam::836397457870:role/Workmates-SSO-L2SupportRole"
+      principal_arn     = "arn:aws:iam::675169529857:role/Workmates-SSO-L2SupportRole"
 
       policy_associations = {
         admin-view = {
@@ -265,7 +272,7 @@ module "eks_cluster" {
     }
     admin-support-role = {
       kubernetes_groups = []
-      principal_arn     = "arn:aws:iam::836397457870:role/Workmates-SSO-AdminRole"
+      principal_arn     = "arn:aws:iam::675169529857:role/Workmates-SSO-AdminRole"
 
       policy_associations = {
         admin-view = {
@@ -279,7 +286,7 @@ module "eks_cluster" {
     # # Example of adding multiple policies to a single access entry
     # ec2-role = {
     #   kubernetes_groups = []
-    #   principal_arn     = "arn:aws:iam::836397457870:role/CWMManagedInstanceRole"
+    #   principal_arn     = "arn:aws:iam::675169529857:role/CWMManagedInstanceRole"
 
     #   policy_associations = {
     #     cluster-admin = {

@@ -35,6 +35,13 @@ module "rds" {
   parameter_group_name        = local.rds_parameter_group_name
   family                      = var.rds_parameter_group_family
   parameter_group_description = "${title(local.rds_identifier)} parameter group"
+  parameters = [
+    {
+      name         = "timezone"
+      value        = "Asia/Kolkata"
+      apply_method = "immediate"
+    }
+  ]
 
   create_db_option_group   = true
   option_group_name        = local.rds_option_group_name

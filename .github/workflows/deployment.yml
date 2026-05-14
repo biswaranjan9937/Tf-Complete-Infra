@@ -65,23 +65,6 @@ jobs:
             echo "Branch not recognized! Exiting."
             exit 1
           fi
-      # - name: Get Instance Profile ARN
-      #   id: get-arn
-      #   run: |
-      #     PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
-      #       --role-name Instance-Profile-Role \
-      #       --query 'InstanceProfiles[0].Arn' \
-      #       --output text)
-      #     # Extract name from ARN
-      #     PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
-      #     echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
-      #     echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
-      #     echo "Instance Profile ARN: $PROFILE_ARN"
-      #     echo "Instance Profile Name: $PROFILE_NAME"
- 
-      # - name: Use the ARN
-      #   run: |
-      #     echo "ARN is: ${{ steps.get-arn.outputs.profile_name }}"
 
       - name: Terraform Init
         run: |
@@ -277,19 +260,6 @@ jobs:
             echo "Branch not recognized! Exiting."
             exit 1
           fi
-      # - name: Get Instance Profile ARN
-      #   id: get-arn
-      #   run: |
-      #     PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
-      #       --role-name Instance-Profile-Role \
-      #       --query 'InstanceProfiles[0].Arn' \
-      #       --output text)
-      #     # Extract name from ARN
-      #     PROFILE_NAME=$(echo $PROFILE_ARN | cut -d'/' -f2)
-      #     echo "profile_arn=$PROFILE_ARN" >> $GITHUB_OUTPUT
-      #     echo "profile_name=$PROFILE_NAME" >> $GITHUB_OUTPUT
-      #     echo "Instance Profile ARN: $PROFILE_ARN"
-      #     echo "Instance Profile Name: $PROFILE_NAME"
 
       - name: Terraform Init
         run: |
@@ -303,68 +273,54 @@ jobs:
           echo "Running Terraform apply in folder"
           terraform apply -auto-approve -var-file="${{ steps.detect_branch.outputs.tfvars }}" -lock=false
 
-      # - name: Get AWS Credentials
-      #   id: aws_creds
-      #   run: |
-      #     ACCESS_KEY=$(terraform output -raw uat_access_key_id)
-      #     SECRET_KEY=$(terraform output -raw uat_secret_access_key)
-      #     # echo "::add-mask::$SECRET_KEY"
-      #     echo "access_key=$ACCESS_KEY" >> $GITHUB_OUTPUT
-      #     echo "secret_key=$SECRET_KEY" >> $GITHUB_OUTPUT
-
-      # - name: Use credentials
-      #   run: |
-      #     echo "Access Key: ${{ steps.aws_creds.outputs.access_key }}"
-      #     echo "Secret Key: ${{ steps.aws_creds.outputs.secret_key }}"
-
       # -----------------------------
       # Runbook — Console Screenshots
       # -----------------------------
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: npm
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: lts/*
+      #     cache: npm
 
-      - name: Install Node.js dependencies
-        run: npm ci
+      # - name: Install Node.js dependencies
+      #   run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+      # - name: Install Playwright browsers
+      #   run: npx playwright install --with-deps chromium
 
-      - name: Extract resources from Terraform state
-        run: npm run extract
+      # - name: Extract resources from Terraform state
+      #   run: npm run extract
 
-      - name: Build AWS Console URLs
-        run: npm run map
+      # - name: Build AWS Console URLs
+      #   run: npm run map
 
-      - name: Capture AWS Console screenshots
-        run: npm run screenshots
+      # - name: Capture AWS Console screenshots
+      #   run: npm run screenshots
 
-      - name: Verify screenshots
-        run: |
-          count=$(find screenshots -maxdepth 1 -type f -name '*.png' | wc -l)
-          echo "Screenshots captured: ${count}"
-          [ "${count}" -gt 0 ] || { echo "No screenshots generated."; exit 1; }
+      # - name: Verify screenshots
+      #   run: |
+      #     count=$(find screenshots -maxdepth 1 -type f -name '*.png' | wc -l)
+      #     echo "Screenshots captured: ${count}"
+      #     [ "${count}" -gt 0 ] || { echo "No screenshots generated."; exit 1; }
 
-      - name: Generate runbook
-        run: npm run runbook
+      # - name: Generate runbook
+      #   run: npm run runbook
 
-      - name: Upload runbook artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: aws-console-runbook
-          path: |
-            screenshots/
-            runbook.md
-            resources.json
-            console-urls.json
-          if-no-files-found: error
+      # - name: Upload runbook artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: aws-console-runbook
+      #     path: |
+      #       screenshots/
+      #       runbook.md
+      #       resources.json
+      #       console-urls.json
+      #     if-no-files-found: error
 
-      - name: Commit runbook and screenshots to main
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add screenshots/ runbook.md resources.json console-urls.json || true
-          git diff --staged --quiet || git commit -m "📸 Update runbook screenshots [skip ci]" || true
-          git push || true
+      # - name: Commit runbook and screenshots to main
+      #   run: |
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "GitHub Action"
+      #     git add screenshots/ runbook.md resources.json console-urls.json || true
+      #     git diff --staged --quiet || git commit -m "📸 Update runbook screenshots [skip ci]" || true
+      #     git push || true
