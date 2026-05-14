@@ -108,8 +108,8 @@ ec2_pritunl_egress_rules = [{
 kms_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Project"       = "project"
+  "Environment"   = "UAT",
+  "Project"       = "Project",
   "Layer"         = "Security"
 }
 key_administrators_list = [ ### IAM roles or users who can manage the key
@@ -121,8 +121,8 @@ key_user_list = [ ### IAM roles or users who can use the key for encryption/decr
   "arn:aws:iam::675169529857:role/Workmates-SSO-AdminRole",
   "arn:aws:iam::675169529857:role/Workmates-SSO-L2SupportRole"
 ]
-key_aliases                 = ["project-prod-CMK"]
-key_description             = "project Customer managed Key"
+key_aliases                 = ["Project-UAT-CMK"]
+key_description             = "Project Customer Managed Key"
 key_deletion_window_in_days = 7
 key_usage                   = "ENCRYPT_DECRYPT"
 kms_region                  = "ap-south-1"
@@ -139,8 +139,8 @@ validation_method      = "DNS"  ### Supports Email and DNS. DNS is recommended.
 acm_main_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Project"       = "project"
-  "Environment"   = "PROD"
+  "Project"       = "Project",
+  "Environment"   = "UAT",
   "Layer"         = "SSL"
 }
 
@@ -167,8 +167,8 @@ cluster_enabled_log_types = [
 eks_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Project"       = "project"
+  "Environment"   = "UAT",
+  "Project"       = "Project"
   "Layer"         = "Kubernetes"
 }
 
@@ -196,20 +196,20 @@ metric_server_role = "EKS-METRICS-SERVER-ROLE"
 ########################################################################
 # RDS
 ########################################################################
-rds_subnet_group_name = "project-prod-rds-subnet-grp"
+rds_subnet_group_name = "Project-uat-rds-subnet-grp"
 rds_subnet_group_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Layer"         = "DB"
-  "Project"       = "project"
+  "Environment"   = "UAT",
+  "Layer"         = "Database",
+  "Project"       = "Project"
 }
 
-rds_identifier                         = "project"
+rds_identifier                         = "Project-PostgreSQL"
 rds_instanceType                       = "db.t4g.medium"
-rds_parameter_group_name               = "project-postgres-parameter-grp"
+rds_parameter_group_name               = "project-uat-postgres-parameter-grp"
 rds_parameter_group_family             = "postgres17"
-rds_option_group_name                  = "project-postgres-options-grp"
+rds_option_group_name                  = "project-uat-postgres-options-grp"
 rds_options_group_major_engine_version = "17"
 rds_engine                             = "postgres"
 rds_engine_version                     = "17"
@@ -230,10 +230,9 @@ rds_publicly_accessible                = false
 rds_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Layer"         = "DB",
-  "Project"       = "project",
-  "Dev-RDS"       = "Auto-Shutdown"
+  "Environment"   = "UAT",
+  "Layer"         = "Database",
+  "Project"       = "Project",
 }
 rds_apply_immediately           = true
 rds_auto_minor_version_upgrade  = false
@@ -276,9 +275,9 @@ repository_names = [
 ecr_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
+  "Environment"   = "UAT",
   "Layer"         = "Storage",
-  "Project"       = "project"
+  "Project"       = "Project"
 }
 
 
@@ -291,14 +290,14 @@ efs_enable_backup_policy = false
 efs_attach_policy        = false
 efs_performance_mode     = "generalPurpose"
 efs_encrypted            = true
-efs_creation_token       = "project-Prod"
+efs_creation_token       = "Project-Uat"
 efs_throughput_mode      = "bursting"
 efs_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
   "Layer"         = "Storage",
-  "Env"           = "PROD",
-  "Project"       = "project"
+  "Env"           = "UAT",
+  "Project"       = "Project"
 }
 efs_ingress_rules = [
   {
