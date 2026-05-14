@@ -196,7 +196,7 @@ metric_server_role = "EKS-METRICS-SERVER-ROLE"
 ########################################################################
 # RDS
 ########################################################################
-rds_subnet_group_name = "Project-uat-rds-subnet-grp"
+rds_subnet_group_name = "project-uat-rds-subnet-grp"
 rds_subnet_group_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",

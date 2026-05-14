@@ -59,10 +59,10 @@ locals {
 ####################################################################
 
 locals {
-  rds_subnet_group_name    = "${var.rds_subnet_group_name}-${var.environment}"
-  rds_identifier           = "${var.rds_identifier}-${var.environment}-rds"
-  rds_parameter_group_name = "${var.rds_parameter_group_name}-${var.environment}"
-  rds_option_group_name    = "${var.rds_option_group_name}-${var.environment}"
+  rds_subnet_group_name    = lower("${var.rds_subnet_group_name}-${var.environment}")
+  rds_identifier           = lower("${var.rds_identifier}-${var.environment}-rds")
+  rds_parameter_group_name = lower("${var.rds_parameter_group_name}-${var.environment}")
+  rds_option_group_name    = lower("${var.rds_option_group_name}-${var.environment}")
 }
 
 ####################################################################
