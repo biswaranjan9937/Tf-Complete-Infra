@@ -145,7 +145,7 @@ resource "aws_ebs_volume" "vpn_additional_volume" {
 }
 
 resource "aws_volume_attachment" "vpn_volume_attachment" {
-  device_name = "/dev/sdb"
+  device_name = "/dev/sdf"
   volume_id   = aws_ebs_volume.vpn_additional_volume.id
   instance_id = module.ec2_pritunl.id
 }
