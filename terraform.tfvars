@@ -121,7 +121,7 @@ key_user_list = [ ### IAM roles or users who can use the key for encryption/decr
   "arn:aws:iam::675169529857:role/Workmates-SSO-AdminRole",
   "arn:aws:iam::675169529857:role/Workmates-SSO-L2SupportRole"
 ]
-key_aliases                 = ["Project-UAT-CMK"]
+key_aliases                 = ["project-prod-CMK"]
 key_description             = "Project Customer Managed Key"
 key_deletion_window_in_days = 7
 key_usage                   = "ENCRYPT_DECRYPT"
