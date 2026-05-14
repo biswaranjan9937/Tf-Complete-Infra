@@ -3,7 +3,7 @@ Project_Name   = "Project"
 ########################################
 # VPC
 ########################################
-environment          = "UAT"
+environment          = "prod"
 vpc_cidr             = "172.16.0.0/16"
 region               = "ap-south-1"
 # vpc_name             = "project"
