@@ -122,7 +122,7 @@ module "ec2_pritunl" {
   root_block_device = [
     {
       encrypted   = var.ec2_pritunl_root_encrypted
-      kms_key_id  =   module.kms_complete.key_id
+      kms_key_id  =   module.kms_complete.key_arn
       delete_on_termination = true
       volume_type = var.ec2_pritunl_volume_type
       volume_size = var.ec2_pritunl_volume_size
@@ -142,7 +142,7 @@ resource "aws_ebs_volume" "vpn_additional_volume" {
   size              = var.ec2_pritunl_additional_volume_size
   type              = var.ec2_pritunl_additional_volume_type
   encrypted         = var.ec2_pritunl_additional_volume_encrypted
-  kms_key_id        = module.kms_complete.key_id
+  kms_key_id        = module.kms_complete.key_arn
 }
 
 resource "aws_volume_attachment" "vpn_volume_attachment" {
