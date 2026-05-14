@@ -14,10 +14,10 @@ variable "Project_Name" {
 # VPC
 ########################################################################
 
-variable "vpc_name" {
-  description = "The name of the project."
-  type        = string
-}
+# variable "vpc_name" {
+#   description = "The name of the project."
+#   type        = string
+# }
 
 variable "vpc_cidr" {
   description = "CIDR block for the VPC."
