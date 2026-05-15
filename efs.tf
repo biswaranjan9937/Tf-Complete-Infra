@@ -1,7 +1,7 @@
 module "efs_security_group" {
   source      = "./modules/sg"
   name        = "${title(var.efs_creation_token)}-SG"
-  description = "${title(var.efs_creation_token)} Security group"
+  description = "${title(var.efs_creation_token)} Security Group"
   vpc_id      = module.vpc.vpc_id
 
 

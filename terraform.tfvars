@@ -3,7 +3,7 @@ Project_Name   = "Project"
 ########################################
 # VPC
 ########################################
-environment          = "prod"
+environment          = "UAT"
 vpc_cidr             = "172.16.0.0/16"
 region               = "ap-south-1"
 # vpc_name             = "project"
@@ -23,7 +23,6 @@ vpc_flowlog_bucket = "project-prod-vpcflowlog7894"
 ########################################
 # Pritunl
 ########################################
-pritunl_availability_zone      = "ap-south-1b"
 cred_bucketName = "project-prod-pritunl-creds7894"
 ec2_pritunl_ami_id        = "ami-0388e3ada3d9812da" ### ubuntu 24.04 of ap-south-1
 ec2_pritunl_instance_type = "t3.medium"
@@ -121,7 +120,6 @@ key_user_list = [ ### IAM roles or users who can use the key for encryption/decr
   "arn:aws:iam::675169529857:role/Workmates-SSO-AdminRole",
   "arn:aws:iam::675169529857:role/Workmates-SSO-L2SupportRole"
 ]
-key_aliases                 = ["project-prod-CMK"]
 key_description             = "Project Customer Managed Key"
 key_deletion_window_in_days = 7
 key_usage                   = "ENCRYPT_DECRYPT"
@@ -148,7 +146,7 @@ acm_main_tags = {
 ########################################################################
 # EKS
 ########################################################################
-eks_cluster_name                    = "POC-cluster"
+# eks_cluster_name                    = "POC-cluster"
 eks_cluster_version                 = "1.34"
 eks_ami_id                          = "" #ami-0f79d8d8f8d504808
 eks_cluster_endpoint_public_access  = "true"

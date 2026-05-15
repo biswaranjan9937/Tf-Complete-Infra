@@ -108,9 +108,6 @@ variable "bucketTags" {
 variable "cred_bucketName" {
   type = string
 }
-variable "pritunl_availability_zone" {
-  type = string
-}
 variable "ec2_pritunl_additional_volume_type" {
   type = string
 }
@@ -145,10 +142,6 @@ variable "enable_key_rotation" {
 
 variable "enable_key" {
   type = bool
-}
-
-variable "key_aliases" {
-  type = list(string)
 }
 
 variable "key_description" {

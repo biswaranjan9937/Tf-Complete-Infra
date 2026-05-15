@@ -7,7 +7,7 @@ module "vpn_credential_bucket" {
   tags          = var.bucketTags
 }
 
-module "vpc-flowlog-bucket" {
+module "vpc_flowlog_bucket" {
   source = "./modules/s3"
   bucket = var.vpc_flowlog_bucket
   #attach_policy   = true    ### Attach policy automatically 

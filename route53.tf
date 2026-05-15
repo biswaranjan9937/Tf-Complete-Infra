@@ -3,7 +3,7 @@ module "zones" {
   create = true
   zones = {
     "${var.main_domain_name}" = {
-      comment = "${var.main_domain_name} (poc)"
+      comment = "${var.main_domain_name}"
     }
   }
   # zones = {

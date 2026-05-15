@@ -36,13 +36,13 @@ module "vpc" {
 
   enable_flow_log           = true
   flow_log_destination_type = "s3"
-  flow_log_destination_arn  = module.vpc-flowlog-bucket.s3_bucket_arn
+  flow_log_destination_arn  = module.vpc_flowlog_bucket.s3_bucket_arn
 
   tags = var.vpc_tags
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "vpc_flowlog_lifecycle" {
-  bucket = module.vpc-flowlog-bucket.s3_bucket_id
+  bucket = module.vpc_flowlog_bucket.s3_bucket_id
 
   rule {
     id     = "${var.Project_Name}_vpc_flowlogs_lifecycle"
