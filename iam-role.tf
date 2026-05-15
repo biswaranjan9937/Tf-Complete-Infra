@@ -206,11 +206,11 @@ resource "aws_iam_role_policy_attachment" "node_kms_policy_attach1" {
   policy_arn = aws_iam_policy.node_kms_policy.arn
   role       = local.eks_app_node_role_ng
 
-  depends_on = [ module.eks_cluster ]
+  depends_on = [module.eks_cluster]
 }
 resource "aws_iam_role_policy_attachment" "node_kms_policy_attach2" {
   policy_arn = aws_iam_policy.node_kms_policy.arn
   role       = local.eks_service_node_role_ng
 
-  depends_on = [ module.eks_cluster ]
+  depends_on = [module.eks_cluster]
 }

@@ -53,12 +53,13 @@ locals {
   eks_vpc_public_controlPlane_subnets  = [module.vpc.public_subnets[0], module.vpc.public_subnets[1], module.vpc.public_subnets[2]]
   eks_vpc_public_subnets               = [module.vpc.public_subnets[0], module.vpc.public_subnets[1], module.vpc.public_subnets[2]]
   # eks_vpc_cidr                         = module.vpc.vpc_cidr_block
-  eks_app_node_role_ng                 = "${var.eks_cluster_name}-${var.environment}-APPLICATION-NG-ROLE"
-  eks_service_node_role_ng             = "${var.eks_cluster_name}-${var.environment}-SERVICE-NG-ROLE"
+  eks_app_node_role_ng     = "${var.Project_Name}-${var.environment}-EKS-CLUSTER-APPLICATION-NG-ROLE"
+  eks_service_node_role_ng = "${var.Project_Name}-${var.environment}-EKS-CLUSTER-SERVICE-NG-ROLE"
   # eks_ami_id                          = try(var.eks_ami_id, data.aws_ssm_parameter.al2023_ami_id.value)
-  eks_key_arn                          = module.kms_complete.key_arn
-  eks_nodegroup_key_name_app           = var.eks_nodegroup_key_name_app
-  eks_nodegroup_key_name_service       = var.eks_nodegroup_key_name_service
+  eks_key_arn                    = module.kms_complete.key_arn
+  eks_nodegroup_key_name_app     = var.eks_nodegroup_key_name_app
+  eks_nodegroup_key_name_service = var.eks_nodegroup_key_name_service
+  cluster_name                   = "${var.Project_Name}-${var.environment}-EKS-CLUSTER"
 
 }
 ####################################################################

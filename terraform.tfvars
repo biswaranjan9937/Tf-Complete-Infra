@@ -1,11 +1,11 @@
 # region_backend = "ap-south-1"
-Project_Name   = "Project"
+Project_Name = "Project"
 ########################################
 # VPC
 ########################################
-environment          = "UAT"
-vpc_cidr             = "172.16.0.0/16"
-region               = "ap-south-1"
+environment = "UAT"
+vpc_cidr    = "172.16.0.0/16"
+region      = "ap-south-1"
 # vpc_name             = "project"
 single_nat_gateway   = "true"
 enable_nat_gateway   = "true"
@@ -23,15 +23,15 @@ vpc_flowlog_bucket = "project-prod-vpcflowlog7894"
 ########################################
 # Pritunl
 ########################################
-cred_bucketName = "project-prod-pritunl-creds7894"
-ec2_pritunl_ami_id        = "ami-0388e3ada3d9812da" ### ubuntu 24.04 of ap-south-1
-ec2_pritunl_instance_type = "t3.medium"
-ec2_pritunl_volume_type = "gp3"
-ec2_pritunl_volume_size = "25"
+cred_bucketName            = "project-prod-pritunl-creds7894"
+ec2_pritunl_ami_id         = "ami-0388e3ada3d9812da" ### ubuntu 24.04 of ap-south-1
+ec2_pritunl_instance_type  = "t3.medium"
+ec2_pritunl_volume_type    = "gp3"
+ec2_pritunl_volume_size    = "25"
 ec2_pritunl_root_encrypted = true
 
-ec2_pritunl_additional_volume_type = "gp3"
-ec2_pritunl_additional_volume_size = "25"
+ec2_pritunl_additional_volume_type      = "gp3"
+ec2_pritunl_additional_volume_size      = "25"
 ec2_pritunl_additional_volume_encrypted = true
 ec2_pritunl_tags = {
   "Implementedby" = "Workmates",
@@ -76,19 +76,19 @@ ec2_pritunl_ingress_rules = [
   },
   {
     cidr_blocks = ["15.206.48.168/32"]
-    from_port   = 2223                #### pritunl ssh port
+    from_port   = 2223 #### pritunl ssh port
     protocol    = "tcp"
     to_port     = 2223
   },
   {
     cidr_blocks = ["10.3.1.105/32"]
-    from_port   = 2223                #### pritunl ssh port
+    from_port   = 2223 #### pritunl ssh port
     protocol    = "tcp"
     to_port     = 2223
   },
   {
     cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 1557                #### pritunl server port for udp
+    from_port   = 1557 #### pritunl server port for udp
     protocol    = "udp"
     to_port     = 1557
   }
@@ -132,8 +132,8 @@ enable_key                  = true
 # ACM
 ########################################################################
 main_domain_name       = "devopskolkata.org"
-create_route53_records = "true" 
-validation_method      = "DNS"  ### Supports Email and DNS. DNS is recommended.
+create_route53_records = "true"
+validation_method      = "DNS" ### Supports Email and DNS. DNS is recommended.
 acm_main_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",

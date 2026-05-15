@@ -113,7 +113,7 @@ variable "ec2_pritunl_additional_volume_type" {
 }
 variable "ec2_pritunl_additional_volume_size" {
   type = string
-} 
+}
 variable "ec2_pritunl_additional_volume_encrypted" {
   type = bool
 }
@@ -364,9 +364,9 @@ variable "acm_main_tags" {
 #######################################################################
 # EKS
 #######################################################################
-variable "eks_cluster_name" {
-  type = string
-}
+# variable "eks_cluster_name" {
+#   type = string
+# }
 variable "eks_cluster_version" {
   type = string
 }
