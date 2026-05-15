@@ -131,7 +131,7 @@ enable_key                  = true
 ########################################################################
 # ACM
 ########################################################################
-main_domain_name       = "seawhale.in"
+main_domain_name       = "devopskolkata.org"
 create_route53_records = "true"
 validation_method      = "DNS" ### Supports Email and DNS. DNS is recommended.
 acm_main_tags = {
