@@ -17,7 +17,7 @@ module "kms_complete" { ### Region comes from the provider block
   key_users          = var.key_user_list
   # key_service_users  = var.key_user_list
 
-  aliases                 = var.key_aliases
+  aliases                 = local.alias_name
   aliases_use_name_prefix = false
   tags                    = var.kms_tags
 

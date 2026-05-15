@@ -1,11 +1,11 @@
-region_backend = "ap-south-1"
-Project_Name   = "project"
+# region_backend = "ap-south-1"
+Project_Name = "Project"
 ########################################
 # VPC
 ########################################
-environment          = "prod"
-vpc_cidr             = "172.16.0.0/16"
-region               = "ap-south-1"
+environment = "UAT"
+vpc_cidr    = "172.16.0.0/16"
+region      = "ap-south-1"
 # vpc_name             = "project"
 single_nat_gateway   = "true"
 enable_nat_gateway   = "true"
@@ -14,7 +14,7 @@ enable_dns_support   = "true"
 vpc_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
+  "Environment"   = "UAT",
   "Project"       = "project"
   "Layer"         = "Gateway"
 }
@@ -23,31 +23,24 @@ vpc_flowlog_bucket = "project-prod-vpcflowlog7894"
 ########################################
 # Pritunl
 ########################################
-pritunl_availability_zone      = "ap-south-1b"
-cred_bucketName = "project-prod-pritunl-creds7894"
-bucketTags = {
-  "Implementedby" = "Workmates",
-  "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Project"       = "project"
-  "Layer"         = "Storage"
-}
-ec2_pritunl_ami_id        = "ami-0388e3ada3d9812da" ### ubuntu 24.04 of ap-south-1
-ec2_pritunl_instance_type = "t3.medium"
-ec2_pritunl_name          = "VPN"
-ec2_pritunl_volume_type = "gp3"
-ec2_pritunl_volume_size = "25"
-ec2_pritunl_additional_volume_type = "gp3"
-ec2_pritunl_additional_volume_size = "25"
+cred_bucketName            = "project-prod-pritunl-creds7894"
+ec2_pritunl_ami_id         = "ami-0388e3ada3d9812da" ### ubuntu 24.04 of ap-south-1
+ec2_pritunl_instance_type  = "t3.medium"
+ec2_pritunl_volume_type    = "gp3"
+ec2_pritunl_volume_size    = "25"
 ec2_pritunl_root_encrypted = true
+
+ec2_pritunl_additional_volume_type      = "gp3"
+ec2_pritunl_additional_volume_size      = "25"
+ec2_pritunl_additional_volume_encrypted = true
 ec2_pritunl_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
+  "Environment"   = "UAT",
   "Project"       = "project",
   "Layer"         = "Gateway"
 }
-ec2_pritunl_key_name               = "project-Pritunl-VPN-1b-keypair"
+ec2_pritunl_key_name               = "Project-UAT-VPN-1b-keypair"
 ec2_pritunl_termination_protection = false
 ec2_pritunl_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-rEMu7z8991ZX" ### This IAM Instance Profile has SSM and Read Only access.
 ec2_pritunl_ingress_rules = [
@@ -76,20 +69,14 @@ ec2_pritunl_ingress_rules = [
     to_port     = 443
   },
   {
-    cidr_blocks = ["59.144.30.58/32"] ## workmates publicInternet IP
+    cidr_blocks = ["59.144.30.58/32"] #### workmates publicInternet IP
     from_port   = 443
     protocol    = "tcp"
     to_port     = 443
   },
   {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 1557 ### pritunl server port for udp
-    protocol    = "udp"
-    to_port     = 1557
-  },
-  {
     cidr_blocks = ["15.206.48.168/32"]
-    from_port   = 2223 ### pritunl ssh port
+    from_port   = 2223 #### pritunl ssh port
     protocol    = "tcp"
     to_port     = 2223
   },
@@ -99,7 +86,12 @@ ec2_pritunl_ingress_rules = [
     protocol    = "tcp"
     to_port     = 2223
   },
-
+  {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 1557 #### pritunl server port for udp
+    protocol    = "udp"
+    to_port     = 1557
+  }
 ]
 ec2_pritunl_egress_rules = [{
   cidr_blocks = ["0.0.0.0/0"]
@@ -115,8 +107,8 @@ ec2_pritunl_egress_rules = [{
 kms_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Project"       = "project"
+  "Environment"   = "UAT",
+  "Project"       = "Project",
   "Layer"         = "Security"
 }
 key_administrators_list = [ ### IAM roles or users who can manage the key
@@ -128,8 +120,7 @@ key_user_list = [ ### IAM roles or users who can use the key for encryption/decr
   "arn:aws:iam::675169529857:role/Workmates-SSO-AdminRole",
   "arn:aws:iam::675169529857:role/Workmates-SSO-L2SupportRole"
 ]
-key_aliases                 = ["project-prod-CMK"]
-key_description             = "project Customer managed Key"
+key_description             = "Project Customer Managed Key"
 key_deletion_window_in_days = 7
 key_usage                   = "ENCRYPT_DECRYPT"
 kms_region                  = "ap-south-1"
@@ -141,13 +132,13 @@ enable_key                  = true
 # ACM
 ########################################################################
 main_domain_name       = "devopskolkata.org"
-create_route53_records = "true" 
-validation_method      = "DNS"  ### Supports Email and DNS. DNS is recommended.
+create_route53_records = "true"
+validation_method      = "DNS" ### Supports Email and DNS. DNS is recommended.
 acm_main_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Project"       = "project"
-  "Environment"   = "PROD"
+  "Project"       = "Project",
+  "Environment"   = "UAT",
   "Layer"         = "SSL"
 }
 
@@ -155,7 +146,7 @@ acm_main_tags = {
 ########################################################################
 # EKS
 ########################################################################
-eks_cluster_name                    = "POC-cluster"
+# eks_cluster_name                    = "POC-cluster"
 eks_cluster_version                 = "1.34"
 eks_ami_id                          = "" #ami-0f79d8d8f8d504808
 eks_cluster_endpoint_public_access  = "true"
@@ -174,8 +165,8 @@ cluster_enabled_log_types = [
 eks_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Project"       = "project"
+  "Environment"   = "UAT",
+  "Project"       = "Project"
   "Layer"         = "Kubernetes"
 }
 
@@ -203,20 +194,20 @@ metric_server_role = "EKS-METRICS-SERVER-ROLE"
 ########################################################################
 # RDS
 ########################################################################
-rds_subnet_group_name = "project-prod-rds-subnet-grp"
+rds_subnet_group_name = "project-uat-rds-subnet-grp"
 rds_subnet_group_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Layer"         = "DB"
-  "Project"       = "project"
+  "Environment"   = "UAT",
+  "Layer"         = "Database",
+  "Project"       = "Project"
 }
 
-rds_identifier                         = "project"
+rds_identifier                         = "Project-PostgreSQL"
 rds_instanceType                       = "db.t4g.medium"
-rds_parameter_group_name               = "project-postgres-parameter-grp"
+rds_parameter_group_name               = "project-uat-postgres-parameter-grp"
 rds_parameter_group_family             = "postgres17"
-rds_option_group_name                  = "project-postgres-options-grp"
+rds_option_group_name                  = "project-uat-postgres-options-grp"
 rds_options_group_major_engine_version = "17"
 rds_engine                             = "postgres"
 rds_engine_version                     = "17"
@@ -237,10 +228,9 @@ rds_publicly_accessible                = false
 rds_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
-  "Layer"         = "DB",
-  "Project"       = "project",
-  "Dev-RDS"       = "Auto-Shutdown"
+  "Environment"   = "UAT",
+  "Layer"         = "Database",
+  "Project"       = "Project",
 }
 rds_apply_immediately           = true
 rds_auto_minor_version_upgrade  = false
@@ -283,9 +273,9 @@ repository_names = [
 ecr_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "PROD",
+  "Environment"   = "UAT",
   "Layer"         = "Storage",
-  "Project"       = "project"
+  "Project"       = "Project"
 }
 
 
@@ -298,14 +288,14 @@ efs_enable_backup_policy = false
 efs_attach_policy        = false
 efs_performance_mode     = "generalPurpose"
 efs_encrypted            = true
-efs_creation_token       = "project-Prod"
+efs_creation_token       = "Project-Uat"
 efs_throughput_mode      = "bursting"
 efs_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
   "Layer"         = "Storage",
-  "Env"           = "PROD",
-  "Project"       = "project"
+  "Env"           = "UAT",
+  "Project"       = "Project"
 }
 efs_ingress_rules = [
   {
@@ -337,8 +327,13 @@ efs_egress_rules = [
 ########################################
 # S3 Buckets
 ########################################
-# uat_s3_bucket_name  = "project-uat-bucket"
-# prod_s3_bucket_name = "project-prod-bucket"
+bucketTags = {
+  "Implementedby" = "Workmates",
+  "Managedby"     = "Workmates",
+  "Environment"   = "UAT",
+  "Project"       = "project"
+  "Layer"         = "Storage"
+}
 
 ########################################
 # Budget

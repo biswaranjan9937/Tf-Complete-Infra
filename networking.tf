@@ -36,13 +36,13 @@ module "vpc" {
 
   enable_flow_log           = true
   flow_log_destination_type = "s3"
-  flow_log_destination_arn  = module.vpc-flowlog-bucket.s3_bucket_arn
+  flow_log_destination_arn  = module.vpc_flowlog_bucket.s3_bucket_arn
 
   tags = var.vpc_tags
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "vpc_flowlog_lifecycle" {
-  bucket = module.vpc-flowlog-bucket.s3_bucket_id
+  bucket = module.vpc_flowlog_bucket.s3_bucket_id
 
   rule {
     id     = "${var.Project_Name}_vpc_flowlogs_lifecycle"
@@ -86,8 +86,8 @@ module "vpc_endpoints" {
 
 module "pritunl-securtiy-group" {
   source      = "./modules/sg"
-  name        = "${upper(local.ec2_pritunl_name)}-SG"
-  description = "${upper(local.ec2_pritunl_name)} Security group"
+  name        = "${local.ec2_pritunl_name}-SG"
+  description = "${local.ec2_pritunl_name} Security Group"
   vpc_id      = module.vpc.vpc_id
 
   ingress_rules = var.ec2_pritunl_ingress_rules
@@ -116,15 +116,16 @@ module "ec2_pritunl" {
   #   AmazonSSMManagedInstanceCore               = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   #   AmazonEC2ContainerRegistryS3ReadOnlyAccess = "arn:aws:iam::aws:policy/ReadOnlyAccess"
   # }
-  iam_instance_profile        = var.ec2_pritunl_iam_instance_profile   ### Uncomment this if you already have Instance profile.
+  iam_instance_profile = var.ec2_pritunl_iam_instance_profile ### Uncomment this if you already have Instance profile.
 
   enable_volume_tags = false
   root_block_device = [
     {
-      encrypted   = var.ec2_pritunl_root_encrypted
-      kms_key_id  = local.ec2_pritunl_kms_key_id
-      volume_type = var.ec2_pritunl_volume_type
-      volume_size = var.ec2_pritunl_volume_size
+      encrypted             = var.ec2_pritunl_root_encrypted
+      kms_key_id            = module.kms_complete.key_arn
+      delete_on_termination = true
+      volume_type           = var.ec2_pritunl_volume_type
+      volume_size           = var.ec2_pritunl_volume_size
       tags = {
         Name = "${local.ec2_pritunl_name}-OS"
       }
@@ -140,7 +141,7 @@ resource "aws_ebs_volume" "vpn_additional_volume" {
   availability_zone = element(module.vpc.azs, 1)
   size              = var.ec2_pritunl_additional_volume_size
   type              = var.ec2_pritunl_additional_volume_type
-  encrypted         = true
+  encrypted         = var.ec2_pritunl_additional_volume_encrypted
   kms_key_id        = module.kms_complete.key_arn
 }
 

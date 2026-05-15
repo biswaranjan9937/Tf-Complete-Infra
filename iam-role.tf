@@ -80,7 +80,7 @@
 #######################################
 
 resource "aws_iam_role" "ebs_csi_driver_role" {
-  name = "${var.Project_Name}-${var.environment}-ebs-csi-driver"
+  name = "${var.Project_Name}-${var.environment}-EBS-CSI-Driver"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -112,7 +112,7 @@ resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy_attach" {
 #################################
 
 resource "aws_iam_role" "efs_csi_driver_role" {
-  name = "${var.Project_Name}-${var.environment}-efs-csi-driver"
+  name = "${var.Project_Name}-${var.environment}-EFS-CSI-Driver"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -146,7 +146,7 @@ resource "aws_iam_role_policy_attachment" "efs_csi_driver_policy_attach" {
 ###################################
 
 resource "aws_iam_policy" "ebs-kms-policy" {
-  name        = "${var.Project_Name}-${var.environment}-ebs-kms"
+  name        = "${var.Project_Name}-${var.environment}-EBS-KMS-Policy"
   path        = "/"
   description = "ebs-kms-policy"
   policy = jsonencode({
@@ -180,8 +180,8 @@ resource "aws_iam_role_policy_attachment" "ebs_kms_policy_attach" {
 # IAM Policy for Node KMS Access
 ###################################
 
-resource "aws_iam_policy" "node-kms-policy" {
-  name        = "${var.Project_Name}-${var.environment}-node-kms"
+resource "aws_iam_policy" "node_kms_policy" {
+  name        = "${var.Project_Name}-${var.environment}-Node-KMS-Policy"
   path        = "/"
   description = "IAM Policy for Node KMS Access"
   policy = jsonencode({
@@ -202,15 +202,15 @@ resource "aws_iam_policy" "node-kms-policy" {
   })
 }
 
-# resource "aws_iam_role_policy_attachment" "node_kms_policy_attach1" {
-#   policy_arn = aws_iam_policy.node-kms-policy.arn
-#   role       = local.eks_app_node_role_ng
+resource "aws_iam_role_policy_attachment" "node_kms_policy_attach1" {
+  policy_arn = aws_iam_policy.node_kms_policy.arn
+  role       = local.eks_app_node_role_ng
 
-#   depends_on = [ module.eks_cluster ]
-# }
-# resource "aws_iam_role_policy_attachment" "node_kms_policy_attach2" {
-#   policy_arn = aws_iam_policy.node-kms-policy.arn
-#   role       = local.eks_service_node_role_ng
+  depends_on = [module.eks_cluster]
+}
+resource "aws_iam_role_policy_attachment" "node_kms_policy_attach2" {
+  policy_arn = aws_iam_policy.node_kms_policy.arn
+  role       = local.eks_service_node_role_ng
 
-#   depends_on = [ module.eks_cluster ]
-# }
+  depends_on = [module.eks_cluster]
+}

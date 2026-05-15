@@ -6,7 +6,7 @@ module "eks_cluster" {
   source = "./modules/eks_module"
 
   create                                   = true
-  cluster_name                             = "${var.eks_cluster_name}-${var.environment}-EKS-CLUSTER"
+  cluster_name                             = local.cluster_name
   cluster_version                          = var.eks_cluster_version
   cluster_endpoint_private_access          = var.eks_cluster_endpoint_private_access
   cluster_endpoint_public_access           = var.eks_cluster_endpoint_public_access
@@ -48,17 +48,16 @@ module "eks_cluster" {
   eks_managed_node_groups = {
     # This is for first node group 
     APPLICATION-NG = {
-      name = "${var.eks_cluster_name}-${var.environment}-APPLICATION-NG"
-      # ami_id                     = "${local.eks_ami_id}"   ### for testing
+      name                       = "${local.cluster_name}-APPLICATION-NG"
       ami_type                   = "AL2023_x86_64_STANDARD"
       enable_bootstrap_user_data = true
-      # key_name                   = local.eks_nodegroup_key_name_app #### This is the SSH key for login into to worker node and this Needs to be created first.
-      description          = "EKS Managed Node Group for APP"
-      min_size             = 1
-      max_size             = 3
-      desired_size         = 1
-      force_update_version = true
-      instance_types       = "${var.app_instance_type}"
+      key_name                   = aws_key_pair.eks_node_keypair.key_name #### This is the SSH key for login into to worker node and this Needs to be created first.
+      description                = "EKS Managed Node Group for Application workloads"
+      min_size                   = 1
+      max_size                   = 3
+      desired_size               = 1
+      force_update_version       = true
+      instance_types             = "${var.app_instance_type}"
       labels = {
         role = "app"
       }
@@ -80,13 +79,12 @@ module "eks_cluster" {
         xvda = {
           device_name = "/dev/xvda"
           ebs = {
-            volume_size = "${var.app_ebs_volume_size}"
-            volume_type = "${var.app_ebs_volume_type}"
-            iops        = 3000
-            throughput  = 125
-            encrypted   = true
-            kms_key_id  = "${module.kms_complete.key_arn}"
-            # kms_key_id            = local.eks_key_arn
+            volume_size           = "${var.app_ebs_volume_size}"
+            volume_type           = "${var.app_ebs_volume_type}"
+            iops                  = 3000
+            throughput            = 125
+            encrypted             = true
+            kms_key_id            = "${module.kms_complete.key_arn}"
             delete_on_termination = true
           }
         }
@@ -99,30 +97,24 @@ module "eks_cluster" {
       }
       create_iam_role      = true
       iam_role_name        = "${local.eks_app_node_role_ng}"
-      iam_role_description = "EKS managed APPLICATION node group role"
-      iam_role_tags = {
-        "Implementedby" = "Workmates",
-        "Managedby"     = "Workmates",
-        "Layer"         = "IAM",
-        "Environment"   = "PROD",
-        "Project"       = "project"
-      }
+      iam_role_description = "IAM Role for EKS managed application node group"
+      iam_role_tags        = var.eks_tags
       iam_role_additional_policies = {
         AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
         AmazonEBSCSIDriverPolicy           = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
         AmazonEFSCSIDriverPolicy           = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
         AmazonSSMPolicy                    = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
         node_additional                    = aws_iam_policy.node_additional.arn
-        node_kms_policy_attach             = aws_iam_policy.node-kms-policy.arn
+        node_kms_policy_attach             = aws_iam_policy.node_kms_policy.arn
       }
       launch_template_tags = {
         # enable discovery of autoscaling groups by cluster-autoscaler
         "k8s.io/cluster-autoscaler/enabled" : true,
-        "k8s.io/cluster-autoscaler/${var.eks_cluster_name}-${var.environment}-EKS-CLUSTER" : "owned",
+        "k8s.io/cluster-autoscaler/${local.cluster_name}" : "owned",
       }
       tags = merge(
         {
-          "Name" : "${var.eks_cluster_name}-${var.environment}-EKS-APPLICATION-NG"
+          "Name" : "${local.cluster_name}-EKS-APPLICATION-NG"
         },
         var.eks_tags
       )
@@ -131,11 +123,11 @@ module "eks_cluster" {
 
     # For a second node group just copy the above block and provide a diffrent name for the block.
     SERVICES-NG = {
-      name = "${var.eks_cluster_name}-${var.environment}-SERVICES-NG"
-      # ami_id                     = "${local.eks_ami_id}"   ### for testing
+      name                       = "${local.cluster_name}-SERVICES-NG"
       ami_type                   = "AL2023_x86_64_STANDARD"
       enable_bootstrap_user_data = true
       # key_name                   = local.eks_nodegroup_key_name_service #### This is the SSH key for login into to worker node and this Needs to be created first.
+      key_name             = aws_key_pair.eks_node_keypair.key_name
       description          = "EKS Managed Node Group for SERVICES"
       min_size             = 1
       max_size             = 2
@@ -162,13 +154,12 @@ module "eks_cluster" {
         xvda = {
           device_name = "/dev/xvda"
           ebs = {
-            volume_size = "${var.service_ebs_volume_size}"
-            volume_type = "${var.service_ebs_volume_type}"
-            iops        = 3000
-            throughput  = 125
-            encrypted   = true
-            kms_key_id  = "${module.kms_complete.key_arn}"
-            # kms_key_id            = "${local.eks_key_arn}"
+            volume_size           = "${var.service_ebs_volume_size}"
+            volume_type           = "${var.service_ebs_volume_type}"
+            iops                  = 3000
+            throughput            = 125
+            encrypted             = true
+            kms_key_id            = "${module.kms_complete.key_arn}"
             delete_on_termination = true
           }
         }
@@ -196,16 +187,16 @@ module "eks_cluster" {
         AmazonEFSCSIDriverPolicy           = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
         AmazonSSMPolicy                    = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
         node_additional                    = aws_iam_policy.node_additional.arn
-        node_kms_policy_attach             = aws_iam_policy.node-kms-policy.arn
+        node_kms_policy_attach             = aws_iam_policy.node_kms_policy.arn
       }
       launch_template_tags = {
         # enable discovery of autoscaling groups by cluster-autoscaler
         "k8s.io/cluster-autoscaler/enabled" : true,
-        "k8s.io/cluster-autoscaler/${var.eks_cluster_name}-${var.environment}-EKS-CLUSTER" : "owned",
+        "k8s.io/cluster-autoscaler/${local.cluster_name}" : "owned",
       }
       tags = merge(
         {
-          "Name" : "${var.eks_cluster_name}-${var.environment}-EKS-SERVICES-NG"
+          "Name" : "${local.cluster_name}-EKS-SERVICES-NG"
         },
         var.eks_tags
       )
@@ -307,7 +298,7 @@ module "eks_cluster" {
 # Supporting Resources
 ################################
 resource "aws_iam_policy" "node_additional" {
-  name        = "${var.eks_cluster_name}-EKS-ADDITIONAL"
+  name        = "${local.cluster_name}-EKS-ADDITIONAL"
   description = " node additional policy for kms"
 
   policy = jsonencode({
