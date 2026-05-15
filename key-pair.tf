@@ -33,7 +33,7 @@ resource "tls_private_key" "eks_node_key" {
 
 # Create AWS Key Pair
 resource "aws_key_pair" "eks_node_keypair" {
-  key_name   = "afpl-eks-uat-keypair" # Change name as needed
+  key_name   = "eks-uat-keypair" # Change name as needed
   public_key = tls_private_key.eks_node_key.public_key_openssh
 
   tags = {
@@ -45,7 +45,7 @@ resource "aws_key_pair" "eks_node_keypair" {
 # Upload private key to S3
 resource "aws_s3_object" "private_key" {
   bucket                 = var.cred_bucketName #Replace with your S3 bucket name
-  key                    = "keypairs/afpl-eks-uat-keypair.pem"
+  key                    = "keypairs/eks-uat-keypair.pem"
   content                = tls_private_key.eks_node_key.private_key_pem
   server_side_encryption = "AES256"
   # kms_key_id            = "your-kms-key-id"
