@@ -61,26 +61,8 @@ data "aws_iam_policy_document" "kms_custom_policy" {
       "kms:CreateGrant",
       "kms:Decrypt",
       "kms:DescribeKey",
-      "kms:GenerateDataKeyWithoutPlainText",
+      "kms:GenerateDataKeyWithoutPlaintext",
       "kms:ReEncrypt*"
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    sid    = "AllowEBSCSIRole"
-    effect = "Allow"
-    principals {
-      type        = "AWS"
-      identifiers = [aws_iam_role.ebs_csi_driver_role.arn]
-    }
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey",
-      "kms:CreateGrant"
     ]
     resources = ["*"]
   }

@@ -2,11 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "5.98.0"
-    }
-    time = {
-      source  = "hashicorp/time"
-      version = "0.13.1"
+      version = "~> 6.0"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -14,33 +10,21 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.36.0"
+      version = "~> 3.2.0"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
       version = "~> 1.19.0"
     }
-    cloudinit = {
-      source = "hashicorp/cloudinit"
-    }
-    tls = {
-      source = "hashicorp/tls"
-    }
-    random = {
-      source = "hashicorp/random"
-    }
-    null = {
-      source = "hashicorp/null"
-    }
   }
 
   backend "s3" {
-    region       = "ap-south-1"
-    encrypt      = true
-    bucket       = "poc-terraform-state-s3-bucket"
+    bucket  = "prod-tf-state-bucket" ### This is the S3 bucket name where the terraform state file will be stored. This bucket should be created before running terraform init.
+    key     = "dev/statefiles/terraform.tfstate"
+    region  = "ap-south-1" ## This should be same as the region where the S3 bucket is created.
+    encrypt = true
+    # kms_key_id   = "arn:aws:kms:ap-south-1:123456789012:key/xxxxxxxx" ## This is the KMS key ARN which will be used to encrypt the terraform state file. This KMS key should be created before running terraform init.
     use_lockfile = true
-    key          = "terraform.tfstate"
   }
 }
-
 

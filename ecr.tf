@@ -1,4 +1,3 @@
-
 module "ecr_repositories" {
   source = "./modules/ecr_module"
 
@@ -6,6 +5,7 @@ module "ecr_repositories" {
   create                  = true
   create_repository       = true
   create_lifecycle_policy = true
+
   repository_lifecycle_policy = jsonencode({
     rules = [
       {
@@ -22,12 +22,18 @@ module "ecr_repositories" {
       }
     ]
   })
+
   repository_type                 = var.repository_type
-  repository_image_tag_mutability = var.tag_mutability ### It means same tag image can be pushed multiple times.
+  repository_image_tag_mutability = var.tag_mutability ### If Mutable, the same tag image can be pushed multiple times.
   repository_encryption_type      = "KMS"
-  repository_kms_key              = module.kms_complete.key_arn
+  repository_kms_key              = module.aws_cmk.key_arn
   repository_force_delete         = var.repository_force_delete ### Terraform will delete the ECR repository even if it still contains images.
   repository_image_scan_on_push   = true
-  tags                            = var.ecr_tags
+
+  tags = merge(var.ecr_tags, {
+    Environment = var.environment,
+    Project     = var.project_name
+  })
+
 }
 

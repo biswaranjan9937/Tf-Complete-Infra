@@ -8,10 +8,10 @@ module "vpc" {
   name = local.vpc_name
   cidr = var.vpc_cidr
 
-  azs              = local.azs
-  private_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 1)]
-  public_subnets   = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 4)]
-  database_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 7)]
+  azs             = local.azs
+  private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 1)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 4)]
+  # database_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k + 7)]
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1,
@@ -32,20 +32,23 @@ module "vpc" {
   enable_nat_gateway = var.enable_nat_gateway
 
   enable_dns_hostnames = var.enable_dns_hostnames
-  enable_dns_support   = var.enable_dns_support ### This is the DNS resolutions.
+  enable_dns_support   = var.enable_dns_resolution ### This is the DNS resolutions.
 
   enable_flow_log           = true
   flow_log_destination_type = "s3"
   flow_log_destination_arn  = module.vpc_flowlog_bucket.s3_bucket_arn
 
-  tags = var.vpc_tags
+  tags = merge(var.vpc_tags, {
+    Environment = var.environment,
+    Project     = var.project_name
+  })
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "vpc_flowlog_lifecycle" {
   bucket = module.vpc_flowlog_bucket.s3_bucket_id
 
   rule {
-    id     = "${var.Project_Name}_vpc_flowlogs_lifecycle"
+    id     = "${var.project_name}_vpc_flowlogs_lifecycle"
     status = "Enabled"
     filter {
       prefix = "" ### Apply to all objects
@@ -75,7 +78,9 @@ module "vpc_endpoints" {
   }
 
   tags = merge(var.vpc_tags, {
-    Endpoint = "true"
+    Endpoint    = "true",
+    Environment = var.environment,
+    Project     = var.project_name
   })
 }
 
@@ -102,7 +107,7 @@ module "ec2_pritunl" {
 
   ami                         = var.ec2_pritunl_ami_id
   instance_type               = var.ec2_pritunl_instance_type
-  availability_zone           = element(module.vpc.azs, 1)
+  availability_zone           = element(local.azs, 1)
   subnet_id                   = element(module.vpc.public_subnets, 1)
   vpc_security_group_ids      = [module.pritunl-securtiy-group.security_group_id]
   key_name                    = aws_key_pair.vpn_ec2_keypair.key_name
@@ -122,7 +127,7 @@ module "ec2_pritunl" {
   root_block_device = [
     {
       encrypted             = var.ec2_pritunl_root_encrypted
-      kms_key_id            = module.kms_complete.key_arn
+      kms_key_id            = module.aws_cmk.key_arn
       delete_on_termination = true
       volume_type           = var.ec2_pritunl_volume_type
       volume_size           = var.ec2_pritunl_volume_size
@@ -133,23 +138,30 @@ module "ec2_pritunl" {
   ]
 
   # user_data = templatefile("./scripts/pritunl-ubuntu24.04.sh", { S3_BUCKET_NAME = module.vpn_credential_bucket.s3_bucket_id })
-  user_data = templatefile("./scripts/pritunl-ubuntu24.04.sh", { NEW_PORT = 2223 })
-  tags      = var.ec2_pritunl_tags
+  user_data = join("\n", [
+    file("./scripts/pritunl-al.sh"),
+    file("./scripts/cloud-watch-al.sh")
+  ])
+
+  tags = merge(var.ec2_pritunl_tags, {
+    Environment = var.environment,
+    Project     = var.project_name
+  })
 }
 
-resource "aws_ebs_volume" "vpn_additional_volume" {
-  availability_zone = element(module.vpc.azs, 1)
-  size              = var.ec2_pritunl_additional_volume_size
-  type              = var.ec2_pritunl_additional_volume_type
-  encrypted         = var.ec2_pritunl_additional_volume_encrypted
-  kms_key_id        = module.kms_complete.key_arn
-}
+# resource "aws_ebs_volume" "vpn_additional_volume" {
+#   availability_zone = element(local.azs, 1)
+#   size              = var.ec2_pritunl_additional_volume_size
+#   type              = var.ec2_pritunl_additional_volume_type
+#   encrypted         = var.ec2_pritunl_additional_volume_encrypted
+#   kms_key_id        = module.aws_cmk.key_arn
+# }
 
-resource "aws_volume_attachment" "vpn_volume_attachment" {
-  device_name = "/dev/sdf"
-  volume_id   = aws_ebs_volume.vpn_additional_volume.id
-  instance_id = module.ec2_pritunl.id
-}
+# resource "aws_volume_attachment" "vpn_volume_attachment" {
+#   device_name = "/dev/sdf"
+#   volume_id   = aws_ebs_volume.vpn_additional_volume.id
+#   instance_id = module.ec2_pritunl.id
+# }
 
 # ################################
 # # PRITUNL Supoorting resources
@@ -161,7 +173,9 @@ resource "aws_eip" "vpn-eip" {
   instance = module.ec2_pritunl.id
   tags = merge(
     {
-      Name = "${local.ec2_pritunl_name}-EIP"
+      Name        = "${local.ec2_pritunl_name}-EIP",
+      Environment = var.environment,
+      Project     = var.project_name
     },
     var.ec2_pritunl_tags
   )

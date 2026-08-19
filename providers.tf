@@ -8,18 +8,16 @@ provider "aws" {
     tags = {
       "Implementedby" = "Workmates",
       "Managedby"     = "Workmates",
-      "Environment"   = "UAT",
-      "Project"       = var.Project_Name
+      "Environment"   = var.environment,
+      "Project"       = var.project_name
     }
   }
 }
 # For multiple regions, uncomment and modify as needed
 # provider "aws" {
 #   region = "ap-south-2"
-#   alias  = "hyderabad"
+#   alias  = "hyderabad"   This can be referenced as provider = aws.hyderabad in the resource blocks.
 # }
-
-
 
 #####################################################
 # EKS Suppporting Providers

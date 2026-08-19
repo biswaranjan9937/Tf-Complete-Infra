@@ -1,59 +1,55 @@
 #!/bin/bash
-sudo tee /etc/apt/sources.list.d/mongodb-org.list << EOF
-deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse
+set -e
+
+sudo tee /etc/yum.repos.d/mongodb-org.repo << EOF
+[mongodb-org]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://pgp.mongodb.com/server-8.0.asc
 EOF
 
-sudo tee /etc/apt/sources.list.d/openvpn.list << EOF
-deb [ signed-by=/usr/share/keyrings/openvpn-repo.gpg ] https://build.openvpn.net/debian/openvpn/stable noble main
+sudo tee /etc/yum.repos.d/pritunl.repo << EOF
+[pritunl]
+name=Pritunl Repository
+baseurl=https://repo.pritunl.com/stable/yum/amazonlinux/2023/
+gpgcheck=1
+enabled=1
+gpgkey=https://raw.githubusercontent.com/pritunl/pgp/master/pritunl_repo_pub.asc
 EOF
 
-sudo tee /etc/apt/sources.list.d/pritunl.list << EOF
-deb [ signed-by=/usr/share/keyrings/pritunl.gpg ] https://repo.pritunl.com/stable/apt noble main
-EOF
+sudo dnf -y update
 
-sudo apt --assume-yes install gnupg
-
-curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor --yes
-curl -fsSL https://swupdate.openvpn.net/repos/repo-public.gpg | sudo gpg -o /usr/share/keyrings/openvpn-repo.gpg --dearmor --yes
-curl -fsSL https://raw.githubusercontent.com/pritunl/pgp/master/pritunl_repo_pub.asc | sudo gpg -o /usr/share/keyrings/pritunl.gpg --dearmor --yes
-sudo apt update
-sudo apt --assume-yes install pritunl openvpn mongodb-org wireguard wireguard-tools
-
-sudo ufw disable
-
-sudo systemctl start pritunl mongod
-sudo systemctl enable pritunl mongod
+sudo dnf -y install pritunl pritunl-openvpn wireguard-tools mongodb-org
+sudo systemctl enable mongod pritunl
+sudo systemctl start mongod pritunl
 
 ### Install kubectl
 sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 kubectl version --client
 
-### Install aws cli
+### Install AWS CLI
 sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-sudo apt install unzip 
+sudo dnf -y install unzip
 unzip awscliv2.zip
 sudo ./aws/install
 
-####### Pritunl Bux Fix #######
-set -e
-
+####### Pritunl Bug Fix #######
 echo "Pritunl 404 Fix Script"
 echo "======================"
 
-# Must run as root
 if [[ $EUID -ne 0 ]]; then
    echo "Error: This script must be run as root"
    exit 1
 fi
 
-# Check config exists
 if [[ ! -f /etc/pritunl.conf ]]; then
     echo "Error: /etc/pritunl.conf not found"
     exit 1
 fi
 
-# Read MongoDB URI safely
 current_uri=$(grep -o '"mongodb_uri": "[^"]*"' /etc/pritunl.conf | cut -d'"' -f4 || true)
 
 if [[ -z "$current_uri" ]]; then
@@ -89,26 +85,15 @@ else
     echo "No fix needed"
 fi
 
-
-###########
-# Below setup is for ubuntu 24.04 machine
-
+### SSH Port Change
 NEW_PORT=${NEW_PORT:-2223}
 
 sed -i "s/^#\?Port .*/Port $NEW_PORT/" /etc/ssh/sshd_config
 grep -q "^Port $NEW_PORT" /etc/ssh/sshd_config || echo "Port $NEW_PORT" >> /etc/ssh/sshd_config
+systemctl restart sshd
+systemctl status sshd
 
-if systemctl is-enabled ssh.socket >/dev/null 2>&1; then
-    sed -i "s/^ListenStream=.*/ListenStream=$NEW_PORT/" /lib/systemd/system/ssh.socket
-    systemctl daemon-reload
-    systemctl restart ssh.socket
-else
-    systemctl restart ssh || systemctl restart sshd
-fi
-
-######################
-# Helm installation
-
+### Helm installation
 sudo curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
 chmod 700 get_helm.sh
 ./get_helm.sh
