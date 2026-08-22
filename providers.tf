@@ -19,6 +19,11 @@ provider "aws" {
 #   alias  = "hyderabad"   This can be referenced as provider = aws.hyderabad in the resource blocks.
 # }
 
+provider "aws" {
+  alias  = "virginia"
+  region = "us-east-1"
+}
+
 #####################################################
 # EKS Suppporting Providers
 #####################################################

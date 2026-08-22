@@ -55,7 +55,7 @@ module "eks_cluster" {
       # name                       = "${local.cluster_name}-APPLICATION-NG"
       name                       = "${local.app_node_group_name}"
       ami_type                   = "AL2023_x86_64_STANDARD"
-      enable_bootstrap_user_data = false  ## This is not needed for EKS managed AMI
+      enable_bootstrap_user_data = false                                    ## This is not needed for EKS managed AMI
       key_name                   = aws_key_pair.eks_app_ng_keypair.key_name #### This is the SSH key for login into to worker node and this Needs to be created first.
       description                = "EKS Managed Node Group for Application workloads"
       min_size                   = var.app_ng_min_size
@@ -137,7 +137,7 @@ module "eks_cluster" {
       # name                       = "${local.cluster_name}-SERVICES-NG"
       name                       = "${local.svc_node_group_name}"
       ami_type                   = "AL2023_x86_64_STANDARD"
-      enable_bootstrap_user_data = false  ## This is not needed for EKS managed AMI
+      enable_bootstrap_user_data = false ## This is not needed for EKS managed AMI
       # key_name                   = local.eks_nodegroup_key_name_service #### This is the SSH key for login into to worker node and this Needs to be created first.
       key_name             = aws_key_pair.eks_svc_ng_keypair.key_name
       description          = "EKS Managed Node Group for SERVICES"
@@ -217,7 +217,7 @@ module "eks_cluster" {
       # name                       = "${local.cluster_name}-SERVICES-NG"
       name                       = "${local.mon_node_group_name}"
       ami_type                   = "AL2023_x86_64_STANDARD"
-      enable_bootstrap_user_data = false  ## This is not needed for EKS managed AMI
+      enable_bootstrap_user_data = false ## This is not needed for EKS managed AMI
       # key_name                   = local.eks_nodegroup_key_name_service #### This is the SSH key for login into to worker node and this Needs to be created first.
       key_name             = aws_key_pair.eks_mon_ng_keypair.key_name
       description          = "EKS Managed Node Group for Monitoring"
@@ -226,7 +226,7 @@ module "eks_cluster" {
       desired_size         = var.mon_ng_desired_size
       force_update_version = true
       instance_types       = "${var.mon_ng_instance_type}"
-      subnet_ids = [module.vpc.private_subnets[1]]  # subnet of ap-south-1b az
+      subnet_ids           = [module.vpc.private_subnets[1]] # subnet of ap-south-1b az
 
 
       labels = {
@@ -440,4 +440,3 @@ resource "aws_iam_policy" "node_additional" {
     Project     = var.project_name
   })
 }
-

@@ -45,35 +45,35 @@ data "aws_iam_policy_document" "kms_additional_policy" {
   #   resources = ["*"]
   # }
 
-  statement {
-    sid    = "AllowEBSCSIRole"
-    effect = "Allow"
-    principals {
-      type        = "AWS"
-      identifiers = [aws_iam_role.ebs_csi_driver_role.arn]
-    }
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey",
-      "kms:CreateGrant"
-    ]
-    resources = ["*"]
-  }
+  # statement {
+  #   sid    = "AllowEBSCSIRole"
+  #   effect = "Allow"
+  #   principals {
+  #     type        = "AWS"
+  #     identifiers = [aws_iam_role.ebs_csi_driver_role.arn]
+  #   }
+  #   actions = [
+  #     "kms:Encrypt",
+  #     "kms:Decrypt",
+  #     "kms:ReEncrypt*",
+  #     "kms:GenerateDataKey*",
+  #     "kms:DescribeKey",
+  #     "kms:CreateGrant"
+  #   ]
+  #   resources = ["*"]
+  # }
 }
 
-resource "aws_kms_key_policy" "additional" {
-  key_id = module.aws_cmk.key_id
-  policy = data.aws_iam_policy_document.kms_merged_policy.json
+# resource "aws_kms_key_policy" "additional" {
+#   key_id = module.aws_cmk.key_id
+#   policy = data.aws_iam_policy_document.kms_merged_policy.json
 
-  depends_on = [aws_iam_role.ebs_csi_driver_role, module.aws_cmk]
-}
+#   depends_on = [aws_iam_role.ebs_csi_driver_role, module.aws_cmk]
+# }
 
-data "aws_iam_policy_document" "kms_merged_policy" {
-  source_policy_documents = [
-    data.aws_iam_policy_document.kms_custom_policy.json,
-    data.aws_iam_policy_document.kms_additional_policy.json
-  ]
-}
+# data "aws_iam_policy_document" "kms_merged_policy" {
+#   source_policy_documents = [
+#     data.aws_iam_policy_document.kms_custom_policy.json,
+#     data.aws_iam_policy_document.kms_additional_policy.json
+#   ]
+# }

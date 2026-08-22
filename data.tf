@@ -109,6 +109,23 @@ data "aws_iam_policy_document" "kms_custom_policy" {
       values   = [data.aws_caller_identity.current.account_id]
     }
   }
+  statement {
+    sid    = "AllowEBSCSIRole"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [aws_iam_role.ebs_csi_driver_role.arn]
+    }
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey",
+      "kms:CreateGrant"
+    ]
+    resources = ["*"]
+  }
 }
 
 
