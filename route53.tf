@@ -20,5 +20,9 @@ module "zones" {
   #   }
   # }
 
-  tags = local.zone_tags
+  tags = merge(local.zone_tags, {
+    Environment = var.environment,
+    Name        = var.main_domain_name,
+    Project     = var.project_name
+  })
 }

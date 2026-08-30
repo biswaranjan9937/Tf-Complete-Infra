@@ -9,7 +9,7 @@
 # }
 
 # resource "aws_iam_role" "lbc_role" {
-#   name = "${var.Project_Name}-${var.environment}-aws-lbc-role"
+#   name = "${var.project_name}-${var.environment}-aws-lbc-role"
 
 #   assume_role_policy = jsonencode({
 #     Version = "2012-10-17"
@@ -46,7 +46,7 @@
 #####################################
 
 # resource "aws_iam_role" "ca_role" {
-#   name = "${var.Project_Name}-${var.environment}-cluster-autoscaler"
+#   name = "${var.project_name}-${var.environment}-cluster-autoscaler"
 #   assume_role_policy = jsonencode({
 #     Version = "2012-10-17"
 #     Statement = [
@@ -80,7 +80,7 @@
 #######################################
 
 resource "aws_iam_role" "ebs_csi_driver_role" {
-  name = "${var.Project_Name}-${var.environment}-EBS-CSI-Driver"
+  name = "${var.project_name}-${var.environment}-EBS-CSI-Driver"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -112,7 +112,7 @@ resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy_attach" {
 #################################
 
 resource "aws_iam_role" "efs_csi_driver_role" {
-  name = "${var.Project_Name}-${var.environment}-EFS-CSI-Driver"
+  name = "${var.project_name}-${var.environment}-EFS-CSI-Driver"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -146,7 +146,7 @@ resource "aws_iam_role_policy_attachment" "efs_csi_driver_policy_attach" {
 ###################################
 
 resource "aws_iam_policy" "ebs-kms-policy" {
-  name        = "${var.Project_Name}-${var.environment}-EBS-KMS-Policy"
+  name        = "${var.project_name}-${var.environment}-EBS-KMS-Policy"
   path        = "/"
   description = "ebs-kms-policy"
   policy = jsonencode({
@@ -172,45 +172,4 @@ resource "aws_iam_role_policy_attachment" "ebs_kms_policy_attach" {
   role       = aws_iam_role.ebs_csi_driver_role.name
 
   depends_on = [aws_iam_role.ebs_csi_driver_role]
-}
-
-
-
-###################################
-# IAM Policy for Node KMS Access
-###################################
-
-resource "aws_iam_policy" "node_kms_policy" {
-  name        = "${var.Project_Name}-${var.environment}-Node-KMS-Policy"
-  path        = "/"
-  description = "IAM Policy for Node KMS Access"
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey"
-        ],
-        "Resource" : "*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "node_kms_policy_attach1" {
-  policy_arn = aws_iam_policy.node_kms_policy.arn
-  role       = local.eks_app_node_role_ng
-
-  depends_on = [module.eks_cluster]
-}
-resource "aws_iam_role_policy_attachment" "node_kms_policy_attach2" {
-  policy_arn = aws_iam_policy.node_kms_policy.arn
-  role       = local.eks_service_node_role_ng
-
-  depends_on = [module.eks_cluster]
 }
