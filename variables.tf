@@ -1,14 +1,13 @@
-variable "environment" {
+variable "project_name" {
   type = string
 }
-variable "Project_Name" {
-  type = string
-}
-
 
 ########################################################################
 # VPC
 ########################################################################
+variable "environment" {
+  type = string
+}
 variable "vpc_cidr" {
   description = "CIDR block for the VPC."
   type        = string
@@ -29,8 +28,8 @@ variable "enable_dns_hostnames" {
   description = "Whether instances with public IP addresses should get corresponding DNS hostnames."
   type        = bool
 }
-variable "enable_dns_support" {
-  description = "Whether the VPC should have DNS support."
+variable "enable_dns_resolution" {
+  description = "Whether the VPC should have DNS resolution enabled."
   type        = bool
 }
 variable "vpc_tags" {
@@ -168,6 +167,10 @@ variable "main_domain_name" {
 }
 
 variable "create_route53_records" {
+  type = bool
+}
+
+variable "validate_certificate" {
   type = bool
 }
 
@@ -364,9 +367,6 @@ variable "acm_main_tags" {
 #######################################################################
 # EKS
 #######################################################################
-# variable "eks_cluster_name" {
-#   type = string
-# }
 variable "eks_cluster_version" {
   type = string
 }
@@ -382,22 +382,16 @@ variable "eks_authentication_mode" {
 variable "eks_ami_id" {
   type = string
 }
-variable "eks_key_arn" {
-  type = string
-}
+# variable "eks_key_arn" {
+#   type = string
+# }
 variable "eks_tags" {
   type = map(string)
 }
-
 variable "eks_cluster_endpoint_private_access" {
   type = bool
 }
-variable "eks_nodegroup_key_name_app" {
-  type = string
-}
-variable "eks_nodegroup_key_name_service" {
-  type = string
-}
+
 variable "cluster_enabled_log_types" {
   type = list(string)
 }
@@ -405,26 +399,66 @@ variable "cloud_provider" {
   type = string
 }
 
+
 ### APPLICATION-NG
-variable "app_instance_type" {
+variable "app_ng_min_size" {
+  type = number
+}
+variable "app_ng_max_size" {
+  type = number
+}
+variable "app_ng_desired_size" {
+  type = number
+}
+variable "app_ng_instance_type" {
   type = list(string)
 }
-variable "app_ebs_volume_type" {
+variable "app_ng_ebs_volume_type" {
   type = string
 }
-variable "app_ebs_volume_size" {
+variable "app_ng_ebs_volume_size" {
   type = number
 }
 
 
 ### SERVICE-NG
-variable "service_instance_type" {
+variable "svc_ng_min_size" {
+  type = number
+}
+variable "svc_ng_max_size" {
+  type = number
+}
+variable "svc_ng_desired_size" {
+  type = number
+}
+variable "svc_ng_instance_type" {
   type = list(string)
 }
-variable "service_ebs_volume_type" {
+variable "svc_ng_ebs_volume_type" {
   type = string
 }
-variable "service_ebs_volume_size" {
+variable "svc_ng_ebs_volume_size" {
+  type = number
+}
+
+
+### MONITORING-NG
+variable "mon_ng_min_size" {
+  type = number
+}
+variable "mon_ng_max_size" {
+  type = number
+}
+variable "mon_ng_desired_size" {
+  type = number
+}
+variable "mon_ng_instance_type" {
+  type = list(string)
+}
+variable "mon_ng_ebs_volume_type" {
+  type = string
+}
+variable "mon_ng_ebs_volume_size" {
   type = number
 }
 
@@ -449,32 +483,21 @@ variable "metric_server_role" {
 # RDS
 ########################################################################
 
-variable "rds_subnet_group_name" {
-  type = string
-}
-
-variable "rds_subnet_group_tags" {
-  type = map(string)
-}
-
-
 variable "rds_identifier" {
   type = string
+}
+
+variable "rds_snapshot_identifier" {
+  description = "The ARN or ID of the snapshot (re-encrypted with CMK) to restore the RDS instance from"
+  type        = string
+  default     = null
 }
 
 variable "rds_instanceType" {
   type = string
 }
 
-
 variable "rds_engine_lifecycle_support" {
-  type = string
-}
-variable "rds_parameter_group_name" {
-  type = string
-}
-
-variable "rds_option_group_name" {
   type = string
 }
 
@@ -484,6 +507,10 @@ variable "rds_options_group_major_engine_version" {
 
 variable "rds_parameter_group_family" {
   type = string
+}
+
+variable "parameters" {
+  type = list(map(string))
 }
 
 variable "rds_engine" {
@@ -531,9 +558,7 @@ variable "rds_password" {
 variable "rds_port" {
   type = string
 }
-variable "rds_availability_zone" {
-  type = string
-}
+
 variable "rds_multi_az" {
   type = bool
 }
@@ -652,9 +677,9 @@ variable "efs_encrypted" {
   type = bool
 }
 
-variable "efs_creation_token" {
-  type = string
-}
+# variable "efs_creation_token" {
+#   type = string
+# }
 
 variable "efs_tags" {
   type = map(string)

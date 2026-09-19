@@ -1,91 +1,89 @@
-# region_backend = "ap-south-1"
-Project_Name = "Project"
+project_name = "Project"
 ########################################
 # VPC
 ########################################
-environment = "UAT"
-vpc_cidr    = "172.16.0.0/16"
-region      = "ap-south-1"
-# vpc_name             = "project"
-single_nat_gateway   = "true"
-enable_nat_gateway   = "true"
-enable_dns_hostnames = "true"
-enable_dns_support   = "true"
+environment           = "UAT"
+vpc_cidr              = "172.16.0.0/16"
+region                = "ap-south-1"
+single_nat_gateway    = "true"
+enable_nat_gateway    = "true"
+enable_dns_hostnames  = "true"
+enable_dns_resolution = "true"
 vpc_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "UAT",
-  "Project"       = "project"
   "Layer"         = "Gateway"
 }
-vpc_flowlog_bucket = "project-prod-vpcflowlog7894"
+vpc_flowlog_bucket = "project-prod-vpcflowlog-bucket"
 
 ########################################
 # Pritunl
 ########################################
-cred_bucketName            = "project-prod-pritunl-creds7894"
-ec2_pritunl_ami_id         = "ami-0388e3ada3d9812da" ### ubuntu 24.04 of ap-south-1
-ec2_pritunl_instance_type  = "t3.medium"
-ec2_pritunl_volume_type    = "gp3"
-ec2_pritunl_volume_size    = "25"
-ec2_pritunl_root_encrypted = true
-
+cred_bucketName                         = "project-uat-creds-bucket"
+ec2_pritunl_ami_id                      = "ami-035827357e3c7e810" ### AL2023 of ap-south-1
+ec2_pritunl_instance_type               = "t3.medium"
+ec2_pritunl_volume_type                 = "gp3"
+ec2_pritunl_volume_size                 = "25"
+ec2_pritunl_root_encrypted              = true
 ec2_pritunl_additional_volume_type      = "gp3"
-ec2_pritunl_additional_volume_size      = "25"
+ec2_pritunl_additional_volume_size      = "10"
 ec2_pritunl_additional_volume_encrypted = true
+
 ec2_pritunl_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "UAT",
-  "Project"       = "project",
-  "Layer"         = "Gateway"
+  "Layer"         = "Gateway",
+  "wm_backup"     = "yes",
+  "dlcm"          = "no"
 }
+
 ec2_pritunl_key_name               = "Project-UAT-VPN-1b-keypair"
 ec2_pritunl_termination_protection = false
-ec2_pritunl_iam_instance_profile   = "CWMIAMROLE-InstanceProfile-rEMu7z8991ZX" ### This IAM Instance Profile has SSM and Read Only access.
+ec2_pritunl_iam_instance_profile   = "ssm-role" ### This IAM Instance Profile has SSM and Read Only access.
+
 ec2_pritunl_ingress_rules = [
-  {
-    cidr_blocks = ["15.206.48.168/32"] ### workmates public ip
-    from_port   = 80
-    protocol    = "tcp"
-    to_port     = 80
-  },
-  {
-    cidr_blocks = ["10.3.1.105/32"] ### workmates private ip
-    from_port   = 80
-    protocol    = "tcp"
-    to_port     = 80
-  },
+  # {
+  #   cidr_blocks = ["15.206.48.168/32"] ### workmates public ip
+  #   from_port   = 80
+  #   protocol    = "tcp"
+  #   to_port     = 80
+  # },
+  # {
+  #   cidr_blocks = ["10.3.1.105/32"] ### workmates private ip
+  #   from_port   = 80
+  #   protocol    = "tcp"
+  #   to_port     = 80
+  # },
   {
     cidr_blocks = ["15.206.48.168/32"]
     from_port   = 443
     protocol    = "tcp"
     to_port     = 443
   },
-  {
-    cidr_blocks = ["10.3.1.105/32"]
-    from_port   = 443
-    protocol    = "tcp"
-    to_port     = 443
-  },
-  {
-    cidr_blocks = ["59.144.30.58/32"] #### workmates publicInternet IP
-    from_port   = 443
-    protocol    = "tcp"
-    to_port     = 443
-  },
+  # {
+  #   cidr_blocks = ["10.3.1.105/32"]
+  #   from_port   = 443
+  #   protocol    = "tcp"
+  #   to_port     = 443
+  # },
+  # {
+  #   cidr_blocks = ["59.144.30.58/32"] #### workmates publicInternet IP
+  #   from_port   = 443
+  #   protocol    = "tcp"
+  #   to_port     = 443
+  # },
   {
     cidr_blocks = ["15.206.48.168/32"]
     from_port   = 2223 #### pritunl ssh port
     protocol    = "tcp"
     to_port     = 2223
   },
-  {
-    cidr_blocks = ["10.3.1.105/32"]
-    from_port   = 2223 #### pritunl ssh port
-    protocol    = "tcp"
-    to_port     = 2223
-  },
+  # {
+  #   cidr_blocks = ["10.3.1.105/32"]
+  #   from_port   = 2223 #### pritunl ssh port
+  #   protocol    = "tcp"
+  #   to_port     = 2223
+  # },
   {
     cidr_blocks = ["0.0.0.0/0"]
     from_port   = 1557 #### pritunl server port for udp
@@ -107,8 +105,6 @@ ec2_pritunl_egress_rules = [{
 kms_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "UAT",
-  "Project"       = "Project",
   "Layer"         = "Security"
 }
 key_administrators_list = [ ### IAM roles or users who can manage the key
@@ -121,24 +117,23 @@ key_user_list = [ ### IAM roles or users who can use the key for encryption/decr
   "arn:aws:iam::675169529857:role/Workmates-SSO-L2SupportRole"
 ]
 key_description             = "Project Customer Managed Key"
-key_deletion_window_in_days = 7
+key_deletion_window_in_days = 30
 key_usage                   = "ENCRYPT_DECRYPT"
 kms_region                  = "ap-south-1"
 enable_multi_region         = false
-enable_key_rotation         = false
+enable_key_rotation         = true
 enable_key                  = true
 
 ########################################################################
 # ACM
 ########################################################################
-main_domain_name       = "devopskolkata.org"
+main_domain_name       = "seawhale.in"
 create_route53_records = "true"
-validation_method      = "DNS" ### Supports Email and DNS. DNS is recommended.
+validate_certificate   = "true" ### Certificate validation will be done automatically by Terraform if you set create_route53_records to true. If you set create_route53_records to false, you need to validate the certificate manually from AWS console or CLI.
+validation_method      = "DNS"  ### Supports Email and DNS. DNS is recommended.
 acm_main_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Project"       = "Project",
-  "Environment"   = "UAT",
   "Layer"         = "SSL"
 }
 
@@ -146,14 +141,10 @@ acm_main_tags = {
 ########################################################################
 # EKS
 ########################################################################
-# eks_cluster_name                    = "POC-cluster"
-eks_cluster_version                 = "1.34"
-eks_ami_id                          = "" #ami-0f79d8d8f8d504808
+eks_cluster_version                 = "1.36"
 eks_cluster_endpoint_public_access  = "true"
-eks_cluster_endpoint_private_access = "false"
+eks_cluster_endpoint_private_access = "true"
 eks_cluster_ip_family               = "ipv4"
-eks_authentication_mode             = "API_AND_CONFIG_MAP"
-eks_key_arn                         = ""
 cluster_enabled_log_types = [
   "api",
   "audit",
@@ -161,28 +152,45 @@ cluster_enabled_log_types = [
   "controllerManager",
   "scheduler"
 ]
+eks_authentication_mode = "API_AND_CONFIG_MAP"
+
+
+# eks_app_ng_key_name = "Project-APP-Node-Key" #### Need to be created first.
+# eks_svc_ng_key_name = "Project-Services-Node-Key"
+# eks_mon_ng_key_name = "Project-Monitoring-Node-Key"
+eks_ami_id = "" #ami-0f79d8d8f8d504808
+
+cloud_provider = "aws"
 
 eks_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "UAT",
-  "Project"       = "Project"
   "Layer"         = "Kubernetes"
 }
 
-eks_nodegroup_key_name_app     = "project-APP-NG-Keypair" #### Need to be created first.
-eks_nodegroup_key_name_service = "project-Services-NG-Keypair"
-cloud_provider                 = "aws"
-
 ### APPLICATION NODE GROUP
-app_instance_type   = ["t3.medium"]
-app_ebs_volume_type = "gp3"
-app_ebs_volume_size = 20
+app_ng_min_size        = 0
+app_ng_max_size        = 1
+app_ng_desired_size    = 0
+app_ng_instance_type   = ["t3.medium"]
+app_ng_ebs_volume_type = "gp3"
+app_ng_ebs_volume_size = 20
 
 ### SERVICES NODE GROUP
-service_instance_type   = ["t3.medium"]
-service_ebs_volume_type = "gp3"
-service_ebs_volume_size = 20
+svc_ng_min_size        = 1
+svc_ng_max_size        = 2
+svc_ng_desired_size    = 1
+svc_ng_instance_type   = ["t3.medium"]
+svc_ng_ebs_volume_type = "gp3"
+svc_ng_ebs_volume_size = 20
+
+### Monitoring NODE GROUP
+mon_ng_min_size        = 1
+mon_ng_max_size        = 2
+mon_ng_desired_size    = 1
+mon_ng_instance_type   = ["t3.medium"]
+mon_ng_ebs_volume_type = "gp3"
+mon_ng_ebs_volume_size = 20
 
 ############################
 # EKS Addons
@@ -194,26 +202,16 @@ metric_server_role = "EKS-METRICS-SERVER-ROLE"
 ########################################################################
 # RDS
 ########################################################################
-rds_subnet_group_name = "project-uat-rds-subnet-grp"
-rds_subnet_group_tags = {
-  "Implementedby" = "Workmates",
-  "Managedby"     = "Workmates",
-  "Environment"   = "UAT",
-  "Layer"         = "Database",
-  "Project"       = "Project"
-}
-
-rds_identifier                         = "Project-PostgreSQL"
+rds_identifier                         = "PostgreSQL"
+rds_snapshot_identifier                = "arn:aws:rds:ap-south-1:239861161507:snapshot:rds-preprod-2026-07-07-12-36-ist-copy-using-cmk-v1"
 rds_instanceType                       = "db.t4g.medium"
-rds_parameter_group_name               = "project-uat-postgres-parameter-grp"
-rds_parameter_group_family             = "postgres17"
-rds_option_group_name                  = "project-uat-postgres-options-grp"
-rds_options_group_major_engine_version = "17"
+rds_parameter_group_family             = "postgres15"
+rds_options_group_major_engine_version = "15"
 rds_engine                             = "postgres"
-rds_engine_version                     = "17"
+rds_engine_version                     = "15.17"
 rds_engine_lifecycle_support           = "open-source-rds-extended-support-disabled"
 rds_storage_type                       = "gp3"
-rds_allocated_storage                  = "30"
+rds_allocated_storage                  = "130"
 rds_max_allocated_storage              = "0"
 rds_storage_encrypted                  = true
 rds_kms_key_id                         = ""
@@ -222,15 +220,12 @@ rds_db_name                            = ""
 rds_username                           = "postgres"
 rds_password                           = "hycnWesdOirutj"
 rds_port                               = "5444"
-rds_availability_zone                  = "ap-south-1b"
 rds_multi_az                           = false
 rds_publicly_accessible                = false
 rds_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "UAT",
-  "Layer"         = "Database",
-  "Project"       = "Project",
+  "Layer"         = "Database"
 }
 rds_apply_immediately           = true
 rds_auto_minor_version_upgrade  = false
@@ -239,7 +234,15 @@ rds_maintenance_window          = "Mon:00:00-Mon:03:00"
 rds_backup_retention_period     = "7"
 rds_backup_window               = "09:30-10:30"
 rds_delete_automated_backups    = true
-rds_deletion_protection         = true
+rds_deletion_protection         = false
+parameters = [
+  {
+    name         = "timezone"
+    value        = "Asia/Kolkata"
+    apply_method = "immediate"
+  }
+]
+
 rds_ingress_rules = [
   {
     from_port   = 5444
@@ -248,7 +251,6 @@ rds_ingress_rules = [
     cidr_blocks = ["172.16.0.0/16"]
   }
 ]
-
 rds_egress_rules = [
   {
     from_port   = 0
@@ -261,21 +263,19 @@ rds_egress_rules = [
 ########################################################################
 # ECR
 ########################################################################
-repository_type         = "private" # It can be public or private.
-tag_mutability          = "MUTABLE" # It can be IMMUTABLE or MUTABLE.
-repository_force_delete = true
-
 repository_names = [
   "frontend_repo",
   "backend_repo"
 ]
 
+repository_type         = "private" # It can be public or private.
+tag_mutability          = "MUTABLE" # It can be IMMUTABLE or MUTABLE.
+repository_force_delete = true
+
 ecr_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "UAT",
-  "Layer"         = "Storage",
-  "Project"       = "Project"
+  "Layer"         = "Container_Registry"
 }
 
 
@@ -288,15 +288,14 @@ efs_enable_backup_policy = false
 efs_attach_policy        = false
 efs_performance_mode     = "generalPurpose"
 efs_encrypted            = true
-efs_creation_token       = "Project-Uat"
-efs_throughput_mode      = "bursting"
+efs_throughput_mode      = "elastic"
+
 efs_tags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Layer"         = "Storage",
-  "Env"           = "UAT",
-  "Project"       = "Project"
+  "Layer"         = "EFS"
 }
+
 efs_ingress_rules = [
   {
     from_port   = 2049
@@ -305,7 +304,6 @@ efs_ingress_rules = [
     cidr_blocks = ["172.16.0.0/16"] ### VPC CIDR.
   }
 ]
-
 efs_egress_rules = [
   {
     from_port   = 0
@@ -330,8 +328,6 @@ efs_egress_rules = [
 bucketTags = {
   "Implementedby" = "Workmates",
   "Managedby"     = "Workmates",
-  "Environment"   = "UAT",
-  "Project"       = "project"
   "Layer"         = "Storage"
 }
 

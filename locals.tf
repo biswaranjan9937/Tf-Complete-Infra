@@ -1,8 +1,8 @@
-################################################################################
+####################################
 # VPC Module
-################################################################################
+####################################
 locals {
-  vpc_name = "${var.Project_Name}-${var.environment}"
+  vpc_name = "${var.project_name}-${var.environment}"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3) ### Limiting to 3 AZs. If the region has less than 3 AZs, Terraform will error.
 }
 
@@ -10,25 +10,24 @@ locals {
 # PRITUNL
 ####################################################################
 locals {
-  ec2_pritunl_key_name          = var.ec2_pritunl_key_name
-  ec2_pritunl_name              = "${var.Project_Name}-${var.environment}-VPN"
-  ec2_pritunl_iam_role_policies = var.ec2_pritunl_iam_role_policies
-  ec2_pritunl_ebs_block_devices = var.ec2_pritunl_ebs_block_devices
+  ec2_pritunl_name = "${var.project_name}-${var.environment}-VPN"
+  vpn_key_pair     = "${var.project_name}-${var.environment}-VPN-1b-KeyPair"
+  # ec2_pritunl_iam_role_policies = var.ec2_pritunl_iam_role_policies
+  # ec2_pritunl_ebs_block_devices = var.ec2_pritunl_ebs_block_devices
 }
-
 
 ###################################################################
 # KMS
 ###################################################################
 locals {
-  alias_name = ["${var.Project_Name}-${var.environment}-CMK"]
+  alias_name = ["${var.project_name}-${var.environment}-CMK"]
 }
 ###################################################################
 # ACM
 ###################################################################
-locals {
-  acm_main_tags = merge(var.acm_main_tags, { Name = var.main_domain_name })
-}
+# locals {
+#   acm_main_tags = merge(var.acm_main_tags, { Name = var.main_domain_name, Environment = var.environment })
+# }
 
 ############################################
 # Route53
@@ -38,8 +37,6 @@ locals {
   zone_tags = {
     "Implementedby" = "Wokrmates",
     "Managedby"     = "Workmates",
-    "Project"       = "sample-project",
-    "Environment"   = "POC",
     "Layer"         = "DNS"
   }
 }
@@ -48,36 +45,34 @@ locals {
 # EKS
 ####################################################################
 locals {
-  # eks_vpc_private_subnets              = [module.vpc.private_subnets[0]]
-  eks_vpc_private_controlPlane_subnets = [module.vpc.private_subnets[0], module.vpc.private_subnets[1], module.vpc.private_subnets[2]]
-  eks_vpc_public_controlPlane_subnets  = [module.vpc.public_subnets[0], module.vpc.public_subnets[1], module.vpc.public_subnets[2]]
-  eks_vpc_public_subnets               = [module.vpc.public_subnets[0], module.vpc.public_subnets[1], module.vpc.public_subnets[2]]
-  # eks_vpc_cidr                         = module.vpc.vpc_cidr_block
-  eks_app_node_role_ng     = "${var.Project_Name}-${var.environment}-EKS-CLUSTER-APPLICATION-NG-ROLE"
-  eks_service_node_role_ng = "${var.Project_Name}-${var.environment}-EKS-CLUSTER-SERVICE-NG-ROLE"
-  # eks_ami_id                          = try(var.eks_ami_id, data.aws_ssm_parameter.al2023_ami_id.value)
-  eks_key_arn                    = module.kms_complete.key_arn
-  eks_nodegroup_key_name_app     = var.eks_nodegroup_key_name_app
-  eks_nodegroup_key_name_service = var.eks_nodegroup_key_name_service
-  cluster_name                   = "${var.Project_Name}-${var.environment}-EKS-CLUSTER"
-
+  eks_app_ng_key_name = "${var.project_name}-${var.environment}-EKS-App-NG-Key"
+  eks_svc_ng_key_name = "${var.project_name}-${var.environment}-EKS-Svc-NG-Key"
+  eks_mon_ng_key_name = "${var.project_name}-${var.environment}-EKS-Mon-NG-Key"
+  app_ng_role_name    = "${var.project_name}-${var.environment}-EKS-Application-NG-Role"
+  svc_ng_role_name    = "${var.project_name}-${var.environment}-EKS-Service-NG-Role"
+  mon_ng_role_name    = "${var.project_name}-${var.environment}-EKS-Monitoring-NG-Role"
+  # eks_key_arn         = module.aws_cmk.key_arn
+  cluster_name        = "${var.project_name}-${var.environment}-EKS-Cluster"
+  app_node_group_name = "${local.cluster_name}-Application-NG"
+  svc_node_group_name = "${local.cluster_name}-Service-NG"
+  mon_node_group_name = "${local.cluster_name}-Monitoring-NG"
 }
 ####################################################################
 # RDS
 ####################################################################
 
 locals {
-  rds_subnet_group_name    = lower("${var.rds_subnet_group_name}-${var.environment}")
-  rds_identifier           = lower("${var.rds_identifier}-${var.environment}-rds")
-  rds_parameter_group_name = lower("${var.rds_parameter_group_name}-${var.environment}")
-  rds_option_group_name    = lower("${var.rds_option_group_name}-${var.environment}")
+  rds_subnet_group_name    = lower("${var.project_name}-${var.environment}-subnet-group")
+  rds_identifier           = lower("${var.project_name}-${var.environment}-${var.rds_identifier}")
+  rds_parameter_group_name = lower("${var.project_name}-${var.environment}-parameter-group")
+  rds_option_group_name    = lower("${var.project_name}-${var.environment}-option-group")
 }
 
 ####################################################################
 # ECR
 ####################################################################
 locals {
-  ecr_kms_key_arn = module.kms_complete.key_arn
+  ecr_kms_key_arn = module.aws_cmk.key_arn
 }
 
 
@@ -85,7 +80,7 @@ locals {
 # EFS
 ################################
 locals {
-  efs_name = "${var.Project_Name}-${var.environment}-efs"
+  efs_name = "${var.project_name}-${var.environment}-EFS"
   efs_azs  = slice(data.aws_availability_zones.available.names, 0, 3)
 }
 
