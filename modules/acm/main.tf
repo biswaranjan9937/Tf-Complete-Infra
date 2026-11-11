@@ -1,3 +1,10 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
 locals {
   create_certificate          = var.create_certificate
   create_route53_records_only = var.create_route53_records_only

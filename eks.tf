@@ -15,25 +15,27 @@ module "eks_cluster" {
   cluster_endpoint_public_access_cidrs     = ["0.0.0.0/0"] ### Needed only when cluster_endpoint_public_access = true.
   cluster_enabled_log_types                = var.cluster_enabled_log_types
   # cluster_encryption_config = {       #### Need to use a different CMK.
-  #   provider_key_arn = module.kms_complete.key_arn
+  #   provider_key_arn = module.aws_cmk.key_arn
   #   resources        = ["secrets"]
   # }
 
   vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = module.vpc.private_subnets                 #### Where the worker nodes (EC2 instances) will be deployed
-  control_plane_subnet_ids = local.eks_vpc_private_controlPlane_subnets #### Where the EKS control plane will be deployed. It is recommended to use private subnets for control plane for better security.
+  subnet_ids               = module.vpc.private_subnets #### Where the worker nodes (EC2 instances) will be deployed
+  control_plane_subnet_ids = module.vpc.private_subnets #### Where the EKS control plane will be deployed. It is recommended to use private subnets for control plane for better security.
 
 
   authentication_mode = var.eks_authentication_mode
 
+
+  ### Note: Other addons like metrics-server, ebs-csi-driver and efs-csi-driver will be installed as part of eks-addons using helm charts after the cluster is created. This is because these addons require additional configuration and permissions that are easier to manage separately.
   cluster_addons = {
-    coredns = {
+    coredns = { ### Enables service discovery for applications running in the cluster and is required for cluster functionality.
       most_recent = true
     }
-    kube-proxy = {
+    kube-proxy = { ### This will forward the traffic to right pod based on the service and endpoint information. It is required for cluster functionality.
       most_recent = true
     }
-    vpc-cni = {
+    vpc-cni = { ### It assigns IP addresses to pods and manages network connectivity for pods. It is required for cluster functionality.
       most_recent    = true
       before_compute = true
       configuration_values = jsonencode({
@@ -45,25 +47,31 @@ module "eks_cluster" {
     }
   }
 
+
+  #### Node Group Configurations
   eks_managed_node_groups = {
     # This is for first node group 
     APPLICATION-NG = {
-      name                       = "${local.cluster_name}-APPLICATION-NG"
+      # name                       = "${local.cluster_name}-APPLICATION-NG"
+      name                       = "${local.app_node_group_name}"
       ami_type                   = "AL2023_x86_64_STANDARD"
-      enable_bootstrap_user_data = true
-      key_name                   = aws_key_pair.eks_node_keypair.key_name #### This is the SSH key for login into to worker node and this Needs to be created first.
+      enable_bootstrap_user_data = false                                    ## This is not needed for EKS managed AMI
+      key_name                   = aws_key_pair.eks_app_ng_keypair.key_name #### This is the SSH key for login into to worker node and this Needs to be created first.
       description                = "EKS Managed Node Group for Application workloads"
-      min_size                   = 1
-      max_size                   = 3
-      desired_size               = 1
+      min_size                   = var.app_ng_min_size
+      max_size                   = var.app_ng_max_size
+      desired_size               = var.app_ng_desired_size
       force_update_version       = true
-      instance_types             = "${var.app_instance_type}"
+      instance_types             = "${var.app_ng_instance_type}"
+
       labels = {
         role = "app"
       }
+
       node_repair_config = {
         enabled = true
       }
+
       # taints = {
       #   workload = {
       #     key    = "workload"
@@ -79,33 +87,34 @@ module "eks_cluster" {
         xvda = {
           device_name = "/dev/xvda"
           ebs = {
-            volume_size           = "${var.app_ebs_volume_size}"
-            volume_type           = "${var.app_ebs_volume_type}"
+            volume_size           = "${var.app_ng_ebs_volume_size}"
+            volume_type           = "${var.app_ng_ebs_volume_type}"
             iops                  = 3000
             throughput            = 125
             encrypted             = true
-            kms_key_id            = "${module.kms_complete.key_arn}"
+            kms_key_id            = "${module.aws_cmk.key_arn}"
             delete_on_termination = true
           }
         }
       }
+
       metadata_options = {
         http_endpoint               = "enabled"
         http_tokens                 = "required"
         http_put_response_hop_limit = 2
         instance_metadata_tags      = "disabled"
       }
+
       create_iam_role      = true
-      iam_role_name        = "${local.eks_app_node_role_ng}"
-      iam_role_description = "IAM Role for EKS managed application node group"
-      iam_role_tags        = var.eks_tags
+      iam_role_name        = "${local.app_ng_role_name}"
+      iam_role_description = "IAM Role for EKS Managed Application NG"
+      iam_role_tags = merge(var.eks_tags, {
+        Name = "Application-NG"
+      })
       iam_role_additional_policies = {
         AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-        AmazonEBSCSIDriverPolicy           = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-        AmazonEFSCSIDriverPolicy           = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
         AmazonSSMPolicy                    = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
         node_additional                    = aws_iam_policy.node_additional.arn
-        node_kms_policy_attach             = aws_iam_policy.node_kms_policy.arn
       }
       launch_template_tags = {
         # enable discovery of autoscaling groups by cluster-autoscaler
@@ -114,7 +123,9 @@ module "eks_cluster" {
       }
       tags = merge(
         {
-          "Name" : "${local.cluster_name}-EKS-APPLICATION-NG"
+          Name : "${local.cluster_name}-Application-NG",
+          Environment : var.environment,
+          Project : var.project_name
         },
         var.eks_tags
       )
@@ -123,20 +134,23 @@ module "eks_cluster" {
 
     # For a second node group just copy the above block and provide a diffrent name for the block.
     SERVICES-NG = {
-      name                       = "${local.cluster_name}-SERVICES-NG"
+      # name                       = "${local.cluster_name}-SERVICES-NG"
+      name                       = "${local.svc_node_group_name}"
       ami_type                   = "AL2023_x86_64_STANDARD"
-      enable_bootstrap_user_data = true
+      enable_bootstrap_user_data = false ## This is not needed for EKS managed AMI
       # key_name                   = local.eks_nodegroup_key_name_service #### This is the SSH key for login into to worker node and this Needs to be created first.
-      key_name             = aws_key_pair.eks_node_keypair.key_name
+      key_name             = aws_key_pair.eks_svc_ng_keypair.key_name
       description          = "EKS Managed Node Group for SERVICES"
-      min_size             = 1
-      max_size             = 2
-      desired_size         = 1
+      min_size             = var.svc_ng_min_size
+      max_size             = var.svc_ng_max_size
+      desired_size         = var.svc_ng_desired_size
       force_update_version = true
-      instance_types       = "${var.service_instance_type}"
+      instance_types       = "${var.svc_ng_instance_type}"
+
       labels = {
         role = "service"
       }
+
       node_repair_config = {
         enabled = true
       }
@@ -154,12 +168,12 @@ module "eks_cluster" {
         xvda = {
           device_name = "/dev/xvda"
           ebs = {
-            volume_size           = "${var.service_ebs_volume_size}"
-            volume_type           = "${var.service_ebs_volume_type}"
+            volume_size           = "${var.svc_ng_ebs_volume_size}"
+            volume_type           = "${var.svc_ng_ebs_volume_type}"
             iops                  = 3000
             throughput            = 125
             encrypted             = true
-            kms_key_id            = "${module.kms_complete.key_arn}"
+            kms_key_id            = "${module.aws_cmk.key_arn}"
             delete_on_termination = true
           }
         }
@@ -172,22 +186,15 @@ module "eks_cluster" {
       }
 
       create_iam_role      = true
-      iam_role_name        = "${local.eks_service_node_role_ng}"
-      iam_role_description = "EKS managed services node group  role"
-      iam_role_tags = {
-        "Implementedby" = "Workmates",
-        "Managedby"     = "Workmates",
-        "Layer"         = "IAM",
-        "Environment"   = "PROD",
-        "Project"       = "project"
-      }
+      iam_role_name        = "${local.svc_ng_role_name}"
+      iam_role_description = "IAM Role for EKS Managed Service NG"
+      iam_role_tags = merge(var.eks_tags, {
+        Name = "Service-NG"
+      })
       iam_role_additional_policies = {
         AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-        AmazonEBSCSIDriverPolicy           = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-        AmazonEFSCSIDriverPolicy           = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
         AmazonSSMPolicy                    = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
         node_additional                    = aws_iam_policy.node_additional.arn
-        node_kms_policy_attach             = aws_iam_policy.node_kms_policy.arn
       }
       launch_template_tags = {
         # enable discovery of autoscaling groups by cluster-autoscaler
@@ -196,7 +203,91 @@ module "eks_cluster" {
       }
       tags = merge(
         {
-          "Name" : "${local.cluster_name}-EKS-SERVICES-NG"
+          Name : "${local.cluster_name}-Service-NG",
+          Environment : var.environment,
+          Project : var.project_name
+        },
+        var.eks_tags
+      )
+
+    }
+
+
+    MONITORING-NG = {
+      # name                       = "${local.cluster_name}-SERVICES-NG"
+      name                       = "${local.mon_node_group_name}"
+      ami_type                   = "AL2023_x86_64_STANDARD"
+      enable_bootstrap_user_data = false ## This is not needed for EKS managed AMI
+      # key_name                   = local.eks_nodegroup_key_name_service #### This is the SSH key for login into to worker node and this Needs to be created first.
+      key_name             = aws_key_pair.eks_mon_ng_keypair.key_name
+      description          = "EKS Managed Node Group for Monitoring"
+      min_size             = var.mon_ng_min_size
+      max_size             = var.mon_ng_max_size
+      desired_size         = var.mon_ng_desired_size
+      force_update_version = true
+      instance_types       = "${var.mon_ng_instance_type}"
+      subnet_ids           = [module.vpc.private_subnets[1]] # subnet of ap-south-1b az
+
+
+      labels = {
+        role = "monitoring"
+      }
+
+      node_repair_config = {
+        enabled = true
+      }
+      taints = {
+        workload = {
+          key    = "workload"
+          value  = "monitoring"
+          effect = "NO_SCHEDULE"
+        }
+      }
+      ebs_optimized           = true
+      disable_api_termination = false
+      #enable_monitoring       = true
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size           = "${var.mon_ng_ebs_volume_size}"
+            volume_type           = "${var.mon_ng_ebs_volume_type}"
+            iops                  = 3000
+            throughput            = 125
+            encrypted             = true
+            kms_key_id            = "${module.aws_cmk.key_arn}"
+            delete_on_termination = true
+          }
+        }
+      }
+      metadata_options = {
+        http_endpoint               = "enabled"
+        http_tokens                 = "required"
+        http_put_response_hop_limit = 2
+        instance_metadata_tags      = "disabled"
+      }
+
+      create_iam_role      = true
+      iam_role_name        = "${local.mon_ng_role_name}"
+      iam_role_description = "IAM Role for EKS Managed Monitoring NG"
+      iam_role_tags = merge(var.eks_tags, {
+        Name = "Monitoring-NG"
+      })
+      iam_role_additional_policies = {
+        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+        AmazonSSMPolicy                    = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        node_additional                    = aws_iam_policy.node_additional.arn
+      }
+      launch_template_tags = {
+        # enable discovery of autoscaling groups by cluster-autoscaler
+        "k8s.io/cluster-autoscaler/enabled" : true,
+        "k8s.io/cluster-autoscaler/${local.cluster_name}" : "owned",
+      }
+      tags = merge(
+        {
+          Name : "${local.cluster_name}-Monitoring-NG",
+          Environment : var.environment,
+          Project : var.project_name
         },
         var.eks_tags
       )
@@ -229,7 +320,7 @@ module "eks_cluster" {
   ## Enable access from bastion host to EKS endpoint
   cluster_security_group_additional_rules = {
     ingress_443 = {
-      description = "Cluster Intra-VPC communication"
+      description = "Allow access from bastion host to EKS API server"
       protocol    = "tcp"
       from_port   = 443
       to_port     = 443
@@ -290,7 +381,10 @@ module "eks_cluster" {
     # }
   }
 
-  tags = var.eks_tags
+  tags = merge(var.eks_tags, {
+    Environment = var.environment,
+    Project     = var.project_name
+  })
 
 }
 
@@ -298,8 +392,8 @@ module "eks_cluster" {
 # Supporting Resources
 ################################
 resource "aws_iam_policy" "node_additional" {
-  name        = "${local.cluster_name}-EKS-ADDITIONAL"
-  description = " node additional policy for kms"
+  name        = "${local.cluster_name}-Additional-Node-Policy"
+  description = "Additional node policy for KMS access and EFS access"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -307,7 +401,6 @@ resource "aws_iam_policy" "node_additional" {
       {
         Action = [
           "ec2:Describe*",
-          "kms:Decrypt",
           "s3:GetEncryptionConfiguration",
           "efs:*"
         ]
@@ -321,7 +414,7 @@ resource "aws_iam_policy" "node_additional" {
           "kms:ListGrants",
           "kms:RevokeGrant"
         ],
-        "Resource" : [module.kms_complete.key_arn],
+        "Resource" : [module.aws_cmk.key_arn],
         "Condition" : {
           "Bool" : {
             "kms:GrantIsForAWSResource" : "true"
@@ -337,11 +430,13 @@ resource "aws_iam_policy" "node_additional" {
           "kms:GenerateDataKey*",
           "kms:DescribeKey"
         ],
-        "Resource" : [module.kms_complete.key_arn]
+        "Resource" : [module.aws_cmk.key_arn]
       }
     ]
   })
 
-  tags = var.eks_tags
+  tags = merge(var.eks_tags, {
+    Environment = var.environment,
+    Project     = var.project_name
+  })
 }
-

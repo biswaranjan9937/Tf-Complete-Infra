@@ -93,17 +93,13 @@ fi
 ###########
 # Below setup is for ubuntu 24.04 machine
 
-NEW_PORT=${NEW_PORT}
+NEW_PORT=${NEW_PORT:-2223}
 
-# Update sshd_config safely (replace any existing Port line or commented Port)
-sed -i "s/^#\?Port .*/Port ${NEW_PORT}/" /etc/ssh/sshd_config
+sed -i "s/^#\?Port .*/Port $NEW_PORT/" /etc/ssh/sshd_config
+grep -q "^Port $NEW_PORT" /etc/ssh/sshd_config || echo "Port $NEW_PORT" >> /etc/ssh/sshd_config
 
-# If no Port line exists, append it
-grep -q "^Port ${NEW_PORT}" /etc/ssh/sshd_config || echo "Port ${NEW_PORT}" >> /etc/ssh/sshd_config
-
-# If system uses socket activation, update socket port
 if systemctl is-enabled ssh.socket >/dev/null 2>&1; then
-    sed -i "s/^ListenStream=.*/ListenStream=${NEW_PORT}/" /lib/systemd/system/ssh.socket
+    sed -i "s/^ListenStream=.*/ListenStream=$NEW_PORT/" /lib/systemd/system/ssh.socket
     systemctl daemon-reload
     systemctl restart ssh.socket
 else

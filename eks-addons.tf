@@ -13,9 +13,10 @@
 #     namespace        = "kube-system"
 #     create_namespace = true
 #     chart            = "aws-load-balancer-controller"
-#     chart_version    = "1.12.0"
-#     repository       = "https://aws.github.io/eks-charts"
-#     timeout          = 180
+#     # chart_version    = "1.12.0"
+#     chart_version = "3.3.0" #### Latest working version of aws-load-balancer-controller helm chart.
+#     repository    = "https://aws.github.io/eks-charts"
+#     timeout       = 180
 
 #     values = [
 #       templatefile("./values-files/aws_lb_contoller_values.yaml", {
@@ -38,13 +39,6 @@
 #     create_role = true
 #     role_name   = var.aws_lbc_role
 
-#     tags = var.eks_tags
-#     # tags = {
-#     #   "ENVIRONMENT"   = "PROD"
-#     #   "PROJECT"       = "INCEDE"
-#     #   "Implementedby" = "Workmates"
-#     #   "Managedby"     = "Workmates"
-#     # }
 #   }
 
 #   cluster_name      = module.eks_cluster.cluster_name
@@ -75,9 +69,10 @@
 #     namespace        = "kube-system"
 #     create_namespace = true
 #     chart            = "cluster-autoscaler"
-#     chart_version    = "9.46.2"
-#     repository       = "https://kubernetes.github.io/autoscaler"
-#     timeout          = 300
+#     # chart_version    = "9.46.2"
+#     chart_version = "9.57.0" #### Latest working version of cluster-autoscaler helm chart.
+#     repository    = "https://kubernetes.github.io/autoscaler"
+#     timeout       = 300
 
 #     values = [
 #       templatefile("./values-files/cluster_autoscaler_values.yaml", {
@@ -105,15 +100,6 @@
 #     create_role = true
 #     role_name   = var.ca_role
 
-#     tags = var.eks_tags
-
-#     # tags = {
-#     #   "ENVIRONMENT"   = "POC"
-#     #   "PROJECT"       = "INCEDE"
-#     #   "Implementedby" = "Workmates"
-#     #   "Managedby"     = "Workmates"
-#     # }
-
 #   }
 
 #   cluster_name      = module.eks_cluster.cluster_name
@@ -124,9 +110,9 @@
 #   # depends_on = [ aws_iam_role.ca_role ]   #### Ignore this if your create_role is true.
 #   # depends_on = [module.aws_lb_controller]
 #   depends_on = [time_sleep.wait_for_lb_controller]
-
-
 # }
+
+
 # ########################################################################
 # # Metric Server
 # ########################################################################
@@ -142,9 +128,10 @@
 #     namespace        = "kube-system"
 #     create_namespace = true
 #     chart            = "metrics-server"
-#     chart_version    = "3.12.0"
-#     repository       = "https://kubernetes-sigs.github.io/metrics-server/"
-#     timeout          = 180
+#     # chart_version    = "3.12.0"
+#     chart_version = "3.13.1" #### Latest working version of metrics-server helm chart.
+#     repository    = "https://kubernetes-sigs.github.io/metrics-server/"
+#     timeout       = 180
 
 #     values = [
 #       templatefile("./values-files/metric_server_values.yaml", {
@@ -164,8 +151,6 @@
 #     create_role = true
 #     role_name   = var.metric_server_role
 
-#     tags = var.eks_tags
-
 #   }
 
 #   cluster_name      = module.eks_cluster.cluster_name
@@ -175,9 +160,8 @@
 
 #   # depends_on = [module.aws_lb_controller]
 #   depends_on = [time_sleep.wait_for_lb_controller]
-
-
 # }
+
 
 # ####################################################
 # # EBS_CSI Driver
@@ -206,9 +190,9 @@
 # # gp3 storgae class addition
 # resource "kubectl_manifest" "gp3_sc" {
 #   yaml_body = templatefile("./manifest-files/ebs/ebs_gp3_sc.yaml", {
-#     kms-id = module.kms_complete.key_arn
+#     kms-id = module.aws_cmk.key_arn
 #   })
-#   depends_on = [helm_release.ebs_csi]
+#   #   depends_on = [helm_release.ebs_csi]
 # }
 
 # ######################################################
@@ -234,15 +218,10 @@
 #   depends_on = [aws_iam_role.efs_csi_driver_role, module.eks_cluster]
 # }
 
-# # need to make the efs file-system id passing as dynamic.
-# # resource "kubectl_manifest" "efs_sc" {
-# #   yaml_body  = file("./manifest-files/efs/efs_sc.yaml")
-# #   depends_on = [helm_release.efs_csi]
-# # }
 # resource "kubectl_manifest" "efs_sc" {
 #   yaml_body = templatefile("./manifest-files/efs/efs_sc.yaml", {
 #     fileSystemId = module.efs.id
 #   })
-#   depends_on = [helm_release.efs_csi, module.efs]
+#   #   depends_on = [helm_release.efs_csi, module.efs]
 # }
 
